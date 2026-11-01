@@ -1,32 +1,38 @@
 # Binary SUST API
 
 The Go backend for the Binary SUST website, built on [ekman](https://github.com/sakib412/ekman).
-The design is in [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md); the public data contract is
-[`../docs/snapshot.md`](../docs/snapshot.md).
+The design is in [`../../docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md); the public data contract is
+[`../../docs/snapshot.md`](../../docs/snapshot.md).
 
 Public pages never call this API. They are pre-rendered from a snapshot of the database
 (`cmd/snapshot`). The API serves the dashboard, sign-in, RSVPs and uploads.
 
 ## Commands
 
-Run these from the repository root (they read `.env`):
+Run these from the repository root (they read the root `.env` through dotenv-cli):
 
 ```sh
-make up        # Postgres + Caddy (http://binarysust.localhost)
-make migrate   # go run ./cmd/server migrate
-make seed      # demo data; DEV_ADMIN_EMAIL becomes an admin
-make api       # serve on :8080
-make snapshot  # write web/.snapshot/site.json from the local database
-make gen       # regenerate openapi.json (enums included) and the web's API types
+pnpm db:up       # Postgres + Caddy (http://binarysust.localhost)
+pnpm db:migrate  # go run ./cmd/server migrate
+pnpm db:seed     # migrate, then demo data; DEV_ADMIN_EMAIL becomes an admin
+pnpm dev         # everything; this module runs `go run ./cmd/server serve --migrate` on :8080
+pnpm snapshot    # write apps/web/.snapshot/site.json from the local database
+pnpm gen         # regenerate openapi.json (enums included) and @binarysust/api-client's types
+pnpm test        # go test -race ./... with EKMAN_TEST_DATABASE_URL (plus the TypeScript tests)
+pnpm lint        # golangci-lint (pinned in turbo.json, config in ../../.golangci.yml) plus ESLint
 ```
 
-Or from `api/`:
+In the Turborepo graph this Go module is the package `api` (native Go workspace support through the root
+`go.work`); `turbo.json` here sets its `dev`, `build` (`bin/server`), `test` (`-race`), `lint` and `gen` commands.
+`pnpm turbo run test --filter=api` runs only the Go tests.
+
+Or with plain Go from `apps/api/` (export the variables from `../../.env` yourself):
 
 ```sh
 go run ./cmd/server                    # serve (default command)
 go run ./cmd/server serve --migrate    # migrate, then serve (what Render runs)
 go run ./cmd/server migrate
-go run ./cmd/server openapi > openapi.json   # ekman's document + enums (internal/apidoc)
+go run ./cmd/server openapi -o openapi.json   # ekman's document + enums (internal/apidoc)
 go run ./cmd/seed
 go run ./cmd/snapshot -out ../web      # prints the version JSON on stdout
 
@@ -44,7 +50,7 @@ local origin (`localhost`, `*.localhost`).
 ```
 cmd/server      config from env, ekman app, `serve | migrate | openapi`
 cmd/seed        demo data (internal/demo)
-cmd/snapshot    site.Build -> web/.snapshot/site.json
+cmd/snapshot    site.Build -> apps/web/.snapshot/site.json
 internal/club   THE module list and THE role table (Roles, Baseline)
 internal/<module>/<module>.go, migrations/NNNN_*.sql, *_test.go
   people        persons, handles, terms, positions, committee seats, portfolios
@@ -75,7 +81,7 @@ internal/<module>/<module>.go, migrations/NNNN_*.sql, *_test.go
    route naming an undeclared permission stops the API at boot.
 4. For public content, add a `Published(ctx)` read function, a `Showcase []showcase.Public` field to
    `site.Snapshot`, one line in `site.Build`, and the field to `docs/snapshot.md`.
-5. `make gen` regenerates `openapi.json` and the web's TypeScript types.
+5. `pnpm gen` regenerates `openapi.json` and `@binarysust/api-client`'s TypeScript types.
 
 Publishing needs no code: every 2xx non-GET request republishes the site unless the route passes
 `republish.Skip()` (use it for writes that change nothing public, like RSVPs).
@@ -138,7 +144,7 @@ lifetime members (`PublicPerson.lifetimeMember`). Seat counts are typical, not e
 | 30 (advisory) | Adviser                                 | adviser    | 5 or more |                                |
 
 Lifetime: President, General Secretary, Director of Training. Which roles a position carries is data
-(`position_roles`), edited by `roles.manage` in _Committee & roles_. `make seed` fills the defaults above
+(`position_roles`), edited by `roles.manage` in _Committee & roles_. `pnpm db:seed` fills the defaults above
 (`demo.PositionRoles`, added if missing, never removed); a fresh production database starts with none,
 so the first admin (a permanent grant) sets them in the dashboard.
 
@@ -146,7 +152,7 @@ so the first admin (a permanent grant) sets them in the dashboard.
 
 ekman v0.1 documents every Go string type as `string`. A string type with `func (T) Enum() []string`
 becomes a named enum schema (`people.Group`, `events.Kind`, ...) and every field of that type points at
-it; role names come from `club.Roles`. That happens in `server openapi` (`club.OpenAPI`), so `make gen`
+it; role names come from `club.Roles`. That happens in `server openapi` (`club.OpenAPI`), so `pnpm gen`
 and the CI check see it. The document ekman serves at runtime (`GET /api/v1/openapi.json`) does not.
 
 ## Environment
@@ -158,7 +164,7 @@ and the CI check see it. The document ekman serves at runtime (`GET /api/v1/open
 | `EKMAN_SECRET`                                                         | at least 32 bytes; signs the OAuth state cookie                                                  |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                             | Google sign-in (redirect URI `$PUBLIC_URL/api/v1/auth/google/callback`)                          |
 | `DEV_ADMIN_EMAIL`                                                      | local dev sign-in; ignored unless `PUBLIC_URL` is local                                          |
-| `MEDIA_DIR`, `MEDIA_BASE_URL`                                          | local uploads directory (relative to `api/` when run from there) and its URL                     |
+| `MEDIA_DIR`, `MEDIA_BASE_URL`                                          | local uploads directory (relative to `apps/api/`, where the server runs) and its URL             |
 | `GITHUB_MEDIA_REPOSITORY`, `GITHUB_MEDIA_TOKEN`, `GITHUB_MEDIA_BRANCH` | production uploads: commit to this repo (Contents API); `MEDIA_BASE_URL` is where it is served   |
 | `GITHUB_REPOSITORY`, `GITHUB_DISPATCH_TOKEN`                           | send `repository_dispatch` `publish` after content writes; unset logs instead                    |
 | `BREVO_API_KEY`, `MAIL_FROM`                                           | RSVP mail through Brevo; an empty key logs mail                                                  |
@@ -167,7 +173,7 @@ and the CI check see it. The document ekman serves at runtime (`GET /api/v1/open
 
 ## Deploy
 
-`../render.yaml` deploys `Dockerfile` (distroless, static binary) to Render's free plan in
+`../../render.yaml` (`rootDir: apps/api`) deploys `Dockerfile` (distroless, static binary) to Render's free plan in
 Singapore with a `/healthz` health check. The container runs `server serve --migrate`.
 
 ## Known gaps in ekman v0.1 (worked around here)

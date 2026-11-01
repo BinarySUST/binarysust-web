@@ -17,10 +17,10 @@ Constraints:
 
 **Add a content type** (for example "Projects showcase"):
 
-1. Copy `api/internal/sponsors/` to `api/internal/showcase/`. It is the smallest complete module. Rename the types, write `migrations/0001_showcase.sql`, and declare `const Manage rbac.Permission = "showcase.manage"`.
-2. Add `showcase.New(db).Module()` to the list in `api/internal/club/club.go`. Add a `Showcase []showcase.Public` field to `site.Snapshot`, and add one line to `site.Build`.
-3. Run `make gen`. It regenerates `openapi.json` and the TypeScript types, so the new section is typed in the web app.
-4. Write the public page and add a dashboard section (one entry in `web/src/dashboard/sections.tsx`).
+1. Copy `apps/api/internal/sponsors/` to `apps/api/internal/showcase/`. It is the smallest complete module. Rename the types, write `migrations/0001_showcase.sql`, and declare `const Manage rbac.Permission = "showcase.manage"`.
+2. Add `showcase.New(db).Module()` to the list in `apps/api/internal/club/club.go`. Add a `Showcase []showcase.Public` field to `site.Snapshot`, and add one line to `site.Build`.
+3. Run `pnpm gen`. It regenerates `apps/api/openapi.json` and the TypeScript types in `@binarysust/api-client`, so the new section is typed in the web app.
+4. Copy `apps/web/src/features/sponsors/` for the public page, the dashboard section and its queries, and add one entry in `apps/web/src/dashboard/sections.tsx`.
 5. Publishing needs no extra work. Every successful write republishes the site unless its route opts out.
 
 **Give a role a new permission:** add the permission to the role in `club.Roles`. If you name a permission that no module declares, the API refuses to boot, and CI catches it.
@@ -36,19 +36,20 @@ Last year's committee loses dashboard access on its next request. Nobody revokes
 Call sites:
 
 ```go
-// api/internal/events/events.go: the access rule sits in the route table, never inside the handler
+// apps/api/internal/events/events.go: the access rule sits in the route table, never inside the handler
 ekman.Handle(r, "PUT /events/{id}", ekman.Requires(Manage), s.update)
 ekman.Handle(r, "POST /events/{slug}/rsvp", ekman.SignedIn(), s.rsvp, republish.Skip())
 ```
 
 ```tsx
-// web/src/routes/events/$slug.tsx: pre-rendered at build time from the snapshot; never calls the API
+// apps/web/src/routes/events/$slug.tsx: pre-rendered at build time from the snapshot; never calls the API
 export const Route = createFileRoute("/events/$slug")({
   loader: ({ params }) => content.event(params.slug), // snapshot slice: disk at build, static JSON in the browser
-  component: EventPage,
+  component: EventPage, // apps/web/src/features/events/components/EventPage.tsx
 });
-function EventPage() {
-  const e = Route.useLoaderData();
+// features/events/components/EventPage.tsx
+export function EventPage() {
+  const { event: e } = getRouteApi("/events/$slug").useLoaderData();
   return (
     <>
       <article dangerouslySetInnerHTML={{ __html: e.bodyHtml }} />
@@ -57,6 +58,12 @@ function EventPage() {
   ); // live seats come from the API
 }
 ```
+
+## Repository
+
+A Turborepo + pnpm monorepo: `apps/web` (TanStack Start), `apps/api` (Go, a native Turborepo Go workspace through
+`go.work`), and shared `packages/` (`ui`, `api-client`, `eslint-config`, `typescript-config`). The rules and the layout are
+[ADR 0001](adr/0001-monorepo-structure.md); everyday commands are the root `pnpm` scripts (README).
 
 ## Shape
 
@@ -108,7 +115,7 @@ CI      ─► go run ./cmd/snapshot (reads Neon directly, read-only role) ─�
   The full snapshot is never bundled into client JavaScript, and a page never calls the API for content.
 
 - **No server functions and no server routes.** Go is the only backend, and the output is static, so neither exists at runtime. A lint rule bans `createServerFn` and `createServerFileRoute` (`AGENTS.md` says why).
-- **The dashboard is routed from one list** (`src/dashboard/sections.tsx`). The sidebar, routes and permission filtering are derived from it. Data uses TanStack Query against the API.
+- **The dashboard is routed from one list** (`apps/web/src/dashboard/sections.tsx`). The sidebar, routes and permission filtering are derived from it. Data uses TanStack Query against the API.
 - **API types are generated** from ekman's OpenAPI (`openapi-typescript` + `openapi-fetch`), including the `Permission` union. A typo in a dashboard permission fails `tsc`.
 - **Landing page:** React components with Motion for animation. Heavy visuals load lazily so the first paint stays fast.
 - **What you lose compared with Astro:** public pages ship React (~100–150 KB gzipped), and we add RSS, the sitemap and the image pipeline ourselves (generated in `cmd/snapshot`).

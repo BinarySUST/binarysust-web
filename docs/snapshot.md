@@ -1,21 +1,21 @@
 # Snapshot contract
 
-`site.Snapshot` (Go, `api/internal/site`) is the only thing the public site reads. `cmd/snapshot` writes it
+`site.Snapshot` (Go, `apps/api/internal/site`) is the only thing the public site reads. `cmd/snapshot` writes it
 two ways from one value:
 
-- `web/.snapshot/site.json`: the whole snapshot, read from disk at pre-render time.
-- `web/public/data/**.json`: per-route slices, fetched by the browser on client-side navigation.
+- `apps/web/.snapshot/site.json`: the whole snapshot, read from disk at pre-render time.
+- `apps/web/public/data/**.json`: per-route slices, fetched by the browser on client-side navigation.
 
 The Go types are the source of truth. They are also exposed through `GET /api/v1/site/preview`, the
-dashboard's preview endpoint, so `make gen` emits them into `web/src/lib/api/schema.d.ts`, and the web
-app imports the TS types from there. Until the API exists, `web/.snapshot/fixture.json` follows this shape.
+dashboard's preview endpoint, so `pnpm gen` emits them into `packages/api-client/src/schema.d.ts`
+(`@binarysust/api-client`), and the web app imports the TS types from there. Until the API exists, `apps/web/.snapshot/fixture.json` follows this shape.
 
 All markdown arrives already rendered to sanitized HTML (`*Html` fields). All timestamps are RFC 3339
 UTC strings. Image fields hold absolute URLs, or null.
 
 The string unions below are real enums in `openapi.json`: a Go string type with an `Enum()` method
-becomes a named enum schema (`api/internal/apidoc`), so `schema.d.ts` already narrows them. Value lists
-for code that iterates them live in `web/src/lib/api/enums.ts`.
+becomes a named enum schema (`apps/api/internal/apidoc`), so `schema.d.ts` already narrows them. Value lists
+for code that iterates them live in `packages/api-client/src/enums.ts`.
 
 ```ts
 type Snapshot = {
@@ -74,7 +74,7 @@ type Seat = {
 }; // order within the committee (lower first)
 // Seats arrive executive first, then by rank, then name. Several people can share a position in a
 // term (assistants, executive members). Positions are the club constitution's
-// (api/internal/people/migrations/0002_positions.sql):
+// (apps/api/internal/people/migrations/0002_positions.sql):
 //   leadership: President, Vice President, General Secretary, Director of Training, Project Co-ordinator
 //   secretary:  Organizing, Event Management, Publication, IT & Design, Finance, Office, Internal Affairs
 //   assistant:  the Assistant ... of each; member: Senior Executive Member, Executive Member
@@ -138,4 +138,4 @@ post and talk dated in the 53 weeks before the build, as `{ date, kind: "event" 
 activity graph; it is derived by `slices.ts`, not a snapshot field), `people.json` (directory cards),
 `people/<handle>.json`, `committee/<term>.json`, `events.json`, `events/<slug>.json`, `blog.json`,
 `blog/<slug>.json`, `talks.json`, `sponsors.json`. The Go side and the web `content` module both
-derive slice names from this list. Adding a slice means editing this doc, `site.Slices` and `content.ts`.
+derive slice names from this list. Adding a slice means editing this doc, `site.Slices` and `apps/web/src/content/` (`slices.ts`, `index.ts`).

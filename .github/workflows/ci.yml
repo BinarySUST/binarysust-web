@@ -1,3 +1,6 @@
+# Quality gates (docs/adr/0001-monorepo-structure.md, rule 7). Every task runs through Turborepo, so Go and
+# TypeScript share one task graph and one cache (.turbo, kept between runs with actions/cache). Pull requests run
+# only the packages their changes affect (--affected against the PR base); pushes to main run everything.
 name: ci
 
 on:
@@ -12,12 +15,33 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  DO_NOT_TRACK: 1
+  WRANGLER_SEND_METRICS: false
+
 jobs:
-  api:
+  pr-title:
+    name: PR title (Conventional Commits)
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: api
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: commitlint
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$TITLE" | pnpm exec commitlint
+
+  checks:
+    name: format, lint, typecheck, test, build, e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     services:
       postgres:
         image: postgres:17-alpine
@@ -31,42 +55,57 @@ jobs:
           --health-interval 2s --health-timeout 3s --health-retries 30
     env:
       EKMAN_TEST_DATABASE_URL: postgres://binary:binary@localhost:5432/binarysust?sslmode=disable
+      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+      AFFECTED: ${{ github.event_name == 'pull_request' && '--affected' || '' }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
         with:
-          go-version-file: api/go.mod
-          cache-dependency-path: api/go.sum
-      - name: gofmt
-        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
-      - run: go vet ./...
-      - run: go test -race ./...
-      - name: openapi.json is up to date
-        run: |
-          go run ./cmd/server openapi > /tmp/openapi.json
-          diff -u openapi.json /tmp/openapi.json || (echo "run 'make gen' and commit openapi.json" && exit 1)
-
-  web:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+          fetch-depth: 0 # --affected compares with the PR base
+          filter: blob:none
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
-          package_json_file: web/package.json
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: apps/api/go.mod
+          cache-dependency-path: apps/api/go.sum
+      - name: Turborepo cache
+        uses: actions/cache@v6
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
-      - name: API types match openapi.json
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: Generated code matches the Go API (openapi.json, api-client types)
         run: |
-          pnpm gen:api
-          git diff --exit-code -- src/lib/api/schema.d.ts || (echo "run 'make gen' and commit schema.d.ts" && exit 1)
-      - run: pnpm typecheck
-      - run: pnpm lint
-      - name: build (fixture snapshot)
-        run: pnpm build
+          pnpm gen
+          git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts \
+            || (echo "::error::Run 'pnpm gen' and commit apps/api/openapi.json and packages/api-client/src/schema.d.ts" && exit 1)
+
+      - name: Lint (ESLint, golangci-lint), typecheck, unit tests (Vitest, go test -race), build
+        run: pnpm turbo run lint typecheck test build $AFFECTED
+
+      - name: Playwright browsers
+        id: playwright
+        run: |
+          echo "version=$(pnpm --filter @binarysust/web exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - run: pnpm --filter @binarysust/web exec playwright install --with-deps chromium
+
+      - name: E2E smoke tests (static build, mocked API)
+        run: pnpm turbo run test:e2e $AFFECTED
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7

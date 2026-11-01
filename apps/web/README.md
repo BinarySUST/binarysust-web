@@ -2,26 +2,26 @@
 
 The public site and the dashboard for Binary SUST. TanStack Start (React) built to **fully static files**
 for Cloudflare Pages. Go (`../api`) is the only backend; read [`AGENTS.md`](AGENTS.md) and
-[`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) first.
+[`../../docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) first.
 
-Stack: TanStack Start + Router, React 19, TypeScript (strict), Tailwind CSS v4, Motion, TanStack Query
-(dashboard only), openapi-fetch, pnpm.
+Stack: TanStack Start + Router, React 19, TypeScript (strict), Tailwind CSS v4, shadcn/ui on Base UI
+(`@binarysust/ui`), Motion, TanStack Query (dashboard only), `@binarysust/api-client` (openapi-fetch), Vitest,
+Playwright, pnpm + Turborepo.
 
 ## Develop
 
-The normal entry point is the monorepo's `make dev`, then open **http://binarysust.localhost**.
-Caddy serves that one origin: `/api/*` and `/healthz` go to the Go API, `/media/*` to local uploads
-(also at `http://media.binarysust.localhost`), and everything else to this dev server
-(`make web` runs `pnpm dev --port 3000 --strictPort` with `VITE_HMR_CLIENT_PORT=80`).
+The entry point is the monorepo root: `pnpm dev`, then open **http://binarysust.localhost**.
+Caddy serves that one origin: `/api/*` and `/healthz` go to the Go API, and everything else to this dev
+server on :3000 (`VITE_HMR_CLIENT_PORT=80` from the root `.env` routes HMR through Caddy). Uploads are served
+at `http://media.binarysust.localhost`.
 
-Without Docker:
+Only this app, without Docker or Caddy:
 
 ```sh
-pnpm install
-pnpm dev            # http://localhost:3000; proxies /api and /healthz to API_ORIGIN (default http://localhost:8080)
+pnpm --filter @binarysust/web dev   # http://localhost:3000; proxies /api and /healthz to API_ORIGIN (default http://localhost:8080)
 ```
 
-`pnpm dev` runs `predev` first, which writes `public/data/**` from the snapshot. In dev, Start's SPA mode
+`pnpm dev` here runs `pnpm slices` first, which writes `public/data/**` from the snapshot. In dev, Start's SPA mode
 serves the shell and every page loads its slice from `/data/*.json` in the browser; the disk-reading half
 of `content.*` runs only during the build's pre-render. Re-run `pnpm slices` after changing the snapshot.
 
@@ -32,10 +32,27 @@ of `content.*` runs only during the build's pre-render. Re-run `pnpm slices` aft
 | `VITE_MEDIA_BASE_URL`  | build                     | Base for media URLs the dashboard builds (default `https://media.binarysust.org`). Snapshot image fields are already absolute. |
 | `SITE_URL`             | build                     | Canonical origin for sitemap, RSS and OpenGraph (default `https://binarysust.org`).                                            |
 
-Other scripts: `pnpm typecheck`, `pnpm lint`, `pnpm preview`, `pnpm gen:api`
-(regenerates `src/lib/api/schema.d.ts` from `../api/openapi.json`; run `make gen` at the root to refresh
-`openapi.json` from the Go code first). Snapshot types in `src/lib/types.ts` are aliases over the generated
-`site.Snapshot`, narrowed to the enums the Go side validates.
+Package scripts (Turborepo runs them from the root: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`):
+`typecheck`, `lint`, `test` (Vitest, `src/**/*.test.ts`), `test:e2e` (Playwright, `e2e/`, against the static build
+served by `wrangler pages dev`, with the API mocked), `preview`. API types come from `@binarysust/api-client`
+(`pnpm gen` at the root regenerates them from the Go code). Snapshot types in `src/content/types.ts` are aliases
+over the generated `site.Snapshot`, narrowed to the enums the Go side validates.
+
+## Layout
+
+```
+src/routes/        file-based routes; each only declares createFileRoute({ loader, head, component })
+src/features/      one folder per domain (events, blog, people, committee, talks, sponsors, media, portfolio):
+                   components/ (public pages and parts), dashboard/ (its dashboard section), queries.ts
+src/dashboard/     the dashboard shell, sections.tsx (THE list of sections), Overview, the form kit (ui.tsx)
+src/content/       the snapshot loader (content.*), slices and snapshot types
+src/components/    site chrome: header, footer, page heads, icons, landing page
+e2e/               Playwright smoke tests
+functions/         Cloudflare Pages Function (/api proxy)
+```
+
+UI primitives come from `@binarysust/ui` (`packages/ui`): add one with `pnpm dlx shadcn@latest add <name>` from
+this directory.
 
 ## How content flows
 
@@ -44,8 +61,8 @@ Other scripts: `pnpm typecheck`, `pnpm lint`, `pnpm preview`, `pnpm gen:api`
         │
         ├─ pnpm slices (scripts/slices.ts) ─► public/data/**.json, sitemap.xml, rss.xml, _redirects, _routes.json, version.json
         │
-        └─ vite build ─► pre-render: every route's loader calls content.* (src/lib/content.ts)
-                          server half: slice the snapshot from disk with src/lib/slices.ts
+        └─ vite build ─► pre-render: every route's loader calls content.* (src/content/index.ts)
+                          server half: slice the snapshot from disk with src/content/slices.ts
                           browser half: fetch /data/<slice>.json (same slicing code wrote it)
 ```
 
@@ -55,7 +72,7 @@ Other scripts: `pnpm typecheck`, `pnpm lint`, `pnpm preview`, `pnpm gen:api`
   Start's `pages` list, and `crawlLinks` finds the rest.
 - **Upcoming vs past** is decided at build time and re-checked in the browser, so a page built days ago
   never lists a finished event as upcoming.
-- **Live data** on public pages is limited to the `<Rsvp>` island (`src/components/Rsvp.tsx`). It pings
+- **Live data** on public pages is limited to the `<Rsvp>` island (`src/features/events/components/Rsvp.tsx`). It pings
   `/healthz` on mount to wake Render, reads availability when the `ekman_hint` cookie says you are signed
   in, and sends you to `/login?next=…` otherwise.
 - **The fixture** (`.snapshot/fixture.json`) is synthetic: every person, company, number and sponsor in it

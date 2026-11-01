@@ -70,7 +70,7 @@ so the site doubles as the club's institutional memory.
 
 ## Evidence on Hand
 
-- Until the API exists, all content is `web/.snapshot/fixture.json`: synthetic people, events, posts, talks
+- Until the API exists, all content is `apps/web/.snapshot/fixture.json`: synthetic people, events, posts, talks
   and sponsors. Every name, company and number there is fake and must be replaced by the real snapshot.
 - No real photos, logos, testimonials or member counts exist yet. Do not invent claims beyond the snapshot.
 

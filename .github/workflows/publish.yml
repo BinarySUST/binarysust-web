@@ -2,7 +2,7 @@
 #
 # Triggers:
 #   - repository_dispatch "publish": the API fires it after every content write (republish middleware)
-#   - push to main touching web/ or the snapshot code: code changes always deploy
+#   - push to main touching apps/web, packages/ or the snapshot code: code changes always deploy
 #   - nightly 00:05 Asia/Dhaka: "upcoming" and "registration open" roll over with the date
 #   - manual run
 #
@@ -18,9 +18,11 @@ on:
   push:
     branches: [main]
     paths:
-      - web/**
-      - api/internal/site/**
-      - api/cmd/snapshot/**
+      - apps/web/**
+      - packages/**
+      - apps/api/internal/site/**
+      - apps/api/cmd/snapshot/**
+      - pnpm-lock.yaml
       - .github/workflows/publish.yml
   schedule:
     - cron: "5 18 * * *"
@@ -43,16 +45,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
-          go-version-file: api/go.mod
-          cache-dependency-path: api/go.sum
+          go-version-file: apps/api/go.mod
+          cache-dependency-path: apps/api/go.sum
 
       - name: Snapshot the database
         id: snapshot
-        working-directory: api
+        working-directory: apps/api
         env:
           DATABASE_URL: ${{ secrets.SNAPSHOT_DATABASE_URL }}
         run: |
@@ -74,28 +76,27 @@ jobs:
             echo "unchanged=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
+        if: steps.live.outputs.unchanged != 'true'
+      - uses: actions/setup-node@v7
         if: steps.live.outputs.unchanged != 'true'
         with:
-          package_json_file: web/package.json
-      - uses: actions/setup-node@v5
-        if: steps.live.outputs.unchanged != 'true'
-        with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
 
       - name: Build
         if: steps.live.outputs.unchanged != 'true'
-        working-directory: web
+        env:
+          TURBO_TELEMETRY_DISABLED: 1
         run: |
           pnpm install --frozen-lockfile
-          pnpm build
+          pnpm turbo run build --filter=@binarysust/web
 
       - name: Deploy to Cloudflare Pages
         if: steps.live.outputs.unchanged != 'true'
-        working-directory: web
+        working-directory: apps/web
         env:
+          WRANGLER_SEND_METRICS: false
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
@@ -103,4 +104,4 @@ jobs:
             echo "::warning::CLOUDFLARE_API_TOKEN is not set; built but not deployed."
             exit 0
           fi
-          pnpm dlx wrangler@4 pages deploy dist/client --project-name "$PAGES_PROJECT" --branch main --commit-dirty=true
+          pnpm exec wrangler pages deploy dist/client --project-name "$PAGES_PROJECT" --branch main --commit-dirty=true

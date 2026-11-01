@@ -18,7 +18,8 @@ binarysust-web/
 │   ├── web/                    TanStack Start (static: prerendered public site + client-only /dashboard)
 │   │   ├── src/routes/         public routes + dashboard routes (file-based)
 │   │   ├── src/features/       one folder per domain: events/, blog/, people/, committee/, talks/,
-│   │   │                       sponsors/, media/, portfolio/ — components, hooks and queries for that domain
+│   │   │                       sponsors/, media/, portfolio/ — components/, dashboard/ (its section) and
+│   │   │                       queries.ts for that domain
 │   │   ├── src/dashboard/      shell + sections.tsx (THE list of dashboard sections)
 │   │   ├── src/content/        snapshot loader (createIsomorphicFn) + slices
 │   │   ├── functions/          Cloudflare Pages Function (/api proxy)
@@ -27,7 +28,8 @@ binarysust-web/
 │       ├── cmd/{server,seed,snapshot}
 │       ├── internal/<module>/  one ekman Module per domain (sponsors = the template to copy)
 │       ├── openapi.json        generated; the API contract
-│       └── turbo.json          per-package overrides (dev = go run ./cmd/server, gen, -race tests)
+│       └── turbo.json          per-package overrides (dev = go run ./cmd/server serve --migrate, build -> bin/server,
+│                               -race tests, golangci-lint, gen)
 ├── packages/
 │   ├── ui/                     @binarysust/ui — shadcn/ui (style base-nova = Base UI primitives),
 │   │                           design tokens (globals.css), brand <Logo/>, shared hooks. No app logic.
@@ -48,11 +50,14 @@ binarysust-web/
 
 ### Go in the task graph: Turborepo native Go workspaces
 
-Turborepo 2.11+ discovers Go modules from a root `go.work` (`futureFlags.experimentalGoWorkspaces`), adds
+Turborepo 2.11 and later discovers Go modules from a root `go.work` (`futureFlags.experimentalGoWorkspaces`), adds
 them to the package graph, and maps `build`/`test`/`lint`/`format` to `go build`/`go test ./...`/`go vet`/`go fmt`.
-`experimentalTaskCommand` lets `apps/api/turbo.json` override commands: `dev` runs `go run ./cmd/server`
-(the module has several `main` packages, so there is no default `dev`), `test` adds `-race`, and `gen`
-writes `openapi.json`. The Go module's Turborepo name is derived from its path (`apps/api` → `api`). No JS
+`experimentalTaskCommand` lets `apps/api/turbo.json` override commands: `dev` runs `go run ./cmd/server serve
+--migrate` (the module has several `main` packages, so there is no default `dev`), `build` writes `bin/server` (a
+cached output), `test` adds `-race`, `lint` runs golangci-lint (a pinned `go run …/golangci-lint/v2/cmd/golangci-lint@vX`,
+so nothing is installed by hand; it replaces the default `go vet`, which golangci-lint includes), and `gen` writes
+`openapi.json` (`server openapi -o openapi.json`, since task commands run without a shell). Verified with Turborepo
+2.11.10: `turbo run build --dry=json` lists `api#build`, and `test`, `lint`, `dev` and `gen` include `api`. The Go module's Turborepo name is derived from its path (`apps/api` → `api`). No JS
 package may be named `api`; JS packages are scoped `@binarysust/*`. The feature is experimental. If a
 Turborepo release breaks it, the fallback is a thin `package.json` adapter in `apps/api`, with no other
 changes.

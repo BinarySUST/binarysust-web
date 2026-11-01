@@ -33,7 +33,7 @@ personal one, so the next committee inherits it. Use the same account for every 
 2. APIs & Services → OAuth consent screen → External, app name "Binary SUST", then publish it.
 3. Credentials → Create OAuth client ID → Web application. Authorized redirect URIs:
    - `https://binarysust.org/api/v1/auth/google/callback`
-   - `http://binarysust.localhost/api/v1/auth/google/callback` (local dev; if Google rejects it, use `make dev` with `DEV_ADMIN_EMAIL` instead)
+   - `http://binarysust.localhost/api/v1/auth/google/callback` (local dev; if Google rejects it, use `pnpm dev` with `DEV_ADMIN_EMAIL` instead)
 4. Copy the client ID and secret.
 
 ## 3. Render (Go API)

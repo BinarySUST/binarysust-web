@@ -3,8 +3,8 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { allPaths } from "./src/lib/slices.ts";
-import { loadSnapshot } from "./src/lib/snapshot.server.ts";
+import { allPaths } from "./src/content/slices.ts";
+import { loadSnapshot } from "./src/content/snapshot.server.ts";
 
 // Every public URL in the snapshot is pre-rendered, linked or not. /dashboard/* and /login are
 // client-only: they are served by _shell.html through public/_redirects.

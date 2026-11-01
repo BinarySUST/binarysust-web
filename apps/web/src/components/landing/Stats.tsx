@@ -1,6 +1,6 @@
-import type { Activity } from "~/lib/slices";
-import type { Club } from "~/lib/types";
-import { ActivityGraph } from "./ActivityGraph";
+import type { Activity } from "~/content/slices";
+import type { Club } from "~/content/types";
+import { ActivityGraph } from "~/components/landing/ActivityGraph";
 
 const compact = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 /** 312 stays 312; 6500 reads 6.5K. */

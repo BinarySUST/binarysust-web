@@ -7,9 +7,9 @@ import { type FormEvent, useId, useState } from "react";
 import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { GROUP_LABEL, POSITION_CATEGORIES, POSITION_GROUPS, type PositionGroup, type RoleName, oneOf } from "@binarysust/api-client";
 import { formatShort } from "~/lib/format";
-import { useMe } from "../me";
-import type { SectionProps } from "../sections";
-import { usePeople } from "./People";
+import { useMe } from "~/dashboard/me";
+import type { SectionProps } from "~/dashboard/sections";
+import { usePeople } from "~/features/people/dashboard/PeopleSection";
 import {
   BackLink,
   ConfirmDialog,
@@ -24,7 +24,7 @@ import {
   fieldErrors,
   invalidate,
   td,
-} from "../ui";
+} from "~/dashboard/ui";
 import { Button } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { NativeSelect } from "@binarysust/ui/components/native-select";

@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { BRAND } from "@binarysust/ui/lib/brand";
-import { Icon } from "./Icon";
+import { Icon } from "~/components/Icon";
 import { Logo } from "@binarysust/ui/components/logo";
-import { NAV } from "./SiteHeader";
+import { NAV } from "~/components/SiteHeader";
 
 const MORE = [
   { to: "/alumni", label: "Alumni" },

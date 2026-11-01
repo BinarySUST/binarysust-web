@@ -3,9 +3,9 @@ import { Link } from "@tanstack/react-router";
 import { Icon } from "~/components/Icon";
 import { api, unwrap } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
-import { useMe } from "../me";
-import { visibleSections } from "../sections";
-import { ErrorBox, SectionHead } from "../ui";
+import { useMe } from "~/dashboard/me";
+import { visibleSections } from "~/dashboard/sections";
+import { ErrorBox, SectionHead } from "~/dashboard/ui";
 
 /**
  * "Is my change live?": GET /site/status compares the API's last content change with the deployed

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CommitteeView } from "~/components/Committee";
+import { CommitteeView } from "~/features/committee/components/CommitteeView";
 import { PageHead } from "~/components/Page";
-import { content } from "~/lib/content";
+import { content } from "~/content";
 import { seo } from "~/lib/seo";
 
 export const Route = createFileRoute("/committee/$term")({

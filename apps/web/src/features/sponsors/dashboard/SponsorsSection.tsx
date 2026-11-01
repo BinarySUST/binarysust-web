@@ -1,18 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { SPONSOR_TIERS, oneOf } from "@binarysust/api-client";
-import { ImageField } from "../MediaUpload";
-import type { SectionProps } from "../sections";
-import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, td } from "../ui";
+import { ImageField } from "~/features/media/components/MediaUpload";
+import type { SectionProps } from "~/dashboard/sections";
+import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, td } from "~/dashboard/ui";
 import { buttonVariants } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { NativeSelect } from "@binarysust/ui/components/native-select";
-
-type SponsorIn = Schemas["sponsors.In"];
-type Sponsor = Schemas["sponsors.Sponsor"];
+import { type Sponsor, type SponsorIn, deleteSponsor, sponsorKeys, useSaveSponsor, useSponsor, useSponsors } from "../queries";
 
 export function SponsorsSection({ rest }: SectionProps) {
   const [id] = rest;
@@ -21,7 +18,7 @@ export function SponsorsSection({ rest }: SectionProps) {
 }
 
 function SponsorList() {
-  const q = useQuery({ queryKey: ["sponsors"], queryFn: async () => unwrap(await api.GET("/api/v1/sponsors")) });
+  const q = useSponsors();
   const year = new Date().getFullYear();
   return (
     <>
@@ -65,11 +62,7 @@ const blank = (): SponsorIn => ({ name: "", tier: "partner", logoUrl: "", url: "
 const toIn = ({ id: _i, updatedAt: _u, ...rest }: Sponsor): SponsorIn => rest;
 
 function SponsorEditor({ id }: { id: string | null }) {
-  const q = useQuery({
-    queryKey: ["sponsors", id],
-    queryFn: async () => unwrap(await api.GET("/api/v1/sponsors/{id}", { params: { path: { id: id ?? "" } } })),
-    enabled: id !== null,
-  });
+  const q = useSponsor(id);
   if (id && q.error) return <ErrorBox error={q.error} retry={() => void q.refetch()} />;
   if (id && !q.data) return <Loading what="Loading sponsor" />;
   return <SponsorForm id={id} initial={q.data ? toIn(q.data) : blank()} key={id ?? "new"} />;
@@ -79,19 +72,7 @@ function SponsorForm({ id, initial }: { id: string | null; initial: SponsorIn })
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [f, setF] = useState<SponsorIn>(initial);
-  const save = useMutation({
-    mutationFn: async (body: SponsorIn) =>
-      unwrap(id ? await api.PUT("/api/v1/sponsors/{id}", { params: { path: { id } }, body }) : await api.POST("/api/v1/sponsors", { body })),
-    onMutate: (body) => {
-      // Optimistic: the list shows the edit straight away.
-      if (id) qc.setQueryData<Sponsor[]>(["sponsors"], (rows) => rows?.map((r) => (r.id === id ? { ...r, ...body } : r)));
-    },
-    onSuccess: (s) => {
-      qc.setQueryData(["sponsors", s.id], s);
-      if (!id) void navigate({ to: "/dashboard/$", params: { _splat: `sponsors/${s.id}` } });
-    },
-    onSettled: () => invalidate(qc, ["sponsors"]),
-  });
+  const save = useSaveSponsor(id, (s) => void navigate({ to: "/dashboard/$", params: { _splat: `sponsors/${s.id}` } }));
   const fe = fieldErrors(save.error);
   const set = <K extends keyof SponsorIn>(k: K, v: SponsorIn[K]) => (setF((x) => ({ ...x, [k]: v })), save.reset());
   const onSubmit = (e: FormEvent) => {
@@ -142,9 +123,9 @@ function SponsorForm({ id, initial }: { id: string | null; initial: SponsorIn })
           <span className="ml-auto">
             <DeleteButton
               what="sponsor"
-              onDelete={async () => unwrap(await api.DELETE("/api/v1/sponsors/{id}", { params: { path: { id } } }))}
+              onDelete={() => deleteSponsor(id)}
               onDeleted={() => {
-                invalidate(qc, ["sponsors"]);
+                invalidate(qc, sponsorKeys.all);
                 void navigate({ to: "/dashboard/$", params: { _splat: "sponsors" } });
               }}
             >

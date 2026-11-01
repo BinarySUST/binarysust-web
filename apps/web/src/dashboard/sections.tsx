@@ -4,16 +4,16 @@
 import type { ComponentType } from "react";
 import type { IconName } from "~/components/Icon";
 import type { Me, Permission } from "@binarysust/api-client";
-import { BlogSection } from "./sections/Blog";
-import { CommitteeSection } from "./sections/Committee";
-import { EventsSection } from "./sections/Events";
-import { MediaSection } from "./sections/Media";
-import { Overview } from "./sections/Overview";
-import { PeopleSection } from "./sections/People";
-import { PortfolioSection } from "./sections/Portfolio";
-import { RsvpsSection } from "./sections/Rsvps";
-import { SponsorsSection } from "./sections/Sponsors";
-import { TalksSection } from "./sections/Talks";
+import { BlogSection } from "~/features/blog/dashboard/BlogSection";
+import { CommitteeSection } from "~/features/committee/dashboard/CommitteeSection";
+import { EventsSection } from "~/features/events/dashboard/EventsSection";
+import { MediaSection } from "~/features/media/dashboard/MediaSection";
+import { Overview } from "~/dashboard/Overview";
+import { PeopleSection } from "~/features/people/dashboard/PeopleSection";
+import { PortfolioSection } from "~/features/portfolio/dashboard/PortfolioSection";
+import { RsvpsSection } from "~/features/events/dashboard/RsvpsSection";
+import { SponsorsSection } from "~/features/sponsors/dashboard/SponsorsSection";
+import { TalksSection } from "~/features/talks/dashboard/TalksSection";
 
 /** `rest` is the path below the section, e.g. ["42"] for /dashboard/events/42. */
 export type SectionProps = { rest: string[] };

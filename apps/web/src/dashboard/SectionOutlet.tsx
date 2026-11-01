@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { useMe } from "./me";
-import { allowed, findSection } from "./sections";
-import { SectionHead } from "./ui";
+import { useMe } from "~/dashboard/me";
+import { allowed, findSection } from "~/dashboard/sections";
+import { SectionHead } from "~/dashboard/ui";
 
 /** Renders the section a /dashboard/<path> URL names, if the caller may see it. */
 export function SectionOutlet({ splat }: { splat: string }) {

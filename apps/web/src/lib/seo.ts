@@ -1,4 +1,4 @@
-import { SITE_URL } from "./site";
+import { SITE_URL } from "~/lib/site";
 
 type Seo = { title: string; description: string; path: string; type?: "website" | "article" | "profile"; image?: string | null };
 

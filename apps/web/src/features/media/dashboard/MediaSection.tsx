@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Icon } from "~/components/Icon";
 import { MEDIA_PURPOSES, type MediaObject, type MediaPurpose } from "@binarysust/api-client";
 import { MAX_SIDE } from "~/lib/image";
-import { UploadButton } from "../MediaUpload";
-import { useMe } from "../me";
-import { Field, SectionHead } from "../ui";
+import { UploadButton } from "~/features/media/components/MediaUpload";
+import { useMe } from "~/dashboard/me";
+import { Field, SectionHead } from "~/dashboard/ui";
 import { Button } from "@binarysust/ui/components/button";
 import { NativeSelect } from "@binarysust/ui/components/native-select";
 

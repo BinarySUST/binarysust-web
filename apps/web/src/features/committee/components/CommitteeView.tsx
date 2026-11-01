@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import type { CommitteeSlice } from "~/lib/slices";
-import type { Seat } from "~/lib/types";
-import { Avatar } from "./Avatar";
-import { SectionHead } from "./Page";
+import type { CommitteeSlice } from "~/content/slices";
+import type { Seat } from "~/content/types";
+import { Avatar } from "~/components/Avatar";
+import { SectionHead } from "~/components/Page";
 import { badgeVariants } from "@binarysust/ui/components/badge";
 
 // A committee can hold thirty seats. Lead with the officers, then group the rest by kind of post so the page stays

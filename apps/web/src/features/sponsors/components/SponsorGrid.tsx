@@ -1,4 +1,4 @@
-import type { PublicSponsor } from "~/lib/types";
+import type { PublicSponsor } from "~/content/types";
 
 /** Sponsor logos in a hairline grid. Static: no marquee, nothing moves. */
 export function SponsorGrid({ sponsors }: { sponsors: PublicSponsor[] }) {

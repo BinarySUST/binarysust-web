@@ -1,6 +1,6 @@
 // Build step 1 of 2 (step 2 is `vite build`). Reads the snapshot and writes everything static that
 // is derived from it into public/:
-//   data/**.json   per-route slices (src/lib/slices.ts, the same code the pre-render uses)
+//   data/**.json   per-route slices (src/content/slices.ts, the same code the pre-render uses)
 //   sitemap.xml    every public URL
 //   rss.xml        blog feed
 //   _redirects     Cloudflare Pages rules: API proxy, SPA shell, old handles/slugs
@@ -8,8 +8,8 @@
 // Run: pnpm slices   (SITE_URL overrides the canonical origin)
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
-import { allPaths, allSlices } from "../src/lib/slices";
-import { loadSnapshot, snapshotFile } from "../src/lib/snapshot.server";
+import { allPaths, allSlices } from "../src/content/slices";
+import { loadSnapshot, snapshotFile } from "../src/content/snapshot.server";
 import { SITE_URL } from "../src/lib/site";
 
 const root = process.cwd();

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, unwrap } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
-import { Empty, ErrorBox, Loading, SectionHead } from "../ui";
+import { Empty, ErrorBox, Loading, SectionHead } from "~/dashboard/ui";
 import { Button } from "@binarysust/ui/components/button";
 
 export function RsvpsSection() {

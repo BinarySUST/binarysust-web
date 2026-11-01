@@ -1,16 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
-import { KIND_LABEL } from "~/components/events";
+import { KIND_LABEL } from "~/features/events/components/EventRow";
 import { Icon } from "~/components/Icon";
 import { API_BASE, type Schemas, api, unwrap } from "@binarysust/api-client";
 import { EVENT_KINDS, EVENT_STATUSES, oneOf } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
-import type { EventKind } from "~/lib/types";
-import { ImageField, UploadButton } from "../MediaUpload";
-import { HandleListPicker } from "../PersonLookup";
-import { useMe } from "../me";
-import type { SectionProps } from "../sections";
+import type { EventKind } from "~/content/types";
+import { ImageField, UploadButton } from "~/features/media/components/MediaUpload";
+import { HandleListPicker } from "~/features/people/components/PersonLookup";
+import { useMe } from "~/dashboard/me";
+import type { SectionProps } from "~/dashboard/sections";
 import {
   BackLink,
   DeleteButton,
@@ -29,7 +29,7 @@ import {
   slugify,
   td,
   toLocalInput,
-} from "../ui";
+} from "~/dashboard/ui";
 import { Button, buttonVariants } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { NativeSelect } from "@binarysust/ui/components/native-select";

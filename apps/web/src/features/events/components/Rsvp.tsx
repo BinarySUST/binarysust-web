@@ -3,8 +3,8 @@ import { type ReactNode, useEffect, useState } from "react";
 import { type Schemas, api, hasSessionHint, loginUrl, unwrap, useWaking, warmApi } from "@binarysust/api-client";
 import { formatShort } from "~/lib/format";
 import { useClientNow, useClientValue } from "~/lib/useNow";
-import type { PublicEvent } from "~/lib/types";
-import { Icon } from "./Icon";
+import type { PublicEvent } from "~/content/types";
+import { Icon } from "~/components/Icon";
 import { Badge } from "@binarysust/ui/components/badge";
 import { Button } from "@binarysust/ui/components/button";
 

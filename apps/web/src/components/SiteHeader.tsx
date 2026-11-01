@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Icon } from "./Icon";
+import { Icon } from "~/components/Icon";
 import { Logo } from "@binarysust/ui/components/logo";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "~/components/ThemeToggle";
 import { Button, buttonVariants } from "@binarysust/ui/components/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@binarysust/ui/components/sheet";
 

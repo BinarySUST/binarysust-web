@@ -9,9 +9,9 @@ import { type Account, ApiError, type Me, api, loginUrl, unwrap, warmApi } from 
 import { Avatar, AvatarFallback, AvatarImage } from "@binarysust/ui/components/avatar";
 import { Button } from "@binarysust/ui/components/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@binarysust/ui/components/sheet";
-import { MeContext } from "./me";
-import { visibleSections } from "./sections";
-import { ErrorBox, WakingBanner } from "./ui";
+import { MeContext } from "~/dashboard/me";
+import { visibleSections } from "~/dashboard/sections";
+import { ErrorBox, WakingBanner } from "~/dashboard/ui";
 
 export function DashboardRoot() {
   const [client] = useState(

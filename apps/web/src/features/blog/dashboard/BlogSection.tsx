@@ -12,9 +12,9 @@ import { Icon } from "~/components/Icon";
 import { type Me, type Schemas, api, unwrap } from "@binarysust/api-client";
 import { POST_STATE_LABEL, type PostAction, type PostState } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
-import { ImageField } from "../MediaUpload";
-import { useMe } from "../me";
-import type { SectionProps } from "../sections";
+import { ImageField } from "~/features/media/components/MediaUpload";
+import { useMe } from "~/dashboard/me";
+import type { SectionProps } from "~/dashboard/sections";
 import {
   BackLink,
   ConfirmDialog,
@@ -32,7 +32,7 @@ import {
   slugify,
   splitList,
   td,
-} from "../ui";
+} from "~/dashboard/ui";
 import { Button, buttonVariants } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { Textarea } from "@binarysust/ui/components/textarea";

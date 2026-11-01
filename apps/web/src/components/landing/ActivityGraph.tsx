@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { Activity } from "~/lib/slices";
+import type { Activity } from "~/content/slices";
 
 // A contribution graph of the club's real output: one cell per day for the 53 weeks before the snapshot was built,
 // darker the more happened that day (events, posts, talks). Sunday-first columns, like GitHub's.

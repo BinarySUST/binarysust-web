@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { Button } from "@binarysust/ui/components/button";
-import { Icon } from "./Icon";
+import { Icon } from "~/components/Icon";
 
 type Theme = "dark" | "light";
 

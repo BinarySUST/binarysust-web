@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { formatDay, formatMonth, formatShort, formatTime, formatWeekday } from "~/lib/format";
-import type { EventCard } from "~/lib/slices";
-import { Icon } from "./Icon";
+import type { EventCard } from "~/content/slices";
+import { Icon } from "~/components/Icon";
 import { Badge } from "@binarysust/ui/components/badge";
 
 export const KIND_LABEL: Record<EventCard["kind"], string> = {

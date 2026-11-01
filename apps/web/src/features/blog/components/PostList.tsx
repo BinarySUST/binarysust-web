@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { formatShort } from "~/lib/format";
-import type { PostCard } from "~/lib/slices";
+import type { PostCard } from "~/content/slices";
 
 export function PostList({ posts }: { posts: PostCard[] }) {
   return (

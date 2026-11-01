@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHead } from "~/components/Page";
-import { PostList } from "~/components/PostList";
-import { TagNav, allTags } from "~/components/TagNav";
-import { content } from "~/lib/content";
+import { PostList } from "~/features/blog/components/PostList";
+import { TagNav, allTags } from "~/features/blog/components/TagNav";
+import { content } from "~/content";
 import { seo } from "~/lib/seo";
 
 export const Route = createFileRoute("/blog/")({

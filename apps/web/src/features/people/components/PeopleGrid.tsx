@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import type { PersonCard } from "~/lib/slices";
-import type { PersonStatus } from "~/lib/types";
-import { Avatar } from "./Avatar";
+import type { PersonCard } from "~/content/slices";
+import type { PersonStatus } from "~/content/types";
+import { Avatar } from "~/components/Avatar";
 
 export const STATUS_LABEL: Record<PersonStatus, string> = {
   committee: "Committee",

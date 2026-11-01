@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHead } from "~/components/Page";
-import { PeopleGrid } from "~/components/People";
-import { content } from "~/lib/content";
+import { PeopleGrid } from "~/features/people/components/PeopleGrid";
+import { content } from "~/content";
 import { seo } from "~/lib/seo";
 
 export const Route = createFileRoute("/advisors")({

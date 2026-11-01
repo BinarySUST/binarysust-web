@@ -5,7 +5,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useId, useState } from "react";
 import { Icon } from "~/components/Icon";
 import { type Schemas, api, unwrap } from "@binarysust/api-client";
-import { Field } from "./ui";
+import { Field } from "~/dashboard/ui";
 import { Input } from "@binarysust/ui/components/input";
 import { Button } from "@binarysust/ui/components/button";
 

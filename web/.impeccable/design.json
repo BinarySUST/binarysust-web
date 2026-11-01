@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T19:13:40.093722+00:00",
+  "title": "Design System: Binary SUST",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Drafting Green",
+        "canonical": "oklch(0.5 0.13 149)",
+        "dark": "oklch(0.79 0.15 149)",
+        "purpose": "Action and active: buttons, prompt $, section indices, focus.",
+        "tonalRamp": [
+          "oklch(0.15 0.054 149)",
+          "oklch(0.26 0.075 149)",
+          "oklch(0.37 0.096 149)",
+          "oklch(0.48 0.117 149)",
+          "oklch(0.6 0.121 149)",
+          "oklch(0.72 0.098 149)",
+          "oklch(0.84 0.075 149)",
+          "oklch(0.95 0.054 149)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Drafting Green Deep",
+        "canonical": "oklch(0.44 0.12 149)",
+        "dark": "oklch(0.85 0.13 149)",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(0.15 0.05 149)",
+          "oklch(0.26 0.069 149)",
+          "oklch(0.37 0.089 149)",
+          "oklch(0.48 0.108 149)",
+          "oklch(0.6 0.111 149)",
+          "oklch(0.72 0.09 149)",
+          "oklch(0.84 0.069 149)",
+          "oklch(0.95 0.05 149)"
+        ]
+      },
+      "primary-ink": {
+        "role": "primary",
+        "displayName": "Accent Ink",
+        "canonical": "oklch(0.45 0.12 149)",
+        "dark": "oklch(0.82 0.14 149)",
+        "purpose": "Accent at text strength: links, hover, indices.",
+        "tonalRamp": [
+          "oklch(0.15 0.05 149)",
+          "oklch(0.26 0.069 149)",
+          "oklch(0.37 0.089 149)",
+          "oklch(0.48 0.108 149)",
+          "oklch(0.6 0.111 149)",
+          "oklch(0.72 0.09 149)",
+          "oklch(0.84 0.069 149)",
+          "oklch(0.95 0.05 149)"
+        ]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Accent Soft",
+        "canonical": "oklch(0.95 0.035 149)",
+        "dark": "oklch(0.27 0.04 149)",
+        "purpose": "Text selection.",
+        "tonalRamp": [
+          "oklch(0.15 0.015 149)",
+          "oklch(0.26 0.02 149)",
+          "oklch(0.37 0.026 149)",
+          "oklch(0.48 0.031 149)",
+          "oklch(0.6 0.032 149)",
+          "oklch(0.72 0.026 149)",
+          "oklch(0.84 0.02 149)",
+          "oklch(0.95 0.015 149)"
+        ]
+      },
+      "primary-foreground": {
+        "role": "primary",
+        "displayName": "On Accent",
+        "canonical": "oklch(1 0 0)",
+        "dark": "oklch(0.19 0.04 152)",
+        "purpose": "Text on accent fills.",
+        "tonalRamp": [
+          "oklch(0.15 0.0 149)",
+          "oklch(0.26 0.0 149)",
+          "oklch(0.37 0.0 149)",
+          "oklch(0.48 0.0 149)",
+          "oklch(0.6 0.0 149)",
+          "oklch(0.72 0.0 149)",
+          "oklch(0.84 0.0 149)",
+          "oklch(0.95 0.0 149)"
+        ]
+      },
+      "brand": {
+        "role": "primary",
+        "displayName": "Logo Green",
+        "canonical": "#2e9e4f",
+        "dark": "#4cc06c",
+        "purpose": "Logo colour; graphics only, never text.",
+        "tonalRamp": [
+          "oklch(0.15 0.059 149)",
+          "oklch(0.26 0.081 149)",
+          "oklch(0.37 0.103 149)",
+          "oklch(0.48 0.126 149)",
+          "oklch(0.6 0.13 149)",
+          "oklch(0.72 0.105 149)",
+          "oklch(0.84 0.081 149)",
+          "oklch(0.95 0.059 149)"
+        ]
+      },
+      "brand-red": {
+        "role": "tertiary",
+        "displayName": "Live Red",
+        "canonical": "#e5252a",
+        "dark": "#ff5a52",
+        "purpose": "Only the live dot.",
+        "tonalRamp": [
+          "oklch(0.15 0.084 27)",
+          "oklch(0.26 0.116 27)",
+          "oklch(0.37 0.148 27)",
+          "oklch(0.48 0.18 27)",
+          "oklch(0.6 0.185 27)",
+          "oklch(0.72 0.151 27)",
+          "oklch(0.84 0.116 27)",
+          "oklch(0.95 0.084 27)"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger",
+        "canonical": "oklch(0.52 0.19 27)",
+        "dark": "oklch(0.72 0.17 25)",
+        "purpose": "Errors, cancelled. Legacy alias --vermilion.",
+        "tonalRamp": [
+          "oklch(0.15 0.079 27)",
+          "oklch(0.26 0.11 27)",
+          "oklch(0.37 0.14 27)",
+          "oklch(0.48 0.171 27)",
+          "oklch(0.6 0.176 27)",
+          "oklch(0.72 0.143 27)",
+          "oklch(0.84 0.11 27)",
+          "oklch(0.95 0.079 27)"
+        ]
+      },
+      "warn": {
+        "role": "tertiary",
+        "displayName": "Warn Amber",
+        "canonical": "oklch(0.72 0.15 70)",
+        "dark": "oklch(0.83 0.14 80)",
+        "purpose": "Warnings. Legacy alias --yellow.",
+        "tonalRamp": [
+          "oklch(0.15 0.063 70)",
+          "oklch(0.26 0.087 70)",
+          "oklch(0.37 0.111 70)",
+          "oklch(0.48 0.135 70)",
+          "oklch(0.6 0.139 70)",
+          "oklch(0.72 0.113 70)",
+          "oklch(0.84 0.087 70)",
+          "oklch(0.95 0.063 70)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Drafting Film",
+        "canonical": "oklch(0.985 0.003 149)",
+        "dark": "oklch(0.175 0.01 160)",
+        "purpose": "Page ground.",
+        "tonalRamp": [
+          "oklch(0.15 0.004 149)",
+          "oklch(0.26 0.006 149)",
+          "oklch(0.37 0.007 149)",
+          "oklch(0.48 0.009 149)",
+          "oklch(0.6 0.009 149)",
+          "oklch(0.72 0.008 149)",
+          "oklch(0.84 0.006 149)",
+          "oklch(0.95 0.004 149)"
+        ]
+      },
+      "ground-2": {
+        "role": "neutral",
+        "displayName": "Sunken Plane",
+        "canonical": "oklch(0.962 0.005 149)",
+        "dark": "oklch(0.205 0.011 160)",
+        "purpose": "Footer, advisor band, hover fills.",
+        "tonalRamp": [
+          "oklch(0.15 0.004 149)",
+          "oklch(0.26 0.006 149)",
+          "oklch(0.37 0.007 149)",
+          "oklch(0.48 0.009 149)",
+          "oklch(0.6 0.009 149)",
+          "oklch(0.72 0.008 149)",
+          "oklch(0.84 0.006 149)",
+          "oklch(0.95 0.004 149)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "oklch(1 0 0)",
+        "dark": "oklch(0.215 0.011 160)",
+        "purpose": "Sheets, windows, fields.",
+        "tonalRamp": [
+          "oklch(0.15 0.004 160)",
+          "oklch(0.26 0.006 160)",
+          "oklch(0.37 0.007 160)",
+          "oklch(0.48 0.009 160)",
+          "oklch(0.6 0.009 160)",
+          "oklch(0.72 0.008 160)",
+          "oklch(0.84 0.006 160)",
+          "oklch(0.95 0.004 160)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.885 0.007 149)",
+        "dark": "oklch(0.3 0.011 160)",
+        "purpose": "Default 1px rules.",
+        "tonalRamp": [
+          "oklch(0.15 0.004 149)",
+          "oklch(0.26 0.006 149)",
+          "oklch(0.37 0.007 149)",
+          "oklch(0.48 0.009 149)",
+          "oklch(0.6 0.009 149)",
+          "oklch(0.72 0.008 149)",
+          "oklch(0.84 0.006 149)",
+          "oklch(0.95 0.004 149)"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "oklch(0.76 0.01 149)",
+        "dark": "oklch(0.42 0.012 160)",
+        "purpose": "Frames, section rules, tag and field borders.",
+        "tonalRamp": [
+          "oklch(0.15 0.005 149)",
+          "oklch(0.26 0.007 149)",
+          "oklch(0.37 0.009 149)",
+          "oklch(0.48 0.011 149)",
+          "oklch(0.6 0.011 149)",
+          "oklch(0.72 0.009 149)",
+          "oklch(0.84 0.007 149)",
+          "oklch(0.95 0.005 149)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.21 0.014 155)",
+        "dark": "oklch(0.955 0.005 149)",
+        "purpose": "Primary text.",
+        "tonalRamp": [
+          "oklch(0.15 0.006 155)",
+          "oklch(0.26 0.008 155)",
+          "oklch(0.37 0.01 155)",
+          "oklch(0.48 0.013 155)",
+          "oklch(0.6 0.013 155)",
+          "oklch(0.72 0.011 155)",
+          "oklch(0.84 0.008 155)",
+          "oklch(0.95 0.006 155)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "oklch(0.39 0.014 155)",
+        "dark": "oklch(0.81 0.01 149)",
+        "purpose": "Secondary text.",
+        "tonalRamp": [
+          "oklch(0.15 0.006 155)",
+          "oklch(0.26 0.008 155)",
+          "oklch(0.37 0.01 155)",
+          "oklch(0.48 0.013 155)",
+          "oklch(0.6 0.013 155)",
+          "oklch(0.72 0.011 155)",
+          "oklch(0.84 0.008 155)",
+          "oklch(0.95 0.006 155)"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "canonical": "oklch(0.49 0.013 155)",
+        "dark": "oklch(0.69 0.012 149)",
+        "purpose": "Metadata labels.",
+        "tonalRamp": [
+          "oklch(0.15 0.005 155)",
+          "oklch(0.26 0.008 155)",
+          "oklch(0.37 0.01 155)",
+          "oklch(0.48 0.012 155)",
+          "oklch(0.6 0.012 155)",
+          "oklch(0.72 0.01 155)",
+          "oklch(0.84 0.008 155)",
+          "oklch(0.95 0.005 155)"
+        ]
+      },
+      "code-bg": {
+        "role": "neutral",
+        "displayName": "Code Ground",
+        "canonical": "oklch(0.965 0.005 149)",
+        "dark": "oklch(0.145 0.01 160)",
+        "purpose": "Code blocks.",
+        "tonalRamp": [
+          "oklch(0.15 0.004 149)",
+          "oklch(0.26 0.006 149)",
+          "oklch(0.37 0.007 149)",
+          "oklch(0.48 0.009 149)",
+          "oklch(0.6 0.009 149)",
+          "oklch(0.72 0.008 149)",
+          "oklch(0.84 0.006 149)",
+          "oklch(0.95 0.004 149)"
+        ]
+      }
+    },
+    "themes": {
+      "default": "light, following prefers-color-scheme",
+      "override": "data-theme=\"light|dark\" on <html>",
+      "noJs": "dark tokens duplicated under @media (prefers-color-scheme: dark) :root:not([data-theme])",
+      "legacyAliases": {
+        "--vermilion": "--danger",
+        "--yellow": "--warn",
+        "--parrot": "--ok",
+        "--font-code": "--ff-mono",
+        ".sign": ".display",
+        ".plate": ".tag",
+        ".trim": "6px framed panel"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero name; Archivo at font-stretch 112%."
+      },
+      "headline": {
+        "displayName": "Page title",
+        "purpose": "PageHead h1."
+      },
+      "title": {
+        "displayName": "Section head",
+        "purpose": "SectionHead with inline mono index."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading text; prose max 68ch, line-height 1.7."
+      },
+      "label": {
+        "displayName": "Meta",
+        "purpose": "Dates, handles, counts, labels, code (JetBrains Mono)."
+      },
+      "bangla": {
+        "displayName": "Bangla wordmark",
+        "purpose": "Only বাইনারি."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Button colour transitions (150ms), more-link arrow step (200ms)."
+      },
+      {
+        "name": "caret-blink",
+        "value": "blink 1.05s steps(1) 1.3s 6",
+        "purpose": "Prompt caret after typing; rests after six blinks."
+      },
+      {
+        "name": "live-pulse",
+        "value": "pulse-dot 2.4s ease-in-out infinite",
+        "purpose": "Live dot only."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "all animation and transition durations 0.01ms",
+        "purpose": "prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ],
+    "focus": {
+      "value": "outline: 2px solid var(--focus); outline-offset: 3px",
+      "purpose": "Every focusable element."
+    },
+    "scrollPaddingTop": "5rem"
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action per view: Join, Reserve.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Join the club</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:44px;padding:.5rem 1.125rem;border:1px solid transparent;border-radius:4px;font-family:var(--ff-sans);font-size:.9375rem;font-weight:560;line-height:1.2;cursor:pointer;transition:background-color 150ms cubic-bezier(.16,1,.3,1),border-color 150ms cubic-bezier(.16,1,.3,1)}.ds-btn:active{transform:translateY(1px)}.ds-btn:focus-visible{outline:2px solid var(--focus);outline-offset:3px}.ds-btn-primary{background:var(--accent);color:var(--primary-foreground)}.ds-btn-primary:hover{background:var(--primary-hover)}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions: All events, Sign in.",
+      "html": "<button class=\"ds-btn-ghost\">All events</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;min-height:44px;padding:.5rem 1.125rem;border:1px solid var(--line-strong);border-radius:4px;background:transparent;color:var(--ink);font-family:var(--ff-sans);font-size:.9375rem;font-weight:560;cursor:pointer}.ds-btn-ghost:hover{border-color:var(--ink-2);background:var(--ground-2)}.ds-btn-ghost:focus-visible{outline:2px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Hairline mono chip for kinds, statuses, post tags.",
+      "html": "<a href=\"#\" class=\"ds-tag\">Workshop</a> <a href=\"#\" class=\"ds-tag\" aria-current=\"page\">All</a>",
+      "css": ".ds-tag{display:inline-flex;align-items:center;min-height:1.75rem;padding:.125rem .5rem;border:1px solid var(--line-strong);border-radius:3px;color:var(--ink-2);font-family:var(--ff-mono);font-size:.75rem;text-decoration:none}.ds-tag:hover{border-color:var(--ink-2);color:var(--ink)}.ds-tag[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--ground)}.ds-tag:focus-visible{outline:2px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Text input.",
+      "html": "<input class=\"ds-field\" placeholder=\"Student ID\">",
+      "css": ".ds-field{width:100%;min-height:44px;padding:.5rem .75rem;border:1px solid var(--line-strong);border-radius:4px;background:var(--panel);color:var(--ink);font:inherit}.ds-field:hover{border-color:var(--ink-3)}.ds-field:focus-visible{border-color:var(--focus);outline:2px solid var(--focus);outline-offset:0}.ds-field::placeholder{color:var(--ink-3)}"
+    },
+    {
+      "name": "Section Head",
+      "kind": "custom",
+      "description": "Heading with inline mono index and a strong hairline beneath; no eyebrow.",
+      "html": "<div class=\"ds-sh\"><h2><span class=\"ds-idx\">02</span><span>Schedule</span></h2></div>",
+      "css": ".ds-sh{border-bottom:1px solid var(--line-strong);padding-bottom:1rem}.ds-sh h2{display:flex;align-items:baseline;gap:1rem;margin:0;font-family:var(--ff-sans);font-stretch:112%;font-weight:620;letter-spacing:-.022em;line-height:1.06;font-size:2rem;color:var(--ink)}.ds-idx{font-family:var(--ff-mono);font-size:.8125rem;font-weight:400;letter-spacing:0;color:var(--primary-ink)}"
+    },
+    {
+      "name": "Next-event Window",
+      "kind": "card",
+      "refersTo": "window",
+      "description": "Code window with title bar, live dot, kv rows.",
+      "html": "<aside class=\"ds-win\"><div class=\"ds-bar\"><span class=\"ds-dot\"></span>next-event</div><dl class=\"ds-kv\"><dt>event</dt><dd>Intro to Go</dd><dt>when</dt><dd>Sat 8 Nov, 3:00 pm</dd></dl></aside>",
+      "css": ".ds-win{border:1px solid var(--line-strong);border-radius:6px;background:var(--panel);overflow:hidden;max-width:25rem}.ds-bar{display:flex;align-items:center;gap:.5rem;padding:.625rem 1rem;border-bottom:1px solid var(--line);font-family:var(--ff-mono);font-size:.8125rem;color:var(--ink-2)}.ds-dot{width:6px;height:6px;border-radius:50%;background:var(--brand-red)}.ds-kv{display:grid;grid-template-columns:4.25rem 1fr;gap:.75rem;padding:1.25rem;margin:0}.ds-kv dt{font-family:var(--ff-mono);font-size:.8125rem;color:var(--ink-3)}.ds-kv dt::after{content:':'}.ds-kv dd{margin:0;color:var(--ink)}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Sticky header nav; active item gets a 1px ink underline on the header rule.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" aria-current=\"page\">Events</a><a href=\"#\">People</a><a href=\"#\">Blog</a></nav>",
+      "css": ".ds-nav{display:flex;border-bottom:1px solid var(--line);background:var(--ground)}.ds-nav a{position:relative;padding:1rem .75rem;font-size:.9375rem;color:var(--ink-2);text-decoration:none}.ds-nav a:hover{color:var(--ink)}.ds-nav a[aria-current]{color:var(--ink)}.ds-nav a[aria-current]::after{content:'';position:absolute;left:.75rem;right:.75rem;bottom:-1px;height:1px;background:var(--ink)}.ds-nav a:focus-visible{outline:2px solid var(--focus);outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Engineering Drawing Sheet",
+    "overview": "A well-made engineering document crossed with a developer tool: hairline frames, title blocks for facts, precise mono metadata, real club data shown the way engineers show it (a contribution graph, a code window, a dated schedule). Calm, credible, university-grade. Ornament lives only in the hero background (a faint grid and a pointer-following glow); the text column carries none.",
+    "keyCharacteristics": [
+      "Light and dark are both first-class; light is the default, the system preference decides until the visitor picks.",
+      "One accent (brand green) for action and \"active\"; everything else is tinted neutral.",
+      "One 1px hairline weight for every rule, border and frame; depth by flat plane steps only.",
+      "Archivo semi-expanded for display, JetBrains Mono for anything a machine would print."
+    ],
+    "rules": [
+      {
+        "name": "The One Spark Rule",
+        "body": "Brand red appears once: the live dot. It is never a fill, rule, heading or button.",
+        "section": "colors"
+      },
+      {
+        "name": "The Legacy Alias Rule",
+        "body": "The dashboard still uses old names; keep them resolving, never use them on new public surfaces: --vermilion / text-vermilion = danger, --yellow / yellow = warn, --parrot / parrot = ok, --font-code = mono.",
+        "section": "colors"
+      },
+      {
+        "name": "The Inline Index Rule",
+        "body": "No eyebrows or kickers above headings. A section's mono index (\"01\") sits on the heading's own baseline, in accent ink, with a strong hairline running beneath to the optional action.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Every rule, border and frame is 1px, in line or line-strong. The only 2px stroke is the focus ring.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do give every technical device a real payload: data, code or metadata.",
+      "Do keep focus visible: 2px accent outline, 3px offset, everywhere.",
+      "Do verify AA contrast for every new text/background pair in both themes.",
+      "Do keep the print stylesheet dropping chrome so portfolios print as a CV."
+    ],
+    "donts": [
+      "Don't add eyebrow or kicker labels above headings.",
+      "Don't use shadows, glass, gradient fills or gradient text.",
+      "Don't use brand red for anything but the live dot.",
+      "Don't add decorative binary, ASCII plots or fake terminal output; the ASCII/binary plot was rejected as \"silly, makes no sense\".",
+      "Don't bring back painted, hand-lettered or playful display faces."
+    ]
+  }
+}

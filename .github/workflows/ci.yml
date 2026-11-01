@@ -1,0 +1,72 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: binary
+          POSTGRES_PASSWORD: binary
+          POSTGRES_DB: binarysust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U binary -d binarysust"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      EKMAN_TEST_DATABASE_URL: postgres://binary:binary@localhost:5432/binarysust?sslmode=disable
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - run: go vet ./...
+      - run: go test -race ./...
+      - name: openapi.json is up to date
+        run: |
+          go run ./cmd/server openapi > /tmp/openapi.json
+          diff -u openapi.json /tmp/openapi.json || (echo "run 'make gen' and commit openapi.json" && exit 1)
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: API types match openapi.json
+        run: |
+          pnpm gen:api
+          git diff --exit-code -- src/lib/api/schema.d.ts || (echo "run 'make gen' and commit schema.d.ts" && exit 1)
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - name: build (fixture snapshot)
+        run: pnpm build

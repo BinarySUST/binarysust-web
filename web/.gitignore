@@ -1,0 +1,18 @@
+node_modules
+dist
+.output
+.tanstack
+.wrangler
+.snapshot/site.json
+src/routeTree.gen.ts
+.impeccable/review
+
+# Written by `pnpm slices` (scripts/slices.ts) from the snapshot on every dev start and build.
+# Hand-written public files (favicon.svg, ...) stay tracked.
+public/data
+public/sitemap.xml
+public/rss.xml
+public/_redirects
+public/_routes.json
+public/version.json
+.impeccable/hook.cache.json

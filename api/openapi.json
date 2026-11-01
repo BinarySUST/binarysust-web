@@ -1,0 +1,5605 @@
+{
+  "components": {
+    "responses": {
+      "Error": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        },
+        "description": "Error"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "properties": {
+          "error": {
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "fields": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "message": {
+                "type": "string"
+              },
+              "requestId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "type": "object"
+      },
+      "Permission": {
+        "description": "A permission declared by a module.",
+        "enum": [
+          "blog.review",
+          "blog.write",
+          "events.checkin",
+          "events.manage",
+          "media.upload",
+          "people.manage",
+          "profile.edit_own",
+          "roles.manage",
+          "sponsors.manage",
+          "talks.manage"
+        ],
+        "type": "string"
+      },
+      "access.Account": {
+        "properties": {
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "personHandle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "personId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "avatarUrl",
+          "personId",
+          "personHandle"
+        ],
+        "type": "object"
+      },
+      "access.CurrentTerm": {
+        "properties": {
+          "termId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "termId"
+        ],
+        "type": "object"
+      },
+      "access.Grant": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "personHandle": {
+            "type": "string"
+          },
+          "personId": {
+            "type": "string"
+          },
+          "personName": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/access.Role"
+          },
+          "termId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "termSlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "personId",
+          "personHandle",
+          "personName",
+          "role",
+          "termId",
+          "termSlug",
+          "createdAt"
+        ],
+        "type": "object"
+      },
+      "access.GrantIn": {
+        "properties": {
+          "personId": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/access.Role"
+          },
+          "termId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "personId",
+          "role",
+          "termId"
+        ],
+        "type": "object"
+      },
+      "access.PositionRoles": {
+        "properties": {
+          "positionId": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/access.Role"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "positionId",
+          "roles"
+        ],
+        "type": "object"
+      },
+      "access.Role": {
+        "enum": [
+          "admin",
+          "blog_editor",
+          "event_manager",
+          "people_manager",
+          "sponsor_manager",
+          "talks_manager",
+          "checkin_volunteer"
+        ],
+        "type": "string"
+      },
+      "access.RoleInfo": {
+        "properties": {
+          "allPermissions": {
+            "type": "boolean"
+          },
+          "name": {
+            "$ref": "#/components/schemas/access.Role"
+          },
+          "permissions": {
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "title",
+          "permissions",
+          "allPermissions"
+        ],
+        "type": "object"
+      },
+      "access.SetPositionRolesInBody": {
+        "properties": {
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/access.Role"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "roles"
+        ],
+        "type": "object"
+      },
+      "blog.Action": {
+        "enum": [
+          "submit",
+          "withdraw",
+          "request_changes",
+          "publish",
+          "unpublish"
+        ],
+        "type": "string"
+      },
+      "blog.Post": {
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "authorName": {
+            "type": "string"
+          },
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reviewNote": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/blog.State"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "state",
+          "author",
+          "authorName",
+          "updatedAt",
+          "excerpt",
+          "bodyMarkdown",
+          "coverUrl",
+          "tags",
+          "reviewNote",
+          "publishedAt",
+          "canEdit"
+        ],
+        "type": "object"
+      },
+      "blog.PostIn": {
+        "properties": {
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "excerpt",
+          "bodyMarkdown",
+          "coverUrl",
+          "tags"
+        ],
+        "type": "object"
+      },
+      "blog.PostRow": {
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "authorName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/blog.State"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "state",
+          "author",
+          "authorName",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "blog.Preview": {
+        "properties": {
+          "html": {
+            "type": "string"
+          },
+          "readingMinutes": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "html",
+          "readingMinutes"
+        ],
+        "type": "object"
+      },
+      "blog.PreviewIn": {
+        "properties": {
+          "markdown": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "markdown"
+        ],
+        "type": "object"
+      },
+      "blog.PublicPost": {
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "bodyHtml": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "readingMinutes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "excerpt",
+          "bodyHtml",
+          "coverUrl",
+          "author",
+          "tags",
+          "publishedAt",
+          "readingMinutes"
+        ],
+        "type": "object"
+      },
+      "blog.State": {
+        "enum": [
+          "draft",
+          "in_review",
+          "published",
+          "unpublished"
+        ],
+        "type": "string"
+      },
+      "blog.TransitionInBody": {
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/blog.Action"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "note"
+        ],
+        "type": "object"
+      },
+      "blog.UpdateInBody": {
+        "properties": {
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "excerpt",
+          "bodyMarkdown",
+          "coverUrl",
+          "tags"
+        ],
+        "type": "object"
+      },
+      "ekman.Me": {
+        "properties": {
+          "permissions": {
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            },
+            "type": "array"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "permissions",
+          "roles"
+        ],
+        "type": "object"
+      },
+      "events.Availability": {
+        "properties": {
+          "capacity": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "closesAt": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "confirmed": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "mine": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/events.MyRSVP"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "opensAt": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "$ref": "#/components/schemas/events.Window"
+          },
+          "waitlisted": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "state",
+          "open",
+          "opensAt",
+          "closesAt",
+          "capacity",
+          "confirmed",
+          "waitlisted",
+          "mine"
+        ],
+        "type": "object"
+      },
+      "events.CheckInInBody": {
+        "properties": {
+          "ticket": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ticket"
+        ],
+        "type": "object"
+      },
+      "events.CheckInResult": {
+        "properties": {
+          "alreadyCheckedIn": {
+            "type": "boolean"
+          },
+          "checkedInAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "checkedInAt",
+          "alreadyCheckedIn"
+        ],
+        "type": "object"
+      },
+      "events.Event": {
+        "properties": {
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "checkedIn": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "confirmed": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/events.Kind"
+          },
+          "onlineUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/events.Photo"
+            },
+            "type": "array"
+          },
+          "recapMarkdown": {
+            "type": "string"
+          },
+          "registration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/events.Registration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rsvpCount": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speakers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "startsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.Status"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "waitlisted": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "kind",
+          "status",
+          "summary",
+          "bodyMarkdown",
+          "coverUrl",
+          "startsAt",
+          "endsAt",
+          "venue",
+          "onlineUrl",
+          "registration",
+          "recapMarkdown",
+          "speakers",
+          "photos",
+          "updatedAt",
+          "rsvpCount",
+          "confirmed",
+          "waitlisted",
+          "checkedIn"
+        ],
+        "type": "object"
+      },
+      "events.EventInput": {
+        "properties": {
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/events.Kind"
+          },
+          "onlineUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/events.Photo"
+            },
+            "type": "array"
+          },
+          "recapMarkdown": {
+            "type": "string"
+          },
+          "registration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/events.Registration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speakers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "startsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.Status"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "status",
+          "summary",
+          "bodyMarkdown",
+          "startsAt",
+          "endsAt",
+          "venue",
+          "onlineUrl",
+          "registration"
+        ],
+        "type": "object"
+      },
+      "events.Kind": {
+        "enum": [
+          "workshop",
+          "contest",
+          "hackathon",
+          "seminar",
+          "meetup"
+        ],
+        "type": "string"
+      },
+      "events.MyRSVP": {
+        "properties": {
+          "position": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.RSVPStatus"
+          },
+          "ticket": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "ticket",
+          "position"
+        ],
+        "type": "object"
+      },
+      "events.Photo": {
+        "properties": {
+          "caption": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "caption"
+        ],
+        "type": "object"
+      },
+      "events.PublicEvent": {
+        "properties": {
+          "bodyHtml": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/events.Kind"
+          },
+          "onlineUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/events.Photo"
+            },
+            "type": "array"
+          },
+          "recapHtml": {
+            "type": "string"
+          },
+          "registration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/events.Registration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speakers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "startsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.Status"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "status",
+          "summary",
+          "bodyHtml",
+          "coverUrl",
+          "startsAt",
+          "endsAt",
+          "venue",
+          "onlineUrl",
+          "registration",
+          "recapHtml",
+          "photos",
+          "speakers"
+        ],
+        "type": "object"
+      },
+      "events.RSVPItem": {
+        "properties": {
+          "eventSlug": {
+            "type": "string"
+          },
+          "eventTitle": {
+            "type": "string"
+          },
+          "position": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "startsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.RSVPStatus"
+          },
+          "ticket": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "ticket",
+          "position",
+          "eventSlug",
+          "eventTitle",
+          "startsAt"
+        ],
+        "type": "object"
+      },
+      "events.RSVPStatus": {
+        "enum": [
+          "confirmed",
+          "waitlisted",
+          "cancelled"
+        ],
+        "type": "string"
+      },
+      "events.Registrant": {
+        "properties": {
+          "checkedInAt": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "handle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "registeredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.RSVPStatus"
+          },
+          "ticket": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "handle",
+          "status",
+          "ticket",
+          "registeredAt",
+          "checkedInAt"
+        ],
+        "type": "object"
+      },
+      "events.Registration": {
+        "properties": {
+          "capacity": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "closesAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "opensAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "opensAt",
+          "closesAt",
+          "capacity"
+        ],
+        "type": "object"
+      },
+      "events.Status": {
+        "enum": [
+          "draft",
+          "published",
+          "cancelled"
+        ],
+        "type": "string"
+      },
+      "events.UpdateInBody": {
+        "properties": {
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/events.Kind"
+          },
+          "onlineUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/events.Photo"
+            },
+            "type": "array"
+          },
+          "recapMarkdown": {
+            "type": "string"
+          },
+          "registration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/events.Registration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speakers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "startsAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/events.Status"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "status",
+          "summary",
+          "bodyMarkdown",
+          "startsAt",
+          "endsAt",
+          "venue",
+          "onlineUrl",
+          "registration"
+        ],
+        "type": "object"
+      },
+      "events.Window": {
+        "enum": [
+          "none",
+          "not_open",
+          "open",
+          "full",
+          "closed",
+          "cancelled"
+        ],
+        "type": "string"
+      },
+      "media.Object": {
+        "properties": {
+          "contentType": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "size": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "url",
+          "contentType",
+          "size"
+        ],
+        "type": "object"
+      },
+      "media.PurposeName": {
+        "enum": [
+          "avatar",
+          "cv",
+          "event",
+          "file",
+          "logo",
+          "post",
+          "talk"
+        ],
+        "type": "string"
+      },
+      "people.Achievement": {
+        "properties": {
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "date",
+          "detail"
+        ],
+        "type": "object"
+      },
+      "people.Affiliation": {
+        "enum": [
+          "student",
+          "faculty",
+          "guest"
+        ],
+        "type": "string"
+      },
+      "people.Category": {
+        "enum": [
+          "executive",
+          "advisor"
+        ],
+        "type": "string"
+      },
+      "people.Committee": {
+        "properties": {
+          "seats": {
+            "items": {
+              "$ref": "#/components/schemas/people.Seat"
+            },
+            "type": "array"
+          },
+          "term": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "term",
+          "seats"
+        ],
+        "type": "object"
+      },
+      "people.Group": {
+        "enum": [
+          "patron",
+          "adviser",
+          "leadership",
+          "secretary",
+          "assistant",
+          "member"
+        ],
+        "type": "string"
+      },
+      "people.Person": {
+        "properties": {
+          "affiliation": {
+            "$ref": "#/components/schemas/people.Affiliation"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "batch": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "department": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "graduatedOn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handle": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "listed": {
+            "type": "boolean"
+          },
+          "memberSince": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/people.Status"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "handle",
+          "name",
+          "email",
+          "affiliation",
+          "status",
+          "listed",
+          "avatarUrl",
+          "headline",
+          "department",
+          "batch",
+          "memberSince",
+          "graduatedOn",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "people.PersonIn": {
+        "properties": {
+          "affiliation": {
+            "$ref": "#/components/schemas/people.Affiliation"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "batch": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "department": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "graduatedOn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handle": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "listed": {
+            "type": "boolean"
+          },
+          "memberSince": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "handle",
+          "name",
+          "email",
+          "affiliation",
+          "listed",
+          "avatarUrl",
+          "headline",
+          "department",
+          "batch",
+          "memberSince",
+          "graduatedOn"
+        ],
+        "type": "object"
+      },
+      "people.PersonRef": {
+        "properties": {
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handle": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "handle",
+          "name",
+          "avatarUrl"
+        ],
+        "type": "object"
+      },
+      "people.PersonRow": {
+        "properties": {
+          "affiliation": {
+            "$ref": "#/components/schemas/people.Affiliation"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handle": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "listed": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/people.Status"
+          }
+        },
+        "required": [
+          "id",
+          "handle",
+          "name",
+          "email",
+          "affiliation",
+          "status",
+          "listed"
+        ],
+        "type": "object"
+      },
+      "people.PersonUpdateInBody": {
+        "properties": {
+          "affiliation": {
+            "$ref": "#/components/schemas/people.Affiliation"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "batch": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "department": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "graduatedOn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handle": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "listed": {
+            "type": "boolean"
+          },
+          "memberSince": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "handle",
+          "name",
+          "email",
+          "affiliation",
+          "listed",
+          "avatarUrl",
+          "headline",
+          "department",
+          "batch",
+          "memberSince",
+          "graduatedOn"
+        ],
+        "type": "object"
+      },
+      "people.Portfolio": {
+        "properties": {
+          "achievements": {
+            "items": {
+              "$ref": "#/components/schemas/people.Achievement"
+            },
+            "type": "array"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bioMarkdown": {
+            "type": "string"
+          },
+          "cvUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "headline": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "projects": {
+            "items": {
+              "$ref": "#/components/schemas/people.Project"
+            },
+            "type": "array"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "socials": {
+            "items": {
+              "$ref": "#/components/schemas/people.Social"
+            },
+            "type": "array"
+          },
+          "workplace": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "headline",
+          "bioMarkdown",
+          "workplace",
+          "jobTitle",
+          "skills",
+          "socials",
+          "cvUrl",
+          "projects",
+          "achievements"
+        ],
+        "type": "object"
+      },
+      "people.Position": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/people.Category"
+          },
+          "group": {
+            "$ref": "#/components/schemas/people.Group"
+          },
+          "id": {
+            "type": "string"
+          },
+          "lifetime": {
+            "type": "boolean"
+          },
+          "rank": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "category",
+          "group",
+          "rank",
+          "lifetime"
+        ],
+        "type": "object"
+      },
+      "people.PositionHeld": {
+        "properties": {
+          "term": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "term",
+          "title"
+        ],
+        "type": "object"
+      },
+      "people.PositionIn": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/people.Category"
+          },
+          "group": {
+            "$ref": "#/components/schemas/people.Group"
+          },
+          "lifetime": {
+            "type": "boolean"
+          },
+          "rank": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "category",
+          "rank"
+        ],
+        "type": "object"
+      },
+      "people.PositionUpdateInBody": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/people.Category"
+          },
+          "group": {
+            "$ref": "#/components/schemas/people.Group"
+          },
+          "lifetime": {
+            "type": "boolean"
+          },
+          "rank": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "category",
+          "rank"
+        ],
+        "type": "object"
+      },
+      "people.Project": {
+        "properties": {
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "repoUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "summary",
+          "url",
+          "repoUrl",
+          "imageUrl",
+          "tags"
+        ],
+        "type": "object"
+      },
+      "people.PublicPerson": {
+        "properties": {
+          "achievements": {
+            "items": {
+              "$ref": "#/components/schemas/people.Achievement"
+            },
+            "type": "array"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "batch": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "bioHtml": {
+            "type": "string"
+          },
+          "cvUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "department": {
+            "type": "string"
+          },
+          "graduatedOn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handle": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "lifetimeMember": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/people.PositionHeld"
+            },
+            "type": "array"
+          },
+          "projects": {
+            "items": {
+              "$ref": "#/components/schemas/people.Project"
+            },
+            "type": "array"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "socials": {
+            "items": {
+              "$ref": "#/components/schemas/people.Social"
+            },
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/people.Status"
+          },
+          "workplace": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "handle",
+          "name",
+          "avatarUrl",
+          "headline",
+          "status",
+          "lifetimeMember",
+          "department",
+          "batch",
+          "graduatedOn",
+          "workplace",
+          "jobTitle",
+          "bioHtml",
+          "skills",
+          "socials",
+          "cvUrl",
+          "projects",
+          "achievements",
+          "positions"
+        ],
+        "type": "object"
+      },
+      "people.Redirect": {
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "type": "object"
+      },
+      "people.Seat": {
+        "properties": {
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/people.Category"
+          },
+          "group": {
+            "$ref": "#/components/schemas/people.Group"
+          },
+          "handle": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "rank": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "handle",
+          "name",
+          "avatarUrl",
+          "position",
+          "category",
+          "group",
+          "rank"
+        ],
+        "type": "object"
+      },
+      "people.SeatInBody": {
+        "properties": {
+          "personId": {
+            "type": "string"
+          },
+          "positionId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "personId",
+          "positionId"
+        ],
+        "type": "object"
+      },
+      "people.SeatRow": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/people.Category"
+          },
+          "group": {
+            "$ref": "#/components/schemas/people.Group"
+          },
+          "handle": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "personId": {
+            "type": "string"
+          },
+          "positionId": {
+            "type": "string"
+          },
+          "positionTitle": {
+            "type": "string"
+          },
+          "rank": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "termId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "termId",
+          "positionId",
+          "positionTitle",
+          "category",
+          "group",
+          "rank",
+          "personId",
+          "handle",
+          "name"
+        ],
+        "type": "object"
+      },
+      "people.Social": {
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/people.SocialKind"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "url"
+        ],
+        "type": "object"
+      },
+      "people.SocialKind": {
+        "enum": [
+          "github",
+          "linkedin",
+          "x",
+          "website",
+          "codeforces",
+          "leetcode",
+          "other"
+        ],
+        "type": "string"
+      },
+      "people.Status": {
+        "enum": [
+          "committee",
+          "advisor",
+          "member",
+          "alumni",
+          "guest"
+        ],
+        "type": "string"
+      },
+      "people.Term": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "startsOn": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "label",
+          "startsOn"
+        ],
+        "type": "object"
+      },
+      "people.TermIn": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "startsOn": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "label",
+          "startsOn"
+        ],
+        "type": "object"
+      },
+      "people.TermRef": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "label"
+        ],
+        "type": "object"
+      },
+      "people.TermRow": {
+        "properties": {
+          "current": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "seats": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "startsOn": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "label",
+          "startsOn",
+          "current",
+          "seats"
+        ],
+        "type": "object"
+      },
+      "people.TermUpdateInBody": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "startsOn": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "label",
+          "startsOn"
+        ],
+        "type": "object"
+      },
+      "site.Club": {
+        "properties": {
+          "about": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "socials": {
+            "items": {
+              "$ref": "#/components/schemas/site.ClubSocial"
+            },
+            "type": "array"
+          },
+          "stats": {
+            "items": {
+              "$ref": "#/components/schemas/site.Stat"
+            },
+            "type": "array"
+          },
+          "tagline": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "tagline",
+          "about",
+          "email",
+          "socials",
+          "stats"
+        ],
+        "type": "object"
+      },
+      "site.ClubSocial": {
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "url"
+        ],
+        "type": "object"
+      },
+      "site.LiveVersion": {
+        "properties": {
+          "contentChangedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "contentChangedAt"
+        ],
+        "type": "object"
+      },
+      "site.PublishState": {
+        "enum": [
+          "live",
+          "publishing"
+        ],
+        "type": "string"
+      },
+      "site.Snapshot": {
+        "properties": {
+          "club": {
+            "$ref": "#/components/schemas/site.Club"
+          },
+          "committees": {
+            "items": {
+              "$ref": "#/components/schemas/people.Committee"
+            },
+            "type": "array"
+          },
+          "currentTerm": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/people.TermRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/events.PublicEvent"
+            },
+            "type": "array"
+          },
+          "people": {
+            "items": {
+              "$ref": "#/components/schemas/people.PublicPerson"
+            },
+            "type": "array"
+          },
+          "posts": {
+            "items": {
+              "$ref": "#/components/schemas/blog.PublicPost"
+            },
+            "type": "array"
+          },
+          "redirects": {
+            "items": {
+              "$ref": "#/components/schemas/people.Redirect"
+            },
+            "type": "array"
+          },
+          "sponsors": {
+            "items": {
+              "$ref": "#/components/schemas/sponsors.Public"
+            },
+            "type": "array"
+          },
+          "talks": {
+            "items": {
+              "$ref": "#/components/schemas/talks.Public"
+            },
+            "type": "array"
+          },
+          "terms": {
+            "items": {
+              "$ref": "#/components/schemas/people.Term"
+            },
+            "type": "array"
+          },
+          "version": {
+            "$ref": "#/components/schemas/site.Version"
+          }
+        },
+        "required": [
+          "version",
+          "club",
+          "currentTerm",
+          "terms",
+          "people",
+          "committees",
+          "events",
+          "posts",
+          "talks",
+          "sponsors",
+          "redirects"
+        ],
+        "type": "object"
+      },
+      "site.Stat": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "type": "object"
+      },
+      "site.Status": {
+        "properties": {
+          "contentChangedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "live": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/site.LiveVersion"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "state": {
+            "$ref": "#/components/schemas/site.PublishState"
+          }
+        },
+        "required": [
+          "contentChangedAt",
+          "live",
+          "state"
+        ],
+        "type": "object"
+      },
+      "site.Version": {
+        "properties": {
+          "builtAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "contentChangedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contentChangedAt",
+          "builtAt",
+          "hash"
+        ],
+        "type": "object"
+      },
+      "sponsors.In": {
+        "properties": {
+          "logoUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "since": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/sponsors.Tier"
+          },
+          "until": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "tier",
+          "logoUrl",
+          "url",
+          "since",
+          "until"
+        ],
+        "type": "object"
+      },
+      "sponsors.Public": {
+        "properties": {
+          "logoUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "since": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/sponsors.Tier"
+          },
+          "until": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "tier",
+          "logoUrl",
+          "url",
+          "since",
+          "until"
+        ],
+        "type": "object"
+      },
+      "sponsors.Sponsor": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "since": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/sponsors.Tier"
+          },
+          "until": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "tier",
+          "logoUrl",
+          "url",
+          "since",
+          "until",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "sponsors.Tier": {
+        "enum": [
+          "platinum",
+          "gold",
+          "silver",
+          "partner"
+        ],
+        "type": "string"
+      },
+      "sponsors.UpdateInBody": {
+        "properties": {
+          "logoUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "since": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/sponsors.Tier"
+          },
+          "until": {
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "tier",
+          "logoUrl",
+          "url",
+          "since",
+          "until"
+        ],
+        "type": "object"
+      },
+      "talks.In": {
+        "properties": {
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "slidesUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "summaryMarkdown": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "speaker",
+          "date",
+          "summaryMarkdown",
+          "videoUrl",
+          "slidesUrl",
+          "featured"
+        ],
+        "type": "object"
+      },
+      "talks.Public": {
+        "properties": {
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "slidesUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "summaryHtml": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "speaker",
+          "date",
+          "summaryHtml",
+          "videoUrl",
+          "slidesUrl",
+          "featured"
+        ],
+        "type": "object"
+      },
+      "talks.Talk": {
+        "properties": {
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "slidesUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "speakerName": {
+            "type": "string"
+          },
+          "summaryMarkdown": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "speaker",
+          "speakerName",
+          "date",
+          "summaryMarkdown",
+          "videoUrl",
+          "slidesUrl",
+          "featured",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "talks.UpdateInBody": {
+        "properties": {
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "slidesUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "summaryMarkdown": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "speaker",
+          "date",
+          "summaryMarkdown",
+          "videoUrl",
+          "slidesUrl",
+          "featured"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "session": {
+        "in": "cookie",
+        "name": "ekman_session",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The Binary SUST club API. Public pages never call it; they are built from the snapshot.",
+    "title": "Binary SUST API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "postAuthLogout",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Sign out and clear the session cookies.",
+        "tags": [
+          "ekman"
+        ],
+        "x-ekman-access": "public"
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "getAuthMe",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ekman.Me"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "The current caller; userId is empty when anonymous.",
+        "tags": [
+          "ekman"
+        ],
+        "x-ekman-access": "public"
+      }
+    },
+    "/api/v1/auth/{provider}/callback": {
+      "get": {
+        "operationId": "getAuthByProviderCallback",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Found"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "OAuth callback; sets the session cookie and redirects.",
+        "tags": [
+          "ekman"
+        ],
+        "x-ekman-access": "public"
+      }
+    },
+    "/api/v1/auth/{provider}/start": {
+      "get": {
+        "operationId": "getAuthByProviderStart",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Found"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Start OAuth sign-in; redirects to the provider. Optional ?next=/path.",
+        "tags": [
+          "ekman"
+        ],
+        "x-ekman-access": "public"
+      }
+    },
+    "/api/v1/events": {
+      "get": {
+        "operationId": "getEvents",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/events.Event"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      },
+      "post": {
+        "operationId": "postEvents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/events.EventInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/events.Event"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      }
+    },
+    "/api/v1/events/{id}": {
+      "delete": {
+        "operationId": "deleteEventsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Delete a draft, or an event nobody registered for (409 otherwise)",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      },
+      "get": {
+        "operationId": "getEventsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/events.Event"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      },
+      "put": {
+        "operationId": "putEventsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/events.UpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/events.Event"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      }
+    },
+    "/api/v1/events/{id}/registrants": {
+      "get": {
+        "operationId": "getEventsByIdRegistrants",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/events.Registrant"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Registrants: confirmed, then the waitlist in order, then cancellations",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      }
+    },
+    "/api/v1/events/{slug}/availability": {
+      "get": {
+        "operationId": "getEventsBySlugAvailability",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/events.Availability"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Live seats and the caller's RSVP",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "public"
+      }
+    },
+    "/api/v1/events/{slug}/checkin": {
+      "post": {
+        "operationId": "postEventsBySlugCheckin",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/events.CheckInInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/events.CheckInResult"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Check in a ticket",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.checkin"
+      }
+    },
+    "/api/v1/events/{slug}/registrants.csv": {
+      "get": {
+        "operationId": "getEventsBySlugRegistrantsCsv",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Registrants as CSV",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "events.manage"
+      }
+    },
+    "/api/v1/events/{slug}/rsvp": {
+      "delete": {
+        "operationId": "deleteEventsBySlugRsvp",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Cancel; promotes the waitlist",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "signed_in"
+      },
+      "post": {
+        "operationId": "postEventsBySlugRsvp",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/events.MyRSVP"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Reserve a seat (idempotent)",
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/grants": {
+      "get": {
+        "operationId": "getGrants",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/access.Grant"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      },
+      "post": {
+        "operationId": "postGrants",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/access.GrantIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/access.Grant"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      }
+    },
+    "/api/v1/grants/{id}": {
+      "delete": {
+        "operationId": "deleteGrantsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "operationId": "getMe",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/access.Account"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "The signed-in account and its linked person",
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/me/portfolio": {
+      "get": {
+        "operationId": "getMePortfolio",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Portfolio"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Your own portfolio",
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "profile.edit_own"
+      },
+      "put": {
+        "operationId": "putMePortfolio",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.Portfolio"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Portfolio"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Replace your own portfolio",
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "profile.edit_own"
+      }
+    },
+    "/api/v1/me/rsvps": {
+      "get": {
+        "operationId": "getMeRsvps",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/events.RSVPItem"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "events"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/media": {
+      "post": {
+        "operationId": "postMedia",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "purpose",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/media.PurposeName"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/media.Object"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Upload one file (multipart field \"file\")",
+        "tags": [
+          "media"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/people": {
+      "get": {
+        "operationId": "getPeople",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/people.PersonRow"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      },
+      "post": {
+        "operationId": "postPeople",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.PersonIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Person"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/people/lookup": {
+      "get": {
+        "operationId": "getPeopleLookup",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/people.PersonRef"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Find people by name or handle (speaker and author pickers)",
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/people/{id}": {
+      "delete": {
+        "operationId": "deletePeopleById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Delete a person with no committee seats, posts or talks (409 otherwise)",
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      },
+      "get": {
+        "operationId": "getPeopleById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Person"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      },
+      "put": {
+        "operationId": "putPeopleById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.PersonUpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Person"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/position-roles": {
+      "get": {
+        "operationId": "getPositionRoles",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/access.PositionRoles"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      }
+    },
+    "/api/v1/positions": {
+      "get": {
+        "operationId": "getPositions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/people.Position"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      },
+      "post": {
+        "operationId": "postPositions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.PositionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Position"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/positions/{id}": {
+      "put": {
+        "operationId": "putPositionsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.PositionUpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.Position"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/positions/{id}/roles": {
+      "put": {
+        "operationId": "putPositionsByIdRoles",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/access.SetPositionRolesInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/access.PositionRoles"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      }
+    },
+    "/api/v1/posts": {
+      "get": {
+        "operationId": "getPosts",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/blog.State"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/blog.PostRow"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Your posts; every post for reviewers",
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      },
+      "post": {
+        "operationId": "postPosts",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/blog.PostIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog.Post"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Start a draft",
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      }
+    },
+    "/api/v1/posts/preview": {
+      "post": {
+        "operationId": "postPostsPreview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/blog.PreviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog.Preview"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Render markdown with the public site's renderer (no save)",
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      }
+    },
+    "/api/v1/posts/{id}": {
+      "delete": {
+        "operationId": "deletePostsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      },
+      "get": {
+        "operationId": "getPostsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog.Post"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      },
+      "put": {
+        "operationId": "putPostsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/blog.UpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog.Post"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      }
+    },
+    "/api/v1/posts/{id}/preview": {
+      "get": {
+        "operationId": "getPostsByIdPreview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog.PublicPost"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "The saved post exactly as the public site will render it",
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      }
+    },
+    "/api/v1/posts/{id}/transitions": {
+      "post": {
+        "operationId": "postPostsByIdTransitions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/blog.TransitionInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog.Post"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "submit, withdraw, request_changes, publish or unpublish",
+        "tags": [
+          "blog"
+        ],
+        "x-ekman-access": "blog.write"
+      }
+    },
+    "/api/v1/roles": {
+      "get": {
+        "operationId": "getRoles",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/access.RoleInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Roles defined in code",
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      }
+    },
+    "/api/v1/seats/{id}": {
+      "delete": {
+        "operationId": "deleteSeatsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/site/preview": {
+      "get": {
+        "operationId": "getSitePreview",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/site.Snapshot"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "The snapshot the next build would publish",
+        "tags": [
+          "site"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/site/status": {
+      "get": {
+        "operationId": "getSiteStatus",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/site.Status"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Is my change live?",
+        "tags": [
+          "site"
+        ],
+        "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/sponsors": {
+      "get": {
+        "operationId": "getSponsors",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/sponsors.Sponsor"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "sponsors"
+        ],
+        "x-ekman-access": "sponsors.manage"
+      },
+      "post": {
+        "operationId": "postSponsors",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sponsors.In"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sponsors.Sponsor"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "sponsors"
+        ],
+        "x-ekman-access": "sponsors.manage"
+      }
+    },
+    "/api/v1/sponsors/{id}": {
+      "delete": {
+        "operationId": "deleteSponsorsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "sponsors"
+        ],
+        "x-ekman-access": "sponsors.manage"
+      },
+      "get": {
+        "operationId": "getSponsorsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sponsors.Sponsor"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "sponsors"
+        ],
+        "x-ekman-access": "sponsors.manage"
+      },
+      "put": {
+        "operationId": "putSponsorsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sponsors.UpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sponsors.Sponsor"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "sponsors"
+        ],
+        "x-ekman-access": "sponsors.manage"
+      }
+    },
+    "/api/v1/talks": {
+      "get": {
+        "operationId": "getTalks",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/talks.Talk"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "talks"
+        ],
+        "x-ekman-access": "talks.manage"
+      },
+      "post": {
+        "operationId": "postTalks",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/talks.In"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/talks.Talk"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "talks"
+        ],
+        "x-ekman-access": "talks.manage"
+      }
+    },
+    "/api/v1/talks/{id}": {
+      "delete": {
+        "operationId": "deleteTalksById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "talks"
+        ],
+        "x-ekman-access": "talks.manage"
+      },
+      "get": {
+        "operationId": "getTalksById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/talks.Talk"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "talks"
+        ],
+        "x-ekman-access": "talks.manage"
+      },
+      "put": {
+        "operationId": "putTalksById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/talks.UpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/talks.Talk"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "talks"
+        ],
+        "x-ekman-access": "talks.manage"
+      }
+    },
+    "/api/v1/terms": {
+      "get": {
+        "operationId": "getTerms",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/people.TermRow"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      },
+      "post": {
+        "operationId": "postTerms",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.TermIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.TermRow"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/terms/{id}": {
+      "put": {
+        "operationId": "putTermsById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.TermUpdateInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.TermRow"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    },
+    "/api/v1/terms/{id}/make-current": {
+      "post": {
+        "operationId": "postTermsByIdMakeCurrent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/access.CurrentTerm"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Hand over: make this term current",
+        "tags": [
+          "access"
+        ],
+        "x-ekman-access": "roles.manage"
+      }
+    },
+    "/api/v1/terms/{id}/seats": {
+      "get": {
+        "operationId": "getTermsByIdSeats",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/people.SeatRow"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      },
+      "post": {
+        "operationId": "postTermsByIdSeats",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/people.SeatInBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/people.SeatRow"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "people"
+        ],
+        "x-ekman-access": "people.manage"
+      }
+    }
+  }
+}

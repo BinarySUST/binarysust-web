@@ -1,0 +1,6 @@
+.data
+*_test.go
+openapi.json
+README.md
+Dockerfile
+.dockerignore

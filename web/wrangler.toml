@@ -1,0 +1,8 @@
+# Cloudflare Pages project (direct upload from GitHub Actions: `wrangler pages deploy`).
+# API_ORIGIN is set per environment in the Pages dashboard or with `wrangler pages secret put`.
+name = "binarysust"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "dist/client"
+
+[vars]
+API_ORIGIN = "https://binarysust-api.onrender.com"

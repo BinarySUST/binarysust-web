@@ -1,0 +1,106 @@
+# Builds the public site from a database snapshot and deploys it to Cloudflare Pages.
+#
+# Triggers:
+#   - repository_dispatch "publish": the API fires it after every content write (republish middleware)
+#   - push to main touching web/ or the snapshot code: code changes always deploy
+#   - nightly 00:05 Asia/Dhaka: "upcoming" and "registration open" roll over with the date
+#   - manual run
+#
+# Secrets (repo settings → Secrets and variables → Actions):
+#   SNAPSHOT_DATABASE_URL  Neon connection string for a READ-ONLY role (optional: without it the fixture is used)
+#   CLOUDFLARE_API_TOKEN   token with "Cloudflare Pages: Edit"
+#   CLOUDFLARE_ACCOUNT_ID
+name: publish
+
+on:
+  repository_dispatch:
+    types: [publish]
+  push:
+    branches: [main]
+    paths:
+      - web/**
+      - api/internal/site/**
+      - api/cmd/snapshot/**
+      - .github/workflows/publish.yml
+  schedule:
+    - cron: "5 18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Bursts of edits collapse to one running build plus one pending; the pending one sees all edits.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  SITE_URL: https://binarysust.org
+  PAGES_PROJECT: binarysust
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+
+      - name: Snapshot the database
+        id: snapshot
+        working-directory: api
+        env:
+          DATABASE_URL: ${{ secrets.SNAPSHOT_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "SNAPSHOT_DATABASE_URL is not set; building from the committed fixture."
+            echo "hash=fixture" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          version=$(go run ./cmd/snapshot -out ../web)
+          echo "hash=$(echo "$version" | jq -r .hash)" >> "$GITHUB_OUTPUT"
+
+      - name: Skip if the live site already has this content
+        id: live
+        if: github.event_name != 'push' && github.event_name != 'workflow_dispatch'
+        run: |
+          live=$(curl -fsS --max-time 10 "$SITE_URL/version.json" | jq -r .hash || echo none)
+          echo "live hash: $live, new hash: ${{ steps.snapshot.outputs.hash }}"
+          if [ "$live" = "${{ steps.snapshot.outputs.hash }}" ]; then
+            echo "unchanged=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.live.outputs.unchanged != 'true'
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v5
+        if: steps.live.outputs.unchanged != 'true'
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Build
+        if: steps.live.outputs.unchanged != 'true'
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.live.outputs.unchanged != 'true'
+        working-directory: web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN is not set; built but not deployed."
+            exit 0
+          fi
+          pnpm dlx wrangler@4 pages deploy dist/client --project-name "$PAGES_PROJECT" --branch main --commit-dirty=true

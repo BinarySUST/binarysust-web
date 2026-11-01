@@ -1,0 +1,44 @@
+# Render Blueprint for the Go API (free plan, Singapore, no card).
+# The free plan has no pre-deploy command, so the container runs `server serve --migrate`
+# (migrations are advisory-locked and forward-only). Secrets are `sync: false`: set them in the
+# Render dashboard once; they are never committed.
+services:
+  - type: web
+    name: binarysust-api
+    runtime: docker
+    plan: free
+    region: singapore
+    rootDir: api
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: /server serve --migrate
+    healthCheckPath: /healthz
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - api/**
+    envVars:
+      - key: DATABASE_URL            # Neon pooled connection string (Singapore)
+        sync: false
+      - key: PUBLIC_URL              # the site origin; its Pages Function proxies /api/* here
+        value: https://binarysust.org
+      - key: EKMAN_SECRET            # >= 32 random bytes; signs the OAuth state cookie
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: MEDIA_BASE_URL          # where the media repository is deployed
+        value: https://media.binarysust.org
+      - key: GITHUB_MEDIA_REPOSITORY # uploads are committed here
+        value: BinarySUST/binarysust-media
+      - key: GITHUB_MEDIA_TOKEN      # contents:write on the media repository
+        sync: false
+      - key: GITHUB_REPOSITORY       # receives repository_dispatch "publish" after content writes
+        value: BinarySUST/binarysust-web
+      - key: GITHUB_DISPATCH_TOKEN   # may create repository_dispatch events on GITHUB_REPOSITORY
+        sync: false
+      - key: BREVO_API_KEY           # optional: empty logs mail instead of sending it
+        sync: false
+      - key: MAIL_FROM
+        value: binary.sust@gmail.com

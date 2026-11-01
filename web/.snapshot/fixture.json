@@ -1,0 +1,1082 @@
+{
+  "version": {
+    "contentChangedAt": "2026-10-30T14:12:00Z",
+    "builtAt": "2026-10-30T14:15:00Z",
+    "hash": "fixture-0001"
+  },
+  "club": {
+    "name": "Binary SUST",
+    "tagline": "Technology for real life.",
+    "about": "Aiming to boost digital skills, foster teamwork, and inspire creativity among members. Binary SUST is the student-run technology club of Shahjalal University of Science & Technology, Sylhet: workshops, contests, career talks and live sessions, run by an elected executive committee every year.",
+    "email": "binary.sust@gmail.com",
+    "socials": [
+      {
+        "kind": "facebook",
+        "url": "https://www.facebook.com/binary.sust"
+      },
+      {
+        "kind": "linkedin",
+        "url": "https://www.linkedin.com/company/binary-sust"
+      },
+      {
+        "kind": "github",
+        "url": "https://github.com/BinarySUST"
+      }
+    ],
+    "stats": [
+      {
+        "label": "members",
+        "value": 312
+      },
+      {
+        "label": "events run",
+        "value": 48
+      },
+      {
+        "label": "contest problems set",
+        "value": 137
+      },
+      {
+        "label": "alumni",
+        "value": 86
+      }
+    ]
+  },
+  "currentTerm": {
+    "slug": "2025-26",
+    "label": "2025–26"
+  },
+  "terms": [
+    {
+      "slug": "2025-26",
+      "label": "2025–26",
+      "startsOn": "2025-10-01"
+    },
+    {
+      "slug": "2024-25",
+      "label": "2024–25",
+      "startsOn": "2024-10-01"
+    }
+  ],
+  "people": [
+    {
+      "avatarUrl": null,
+      "headline": "Competitive programmer who ended up liking backends",
+      "department": "CSE",
+      "batch": 2021,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Fourth-year CSE student. Two-time ICPC Dhaka Regional finalist, and the person who keeps asking whether it could be a static page.</p><p>Writes Go for the club's API and C++ for everything with a time limit.</p>",
+      "skills": [
+        "Go",
+        "C++",
+        "PostgreSQL",
+        "Algorithms",
+        "Docker"
+      ],
+      "socials": [
+        {
+          "kind": "github",
+          "url": "https://github.com/"
+        },
+        {
+          "kind": "codeforces",
+          "url": "https://codeforces.com/"
+        },
+        {
+          "kind": "linkedin",
+          "url": "https://www.linkedin.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [
+        {
+          "title": "ekman",
+          "summary": "An API-only Go framework where every route declares its access rule. Powers this site's dashboard.",
+          "url": null,
+          "repoUrl": "https://github.com/sakib412/ekman",
+          "imageUrl": null,
+          "tags": [
+            "Go",
+            "RBAC",
+            "OpenAPI"
+          ]
+        },
+        {
+          "title": "Judge queue",
+          "summary": "A small submission queue for intra-SUST contests that grades 400 submissions a minute on one VPS.",
+          "url": null,
+          "repoUrl": null,
+          "imageUrl": null,
+          "tags": [
+            "Go",
+            "Redis"
+          ]
+        }
+      ],
+      "achievements": [
+        {
+          "title": "ICPC Asia Dhaka Regional, 14th place",
+          "date": "2025-12-06",
+          "detail": "Team SUST_Binary_Bandits."
+        },
+        {
+          "title": "Intra-SUST Programming Contest, champion",
+          "date": "2024-09-14",
+          "detail": "Solved 9 of 11 problems."
+        }
+      ],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "President"
+        },
+        {
+          "term": "2024-25",
+          "title": "General Secretary"
+        }
+      ],
+      "handle": "tahmid",
+      "name": "Tahmid Rahman",
+      "status": "committee",
+      "lifetimeMember": true
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Frontend, accessibility and first-time contributors",
+      "department": "CSE",
+      "batch": 2021,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Runs the club's open-source onboarding sessions. Believes every first pull request deserves a review within a day.</p>",
+      "skills": [
+        "TypeScript",
+        "React",
+        "Accessibility",
+        "Git"
+      ],
+      "socials": [
+        {
+          "kind": "github",
+          "url": "https://github.com/"
+        },
+        {
+          "kind": "website",
+          "url": "https://example.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [
+        {
+          "title": "Bangla date picker",
+          "summary": "An accessible date picker with Bangla numerals and the Bengali calendar.",
+          "url": null,
+          "repoUrl": null,
+          "imageUrl": null,
+          "tags": [
+            "React",
+            "a11y",
+            "i18n"
+          ]
+        }
+      ],
+      "achievements": [
+        {
+          "title": "Google Summer of Code contributor",
+          "date": "2025-08-25",
+          "detail": "Improved keyboard navigation in an open-source design system."
+        }
+      ],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "General Secretary"
+        }
+      ],
+      "handle": "nusrat",
+      "name": "Nusrat Jahan Mim",
+      "status": "committee",
+      "lifetimeMember": true
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Keeps the books balanced and the servers cheap",
+      "department": "SWE",
+      "batch": 2022,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Software engineering student who treats the club budget like a production system: monitored, audited and boring.</p>",
+      "skills": [
+        "Python",
+        "Django",
+        "Linux",
+        "Accounting"
+      ],
+      "socials": [
+        {
+          "kind": "github",
+          "url": "https://github.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Finance Secretary"
+        },
+        {
+          "term": "2024-25",
+          "title": "Organizing Secretary"
+        }
+      ],
+      "handle": "arif",
+      "name": "Arif Hossain",
+      "status": "committee",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Events, logistics and a spreadsheet for everything",
+      "department": "CSE",
+      "batch": 2022,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Has organised every Binary SUST event since the 2025 hackathon. Knows exactly how many extension cords the IICT building has.</p>",
+      "skills": [
+        "Event operations",
+        "Figma",
+        "Kotlin"
+      ],
+      "socials": [
+        {
+          "kind": "linkedin",
+          "url": "https://www.linkedin.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Organizing Secretary"
+        }
+      ],
+      "handle": "sadia",
+      "name": "Sadia Islam",
+      "status": "committee",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Teaches dynamic programming until it clicks",
+      "department": "CSE",
+      "batch": 2022,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Runs the weekly problem-solving classes for first-years. Codeforces Expert.</p>",
+      "skills": [
+        "C++",
+        "Algorithms",
+        "Python"
+      ],
+      "socials": [
+        {
+          "kind": "codeforces",
+          "url": "https://codeforces.com/"
+        },
+        {
+          "kind": "leetcode",
+          "url": "https://leetcode.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [
+        {
+          "title": "Codeforces Expert",
+          "date": "2026-02-10",
+          "detail": "Peak rating 1873."
+        }
+      ],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Director of Training"
+        }
+      ],
+      "handle": "rakib",
+      "name": "Rakibul Hasan",
+      "status": "committee",
+      "lifetimeMember": true
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Writes the blog posts nobody else has time for",
+      "department": "SWE",
+      "batch": 2023,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Second-year software engineering student. Edits the Binary SUST blog and photographs every event.</p>",
+      "skills": [
+        "Writing",
+        "Photography",
+        "Next.js"
+      ],
+      "socials": [
+        {
+          "kind": "x",
+          "url": "https://x.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Publication Secretary"
+        }
+      ],
+      "handle": "farhan",
+      "name": "Farhan Ahmed Chowdhury",
+      "status": "committee",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Professor, Department of CSE",
+      "department": "CSE",
+      "batch": null,
+      "graduatedOn": null,
+      "workplace": "Shahjalal University of Science & Technology",
+      "jobTitle": "Professor",
+      "bioHtml": "<p>Teaches compilers and programming languages. Advisor to Binary SUST since its first committee.</p>",
+      "skills": [
+        "Compilers",
+        "Programming languages",
+        "Static analysis"
+      ],
+      "socials": [],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Chief Adviser"
+        },
+        {
+          "term": "2024-25",
+          "title": "Chief Adviser"
+        }
+      ],
+      "handle": "mkarim",
+      "name": "Dr. Mahmudul Karim",
+      "status": "advisor",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Associate Professor, Department of CSE",
+      "department": "CSE",
+      "batch": null,
+      "graduatedOn": null,
+      "workplace": "Shahjalal University of Science & Technology",
+      "jobTitle": "Associate Professor",
+      "bioHtml": "<p>Works on Bangla natural language processing. Supervises the club's research reading group.</p>",
+      "skills": [
+        "NLP",
+        "Machine learning",
+        "Bangla computing"
+      ],
+      "socials": [],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Adviser"
+        },
+        {
+          "term": "2024-25",
+          "title": "Adviser"
+        }
+      ],
+      "handle": "shirin",
+      "name": "Dr. Shirin Akter",
+      "status": "advisor",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Vice-Chancellor",
+      "department": "",
+      "batch": null,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "<p>Chief patron of the club, as every Vice-Chancellor is.</p>",
+      "skills": [],
+      "socials": [],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2025-26",
+          "title": "Chief Patron"
+        },
+        {
+          "term": "2024-25",
+          "title": "Chief Patron"
+        }
+      ],
+      "handle": "ahossain",
+      "name": "Prof. Dr. Anwar Hossain",
+      "status": "advisor",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Android apps and too many side projects",
+      "department": "CSE",
+      "batch": 2023,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "",
+      "skills": [
+        "Kotlin",
+        "Jetpack Compose",
+        "Firebase"
+      ],
+      "socials": [
+        {
+          "kind": "github",
+          "url": "https://github.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [
+        {
+          "title": "Bus Tracker SUST",
+          "summary": "Live campus bus locations for the Sylhet city routes, built during the 2026 hackathon.",
+          "url": null,
+          "repoUrl": null,
+          "imageUrl": null,
+          "tags": [
+            "Android",
+            "Maps"
+          ]
+        }
+      ],
+      "achievements": [],
+      "positions": [],
+      "handle": "tanvir",
+      "name": "Tanvir Alam",
+      "status": "member",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Embedded systems meets machine learning",
+      "department": "EEE",
+      "batch": 2023,
+      "graduatedOn": null,
+      "workplace": "",
+      "jobTitle": "",
+      "bioHtml": "",
+      "skills": [
+        "C",
+        "Arduino",
+        "TinyML",
+        "Python"
+      ],
+      "socials": [
+        {
+          "kind": "github",
+          "url": "https://github.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [],
+      "handle": "ishrat",
+      "name": "Ishrat Jahan",
+      "status": "member",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "ML engineer, former club president",
+      "department": "CSE",
+      "batch": 2020,
+      "graduatedOn": "2025-09-15",
+      "workplace": "Padma Labs",
+      "jobTitle": "Machine Learning Engineer",
+      "bioHtml": "<p>Led Binary SUST through 2024-25. Now builds speech recognition for Bangla at Padma Labs.</p>",
+      "skills": [
+        "PyTorch",
+        "Speech",
+        "MLOps"
+      ],
+      "socials": [
+        {
+          "kind": "linkedin",
+          "url": "https://www.linkedin.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2024-25",
+          "title": "President"
+        }
+      ],
+      "handle": "lamia",
+      "name": "Lamia Chowdhury",
+      "status": "alumni",
+      "lifetimeMember": true
+    },
+    {
+      "avatarUrl": null,
+      "headline": "SRE in Berlin, still answers club Discord at 3 a.m.",
+      "department": "SWE",
+      "batch": 2020,
+      "graduatedOn": "2025-08-30",
+      "workplace": "Northbridge Payments",
+      "jobTitle": "Site Reliability Engineer",
+      "bioHtml": "",
+      "skills": [
+        "Kubernetes",
+        "Go",
+        "Terraform"
+      ],
+      "socials": [
+        {
+          "kind": "github",
+          "url": "https://github.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [
+        {
+          "term": "2024-25",
+          "title": "Director of Training"
+        }
+      ],
+      "handle": "nafis",
+      "name": "Nafis Iqbal",
+      "status": "alumni",
+      "lifetimeMember": true
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Distributed systems at Kite Systems",
+      "department": "CSE",
+      "batch": 2018,
+      "graduatedOn": "2023-06-30",
+      "workplace": "Kite Systems",
+      "jobTitle": "Senior Software Engineer",
+      "bioHtml": "",
+      "skills": [
+        "Java",
+        "Kafka",
+        "System design"
+      ],
+      "socials": [
+        {
+          "kind": "linkedin",
+          "url": "https://www.linkedin.com/"
+        }
+      ],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [],
+      "handle": "mehedi",
+      "name": "Mehedi Hasan Shuvo",
+      "status": "alumni",
+      "lifetimeMember": false
+    },
+    {
+      "avatarUrl": null,
+      "headline": "Staff Engineer, Surma Cloud",
+      "department": "",
+      "batch": null,
+      "graduatedOn": null,
+      "workplace": "Surma Cloud",
+      "jobTitle": "Staff Engineer",
+      "bioHtml": "<p>Runs the database platform at Surma Cloud. Guest speaker at Binary SUST.</p>",
+      "skills": [
+        "PostgreSQL",
+        "Performance"
+      ],
+      "socials": [],
+      "cvUrl": null,
+      "projects": [],
+      "achievements": [],
+      "positions": [],
+      "handle": "sabbir",
+      "name": "Sabbir Ahmed",
+      "status": "guest",
+      "lifetimeMember": false
+    }
+  ],
+  "committees": [
+    {
+      "term": "2025-26",
+      "seats": [
+        {
+          "handle": "tahmid",
+          "name": "Tahmid Rahman",
+          "avatarUrl": null,
+          "position": "President",
+          "category": "executive",
+          "group": "leadership",
+          "rank": 10
+        },
+        {
+          "handle": "nusrat",
+          "name": "Nusrat Jahan Mim",
+          "avatarUrl": null,
+          "position": "General Secretary",
+          "category": "executive",
+          "group": "leadership",
+          "rank": 30
+        },
+        {
+          "handle": "rakib",
+          "name": "Rakibul Hasan",
+          "avatarUrl": null,
+          "position": "Director of Training",
+          "category": "executive",
+          "group": "leadership",
+          "rank": 40
+        },
+        {
+          "handle": "sadia",
+          "name": "Sadia Islam",
+          "avatarUrl": null,
+          "position": "Organizing Secretary",
+          "category": "executive",
+          "group": "secretary",
+          "rank": 70
+        },
+        {
+          "handle": "farhan",
+          "name": "Farhan Ahmed Chowdhury",
+          "avatarUrl": null,
+          "position": "Publication Secretary",
+          "category": "executive",
+          "group": "secretary",
+          "rank": 110
+        },
+        {
+          "handle": "arif",
+          "name": "Arif Hossain",
+          "avatarUrl": null,
+          "position": "Finance Secretary",
+          "category": "executive",
+          "group": "secretary",
+          "rank": 150
+        },
+        {
+          "handle": "ahossain",
+          "name": "Prof. Dr. Anwar Hossain",
+          "avatarUrl": null,
+          "position": "Chief Patron",
+          "category": "advisor",
+          "group": "patron",
+          "rank": 10
+        },
+        {
+          "handle": "mkarim",
+          "name": "Dr. Mahmudul Karim",
+          "avatarUrl": null,
+          "position": "Chief Adviser",
+          "category": "advisor",
+          "group": "adviser",
+          "rank": 20
+        },
+        {
+          "handle": "shirin",
+          "name": "Dr. Shirin Akter",
+          "avatarUrl": null,
+          "position": "Adviser",
+          "category": "advisor",
+          "group": "adviser",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "term": "2024-25",
+      "seats": [
+        {
+          "handle": "lamia",
+          "name": "Lamia Chowdhury",
+          "avatarUrl": null,
+          "position": "President",
+          "category": "executive",
+          "group": "leadership",
+          "rank": 10
+        },
+        {
+          "handle": "tahmid",
+          "name": "Tahmid Rahman",
+          "avatarUrl": null,
+          "position": "General Secretary",
+          "category": "executive",
+          "group": "leadership",
+          "rank": 30
+        },
+        {
+          "handle": "nafis",
+          "name": "Nafis Iqbal",
+          "avatarUrl": null,
+          "position": "Director of Training",
+          "category": "executive",
+          "group": "leadership",
+          "rank": 40
+        },
+        {
+          "handle": "arif",
+          "name": "Arif Hossain",
+          "avatarUrl": null,
+          "position": "Organizing Secretary",
+          "category": "executive",
+          "group": "secretary",
+          "rank": 70
+        },
+        {
+          "handle": "ahossain",
+          "name": "Prof. Dr. Anwar Hossain",
+          "avatarUrl": null,
+          "position": "Chief Patron",
+          "category": "advisor",
+          "group": "patron",
+          "rank": 10
+        },
+        {
+          "handle": "mkarim",
+          "name": "Dr. Mahmudul Karim",
+          "avatarUrl": null,
+          "position": "Chief Adviser",
+          "category": "advisor",
+          "group": "adviser",
+          "rank": 20
+        },
+        {
+          "handle": "shirin",
+          "name": "Dr. Shirin Akter",
+          "avatarUrl": null,
+          "position": "Adviser",
+          "category": "advisor",
+          "group": "adviser",
+          "rank": 30
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "status": "published",
+      "coverUrl": null,
+      "venue": "Central Auditorium, SUST",
+      "onlineUrl": null,
+      "registration": null,
+      "recapHtml": "",
+      "photos": [],
+      "speakers": [
+        "lamia",
+        "mehedi"
+      ],
+      "slug": "career-meetup-2026",
+      "title": "Alumni career meetup",
+      "kind": "meetup",
+      "summary": "Alumni from Dhaka, Berlin and Singapore on first jobs, interviews and what they wish they had learned at SUST.",
+      "bodyHtml": "<p>An evening of short talks and long questions. Bring your CV if you want it read.</p><ul><li>18:00 Short talks</li><li>19:00 Open Q&amp;A</li><li>20:00 Tea and CV reviews</li></ul>",
+      "startsAt": "2026-12-19T12:00:00Z",
+      "endsAt": "2026-12-19T15:00:00Z"
+    },
+    {
+      "status": "published",
+      "coverUrl": null,
+      "venue": "IICT Building, Lab 3",
+      "onlineUrl": null,
+      "registration": {
+        "opensAt": "2026-11-15T00:00:00Z",
+        "closesAt": "2026-11-26T18:00:00Z",
+        "capacity": 120
+      },
+      "recapHtml": "",
+      "photos": [],
+      "speakers": [
+        "rakib"
+      ],
+      "slug": "icpc-mock-round-2026",
+      "title": "ICPC Dhaka mock round",
+      "kind": "contest",
+      "summary": "A five-hour team contest on the ICPC Dhaka Regional format, with problems set by club alumni.",
+      "bodyHtml": "<p>Teams of three, one computer, eleven problems. Standings freeze at the fourth hour, exactly like the regional.</p><p>Registration opens on 15 November.</p>",
+      "startsAt": "2026-11-28T03:00:00Z",
+      "endsAt": "2026-11-28T08:00:00Z"
+    },
+    {
+      "status": "published",
+      "coverUrl": null,
+      "venue": "IICT Building, Lab 1",
+      "onlineUrl": null,
+      "registration": {
+        "opensAt": "2026-10-25T00:00:00Z",
+        "closesAt": "2026-11-13T15:00:00Z",
+        "capacity": 80
+      },
+      "recapHtml": "",
+      "photos": [],
+      "speakers": [
+        "nusrat",
+        "tahmid"
+      ],
+      "slug": "git-and-github-bootcamp",
+      "title": "Git and GitHub bootcamp",
+      "kind": "workshop",
+      "summary": "From your first commit to your first merged pull request, in one Saturday. Laptops required.",
+      "bodyHtml": "<p>For first- and second-year students who have used Git only through a GUI, or not at all.</p><h2>What we cover</h2><ol><li>Commits, branches and why history matters</li><li>Rebasing without fear</li><li>Opening, reviewing and merging a pull request on a real repository</li></ol><pre><code class=\"language-bash\">git switch -c fix/typo-in-readme\ngit commit -am \"docs: fix typo in README\"\ngit push -u origin fix/typo-in-readme</code></pre>",
+      "startsAt": "2026-11-14T04:00:00Z",
+      "endsAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "status": "published",
+      "coverUrl": null,
+      "venue": "IICT Building, Labs 1 to 4",
+      "onlineUrl": null,
+      "registration": {
+        "opensAt": "2026-08-20T00:00:00Z",
+        "closesAt": "2026-09-10T18:00:00Z",
+        "capacity": 240
+      },
+      "recapHtml": "<p>Congratulations to the top three, and thanks to the problem setters who stayed up for the final round of testing.</p><ol><li>Rakibul Hasan, 10 solved</li><li>Tanvir Alam, 8 solved</li><li>Ishrat Jahan, 8 solved</li></ol>",
+      "photos": [],
+      "speakers": [],
+      "slug": "intra-sust-contest-2026",
+      "title": "Intra-SUST Programming Contest 2026",
+      "kind": "contest",
+      "summary": "The club's yearly individual contest. 212 contestants, 11 problems, one very long afternoon.",
+      "bodyHtml": "<p>Open to every SUST student. Problems range from warm-up to regional level.</p>",
+      "startsAt": "2026-09-12T08:00:00Z",
+      "endsAt": "2026-09-12T13:00:00Z"
+    },
+    {
+      "status": "published",
+      "coverUrl": null,
+      "venue": "Room 331, Academic Building C",
+      "onlineUrl": null,
+      "registration": null,
+      "recapHtml": "<p>Forty-one participants shipped an API to a free host by the end of the second evening.</p>",
+      "photos": [
+        {
+          "url": "https://picsum.photos/seed/binarysust-go1/1200/800",
+          "caption": "Writing the first handler"
+        }
+      ],
+      "speakers": [
+        "tahmid"
+      ],
+      "slug": "go-backend-workshop",
+      "title": "Backends in Go, two evenings",
+      "kind": "workshop",
+      "summary": "Build and deploy a small JSON API in Go with PostgreSQL, tests and a Dockerfile.",
+      "bodyHtml": "<p>Day one: handlers, routing and SQL. Day two: tests, migrations and shipping it.</p><pre><code class=\"language-go\">func (s *Server) health(w http.ResponseWriter, r *http.Request) {\n\tw.Header().Set(\"Content-Type\", \"application/json\")\n\tw.Write([]byte(`{\"ok\":true}`))\n}</code></pre>",
+      "startsAt": "2026-07-17T12:00:00Z",
+      "endsAt": "2026-07-18T15:00:00Z"
+    },
+    {
+      "status": "published",
+      "coverUrl": null,
+      "venue": "Central Auditorium, SUST",
+      "onlineUrl": null,
+      "registration": null,
+      "recapHtml": "<p>The winning team built a flood-level alert bot for the Surma river using public gauge data. Bus Tracker SUST took second place.</p>",
+      "photos": [
+        {
+          "url": "https://picsum.photos/seed/binarysust-hack1/1200/800",
+          "caption": "Teams pitching on the final morning"
+        },
+        {
+          "url": "https://picsum.photos/seed/binarysust-hack2/1200/800",
+          "caption": "The judges' table"
+        }
+      ],
+      "speakers": [
+        "sabbir"
+      ],
+      "slug": "sylhet-hackathon-2026",
+      "title": "Sylhet Hackathon 2026",
+      "kind": "hackathon",
+      "summary": "Thirty hours, twenty-six teams, one theme: software for Sylhet.",
+      "bodyHtml": "<p>Build something that makes life in Sylhet a little easier: transport, tea gardens, flood alerts, anything.</p>",
+      "startsAt": "2026-03-20T03:00:00Z",
+      "endsAt": "2026-03-21T09:00:00Z"
+    }
+  ],
+  "posts": [
+    {
+      "slug": "a-static-site-from-one-snapshot",
+      "title": "How this site is built: one snapshot, zero servers",
+      "author": "tahmid",
+      "tags": [
+        "web",
+        "go",
+        "infrastructure"
+      ],
+      "excerpt": "The public site never talks to our API. Here is why a sleeping free-tier server does not take the site down with it.",
+      "publishedAt": "2026-10-20T10:00:00Z",
+      "readingMinutes": 6,
+      "bodyHtml": "<p>Our API runs on a free tier that sleeps after fifteen idle minutes and takes about a minute to wake. If the public site depended on it, the first visitor of the morning would stare at a spinner.</p><h2>The snapshot</h2><p>Every build reads the database once, through a read-only role, and writes a single JSON file: <code>site.json</code>. Every public page is rendered from it.</p><pre><code class=\"language-go\">type Snapshot struct {\n\tClub      Club           `json:\"club\"`\n\tPeople    []PublicPerson `json:\"people\"`\n\tEvents    []PublicEvent  `json:\"events\"`\n\tPosts     []PublicPost   `json:\"posts\"`\n}</code></pre><h2>One loader</h2><p>On the web side, a page asks for its slice and does not care where it comes from:</p><pre><code class=\"language-ts\">export const Route = createFileRoute(\"/events/$slug\")({\n  loader: ({ params }) =&gt; content.event(params.slug),\n  component: EventPage,\n});</code></pre><p>At build time that reads from disk. In the browser it fetches a small static JSON file. The API only ever sees signed-in members.</p><blockquote><p>If the API is down, the site is still up. That is the whole design.</p></blockquote>",
+      "coverUrl": null
+    },
+    {
+      "slug": "dp-on-trees-from-scratch",
+      "title": "DP on trees, from scratch",
+      "author": "rakib",
+      "tags": [
+        "competitive-programming",
+        "algorithms"
+      ],
+      "excerpt": "Subtree sizes, rerooting and the one recursion pattern behind half the tree problems you will meet at ICPC.",
+      "publishedAt": "2026-09-28T09:00:00Z",
+      "readingMinutes": 9,
+      "bodyHtml": "<p>Most tree DP problems ask the same question: what is the answer for the subtree rooted at <code>v</code>, given the answers for its children?</p><h2>Subtree sizes</h2><pre><code class=\"language-cpp\">vector&lt;int&gt; g[N];\nint sz[N];\n\nvoid dfs(int v, int parent) {\n    sz[v] = 1;\n    for (int u : g[v]) {\n        if (u == parent) continue;\n        dfs(u, v);\n        sz[v] += sz[u];\n    }\n}</code></pre><h2>Rerooting</h2><p>Once you have the answer for the root, moving the root to a child changes only two subtrees. That turns an <code>O(n&sup2;)</code> brute force into <code>O(n)</code>.</p><ul><li>Compute <code>down[v]</code> with one DFS.</li><li>Push <code>up[v]</code> from parent to child with a second DFS.</li><li>Combine them per node.</li></ul>",
+      "coverUrl": null
+    },
+    {
+      "slug": "your-first-pull-request",
+      "title": "Your first pull request, without the panic",
+      "author": "nusrat",
+      "tags": [
+        "open-source",
+        "git"
+      ],
+      "excerpt": "Fork, branch, commit, push, open. A checklist we hand out at every bootcamp, and what reviewers actually look for.",
+      "publishedAt": "2026-08-14T08:30:00Z",
+      "readingMinutes": 5,
+      "bodyHtml": "<p>Nobody remembers their first merged pull request for the code. They remember the reviewer who was kind about it.</p><h2>The checklist</h2><ol><li>Read <code>CONTRIBUTING.md</code> first.</li><li>One change per pull request.</li><li>Write the commit message for the person reading <code>git log</code> in two years.</li></ol><pre><code class=\"language-bash\">git clone git@github.com:you/project.git\ncd project\ngit remote add upstream git@github.com:org/project.git\ngit switch -c docs/clarify-install</code></pre><p>Then push and open the pull request from GitHub. Link the issue, describe what you changed and how you tested it.</p>",
+      "coverUrl": null
+    },
+    {
+      "slug": "notes-from-sylhet-hackathon-2026",
+      "title": "Notes from Sylhet Hackathon 2026",
+      "author": "farhan",
+      "tags": [
+        "hackathon",
+        "events"
+      ],
+      "excerpt": "Thirty hours, a flood alert bot, a bus tracker and the power cut at 3 a.m. that nobody will forget.",
+      "publishedAt": "2026-03-25T12:00:00Z",
+      "readingMinutes": 4,
+      "bodyHtml": "<p>Twenty-six teams signed in on Friday morning. By Saturday afternoon, nineteen had something running.</p><h2>The winners</h2><p>Team <em>Surma Watch</em> polled public river gauge data every ten minutes and posted to a Telegram channel when levels crossed the danger mark.</p><pre><code class=\"language-python\">if level_cm &gt;= DANGER_MARK[station]:\n    bot.send_message(CHANNEL, f\"{station}: {level_cm} cm, above danger level\")</code></pre><p>Thanks to everyone who brought extension cords.</p>",
+      "coverUrl": null
+    }
+  ],
+  "talks": [
+    {
+      "slug": "what-compilers-teach-about-performance",
+      "title": "What your compiler course should have taught you about performance",
+      "speaker": "mkarim",
+      "date": "2026-08-21T10:00:00Z",
+      "summaryHtml": "<p>Why the fastest loop is often the one the compiler can see through, and how to write code that lets it.</p>",
+      "videoUrl": null,
+      "slidesUrl": null,
+      "featured": true
+    },
+    {
+      "slug": "reading-papers-without-drowning",
+      "title": "Reading research papers without drowning",
+      "speaker": "shirin",
+      "date": "2026-03-11T09:00:00Z",
+      "summaryHtml": "<p>A three-pass method for papers, with a live read-through of a Bangla NLP paper.</p>",
+      "videoUrl": null,
+      "slidesUrl": null,
+      "featured": false
+    },
+    {
+      "slug": "postgres-on-a-budget",
+      "title": "Postgres for a million users on a budget",
+      "speaker": "sabbir",
+      "date": "2025-12-02T11:00:00Z",
+      "summaryHtml": "<p>Indexes, connection pooling and the three queries that cost Surma Cloud the most money last year.</p>",
+      "videoUrl": null,
+      "slidesUrl": null,
+      "featured": false
+    }
+  ],
+  "sponsors": [
+    {
+      "name": "Surma Cloud",
+      "tier": "platinum",
+      "logoUrl": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2080%22%3E%3Crect%20width%3D%22240%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%230b5cad%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%2250%22%20text-anchor%3D%22middle%22%20font-family%3D%22Verdana%2Csans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%3ESurma%20Cloud%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "url": "https://example.com/surma-cloud",
+      "since": 2024,
+      "until": null
+    },
+    {
+      "name": "Padma Labs",
+      "tier": "gold",
+      "logoUrl": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2080%22%3E%3Crect%20width%3D%22240%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%23f4c430%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%2250%22%20text-anchor%3D%22middle%22%20font-family%3D%22Verdana%2Csans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20fill%3D%22%231a1a1a%22%3EPadma%20Labs%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "url": "https://example.com/padma-labs",
+      "since": 2025,
+      "until": null
+    },
+    {
+      "name": "Kite Systems",
+      "tier": "gold",
+      "logoUrl": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2080%22%3E%3Crect%20width%3D%22240%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%23c2185b%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%2250%22%20text-anchor%3D%22middle%22%20font-family%3D%22Verdana%2Csans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%3EKite%20Systems%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "url": "https://example.com/kite-systems",
+      "since": 2023,
+      "until": null
+    },
+    {
+      "name": "Northbridge Payments",
+      "tier": "silver",
+      "logoUrl": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2080%22%3E%3Crect%20width%3D%22240%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%232e7d32%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%2250%22%20text-anchor%3D%22middle%22%20font-family%3D%22Verdana%2Csans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%3ENorthbridge%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "url": "https://example.com/northbridge",
+      "since": 2025,
+      "until": null
+    },
+    {
+      "name": "Sylhet Startup Hub",
+      "tier": "partner",
+      "logoUrl": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2080%22%3E%3Crect%20width%3D%22240%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22%23e0e0e0%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%2250%22%20text-anchor%3D%22middle%22%20font-family%3D%22Verdana%2Csans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20fill%3D%22%231a1a1a%22%3EStartup%20Hub%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "url": "https://example.com/sylhet-startup-hub",
+      "since": 2022,
+      "until": null
+    }
+  ],
+  "redirects": [
+    {
+      "from": "/people/tahmid-r",
+      "to": "/people/tahmid"
+    },
+    {
+      "from": "/events/git-bootcamp",
+      "to": "/events/git-and-github-bootcamp"
+    }
+  ]
+}

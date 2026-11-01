@@ -1,0 +1,40 @@
+# Local dev edge, shaped like production:
+#
+#   production                           local
+#   binarysust.org                 http://binarysust.localhost
+#     /api/*  -> Pages Function -> Render  /api/*, /healthz -> Go API on the host
+#     /*      -> static site               /*                -> TanStack Start dev server on the host
+#   media.binarysust.org           http://media.binarysust.localhost  -> .data/media
+#
+# Browsers resolve *.localhost to 127.0.0.1 and treat it as a secure context, so cookies
+# behave like production without certificates.
+{
+	auto_https off
+	admin off
+}
+
+http://binarysust.localhost {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy {$API_UPSTREAM:host.docker.internal:8080}
+	}
+	handle /healthz {
+		reverse_proxy {$API_UPSTREAM:host.docker.internal:8080}
+	}
+	handle {
+		# Vite HMR websockets pass through reverse_proxy unchanged.
+		reverse_proxy {$WEB_UPSTREAM:host.docker.internal:3000}
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+http://media.binarysust.localhost {
+	root * /srv/media
+	file_server
+	header Access-Control-Allow-Origin "http://binarysust.localhost"
+}

@@ -1,0 +1,158 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { type FormEvent, useState } from "react";
+import { Icon } from "~/components/Icon";
+import { type Schemas, api, unwrap } from "~/lib/api/client";
+import { SPONSOR_TIERS, oneOf } from "~/lib/api/enums";
+import { ImageField } from "../MediaUpload";
+import type { SectionProps } from "../sections";
+import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, td } from "../ui";
+
+type SponsorIn = Schemas["sponsors.In"];
+type Sponsor = Schemas["sponsors.Sponsor"];
+
+export function SponsorsSection({ rest }: SectionProps) {
+  const [id] = rest;
+  if (!id) return <SponsorList />;
+  return <SponsorEditor id={id === "new" ? null : id} />;
+}
+
+function SponsorList() {
+  const q = useQuery({ queryKey: ["sponsors"], queryFn: async () => unwrap(await api.GET("/api/v1/sponsors")) });
+  const year = new Date().getFullYear();
+  return (
+    <>
+      <SectionHead title="Sponsors">
+        <Link to="/dashboard/$" params={{ _splat: "sponsors/new" }} className="btn btn-primary">
+          <Icon name="plus" size={18} /> New sponsor
+        </Link>
+      </SectionHead>
+      {q.error ? (
+        <ErrorBox error={q.error} retry={() => void q.refetch()} />
+      ) : !q.data ? (
+        <Loading what="Loading sponsors" />
+      ) : q.data.length === 0 ? (
+        <Empty>No sponsors yet.</Empty>
+      ) : (
+        <Table head={["Sponsor", "Tier", "Years", ""]}>
+          {q.data.map((s) => (
+            <tr key={s.id}>
+              <td className={td}>
+                <span className="flex items-center gap-3">
+                  <img src={s.logoUrl} alt="" className="h-8 w-16 shrink-0 object-contain" />
+                  <Link to="/dashboard/$" params={{ _splat: `sponsors/${s.id}` }} className="link font-semibold text-ink">
+                    {s.name}
+                  </Link>
+                </span>
+              </td>
+              <td className={`${td} capitalize`}>{s.tier}</td>
+              <td className={`${td} tabular`}>
+                {s.since} to {s.until ?? "now"}
+              </td>
+              <td className={`${td} text-sm text-ink-3`}>{s.until !== null && s.until < year ? "Past" : "Active"}</td>
+            </tr>
+          ))}
+        </Table>
+      )}
+    </>
+  );
+}
+
+const blank = (): SponsorIn => ({ name: "", tier: "partner", logoUrl: "", url: "", since: new Date().getFullYear(), until: null });
+const toIn = ({ id: _i, updatedAt: _u, ...rest }: Sponsor): SponsorIn => rest;
+
+function SponsorEditor({ id }: { id: string | null }) {
+  const q = useQuery({
+    queryKey: ["sponsors", id],
+    queryFn: async () => unwrap(await api.GET("/api/v1/sponsors/{id}", { params: { path: { id: id ?? "" } } })),
+    enabled: id !== null,
+  });
+  if (id && q.error) return <ErrorBox error={q.error} retry={() => void q.refetch()} />;
+  if (id && !q.data) return <Loading what="Loading sponsor" />;
+  return <SponsorForm id={id} initial={q.data ? toIn(q.data) : blank()} key={id ?? "new"} />;
+}
+
+function SponsorForm({ id, initial }: { id: string | null; initial: SponsorIn }) {
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+  const [f, setF] = useState<SponsorIn>(initial);
+  const save = useMutation({
+    mutationFn: async (body: SponsorIn) =>
+      unwrap(id ? await api.PUT("/api/v1/sponsors/{id}", { params: { path: { id } }, body }) : await api.POST("/api/v1/sponsors", { body })),
+    onMutate: (body) => {
+      // Optimistic: the list shows the edit straight away.
+      if (id) qc.setQueryData<Sponsor[]>(["sponsors"], (rows) => rows?.map((r) => (r.id === id ? { ...r, ...body } : r)));
+    },
+    onSuccess: (s) => {
+      qc.setQueryData(["sponsors", s.id], s);
+      if (!id) void navigate({ to: "/dashboard/$", params: { _splat: `sponsors/${s.id}` } });
+    },
+    onSettled: () => invalidate(qc, ["sponsors"]),
+  });
+  const fe = fieldErrors(save.error);
+  const set = <K extends keyof SponsorIn>(k: K, v: SponsorIn[K]) => (setF((x) => ({ ...x, [k]: v })), save.reset());
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    save.mutate(f);
+  };
+  return (
+    <form onSubmit={onSubmit} className="max-w-3xl space-y-8" noValidate>
+      <SectionHead title={id ? initial.name : "New sponsor"}>
+        <BackLink to="sponsors">Back to sponsors</BackLink>
+      </SectionHead>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Name" error={fe.name}>
+          <input className="field" value={f.name} onChange={(e) => set("name", e.target.value)} />
+        </Field>
+        <Field label="Tier" error={fe.tier}>
+          <select className="field" value={f.tier} onChange={(e) => set("tier", oneOf(SPONSOR_TIERS, e.target.value))}>
+            {SPONSOR_TIERS.map((t) => (
+              <option key={t} value={t}>
+                {t[0]?.toUpperCase() + t.slice(1)}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <div className="sm:col-span-2">
+          <Field label="Website" error={fe.url}>
+            <input className="field" type="url" value={f.url} onChange={(e) => set("url", e.target.value)} placeholder="https://" />
+          </Field>
+        </div>
+        <div className="sm:col-span-2">
+          <ImageField label="Logo" purpose="logo" value={f.logoUrl || null} onChange={(v) => set("logoUrl", v ?? "")} error={fe.logoUrl} hint="A wide logo on a transparent background works best." />
+        </div>
+        <Field label="Since (year)" error={fe.since}>
+          <input className="field" type="number" inputMode="numeric" value={f.since} onChange={(e) => set("since", Number(e.target.value))} />
+        </Field>
+        <Field label="Until (year)" hint="Empty while the sponsorship is active." error={fe.until}>
+          <input className="field" type="number" inputMode="numeric" value={f.until ?? ""} onChange={(e) => set("until", e.target.value ? Number(e.target.value) : null)} />
+        </Field>
+      </div>
+      <SaveBar
+        pending={save.isPending}
+        error={save.error}
+        success={save.isSuccess}
+        label={id ? "Save changes" : "Add sponsor"}
+        shown={["name", "tier", "url", "logoUrl", "since", "until"]}
+      >
+        {id && (
+          <span className="ml-auto">
+            <DeleteButton
+              what="sponsor"
+              onDelete={async () => unwrap(await api.DELETE("/api/v1/sponsors/{id}", { params: { path: { id } } }))}
+              onDeleted={() => {
+                invalidate(qc, ["sponsors"]);
+                void navigate({ to: "/dashboard/$", params: { _splat: "sponsors" } });
+              }}
+            >
+              <p>
+                {initial.name} disappears from the public site after the next build. To show a past sponsor instead, set{" "}
+                <strong>Until</strong> to the last year.
+              </p>
+            </DeleteButton>
+          </span>
+        )}
+      </SaveBar>
+    </form>
+  );
+}

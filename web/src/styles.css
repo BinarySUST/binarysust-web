@@ -1,0 +1,742 @@
+@import "tailwindcss";
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "@fontsource-variable/anek-bangla/wght.css";
+
+/* Binary SUST: an engineering drawing sheet. Hairline frames, grid references, a title block for the facts.
+   One accent (brand green) for action; brand red only for a live dot or a single rule.
+   Light and dark are both first-class; the theme follows the system until the visitor picks one. */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  color-scheme: light;
+  /* Drafting film: white with a breath of the brand green. */
+  --ground: oklch(0.985 0.003 149);
+  --ground-2: oklch(0.962 0.005 149);
+  --panel: oklch(1 0 0);
+  --line: oklch(0.885 0.007 149);
+  --line-strong: oklch(0.76 0.01 149);
+  --ink: oklch(0.21 0.014 155);
+  --ink-2: oklch(0.39 0.014 155);
+  --ink-3: oklch(0.49 0.013 155);
+  /* Brand green #2E9E4F, darkened until white text on it passes AA. --brand is the logo colour itself,
+     for graphics only (3:1 against the ground). */
+  --primary: oklch(0.5 0.13 149);
+  --primary-hover: oklch(0.44 0.12 149);
+  --primary-ink: oklch(0.45 0.12 149);
+  --primary-soft: oklch(0.95 0.035 149);
+  --primary-foreground: oklch(1 0 0);
+  --brand: #2e9e4f;
+  --brand-red: #e5252a;
+  /* Status: danger is the brand red at text strength; warn is an amber. */
+  --danger: oklch(0.52 0.19 27);
+  --warn: oklch(0.72 0.15 70);
+  --ok: var(--primary);
+  --focus: oklch(0.5 0.13 149);
+  --code-bg: oklch(0.965 0.005 149);
+  --code-ink: oklch(0.25 0.014 155);
+  /* Activity graph levels, and syntax colours (sugar-high reads --sh-*). */
+  --graph-0: var(--ground-2);
+  --graph-1: oklch(0.86 0.07 149);
+  --graph-2: oklch(0.68 0.13 149);
+  --graph-3: oklch(0.5 0.13 149);
+  --sh-keyword: oklch(0.45 0.13 149);
+  --sh-string: oklch(0.47 0.12 60);
+  --sh-class: oklch(0.45 0.12 250);
+  --sh-property: oklch(0.42 0.1 200);
+  --sh-entity: oklch(0.45 0.12 250);
+  --sh-jsxliterals: oklch(0.42 0.1 200);
+  --sh-identifier: var(--code-ink);
+  --sh-sign: oklch(0.5 0.012 155);
+  --sh-comment: oklch(0.52 0.012 155);
+  --sh-number: oklch(0.47 0.14 25);
+  --sh-space: inherit;
+  --grid-line: oklch(0.5 0.03 149 / 0.075);
+  --glow: oklch(0.75 0.12 149 / 0.16);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* Night graphite, same hue. */
+  --ground: oklch(0.175 0.01 160);
+  --ground-2: oklch(0.205 0.011 160);
+  --panel: oklch(0.215 0.011 160);
+  --line: oklch(0.3 0.011 160);
+  --line-strong: oklch(0.42 0.012 160);
+  --ink: oklch(0.955 0.005 149);
+  --ink-2: oklch(0.81 0.01 149);
+  --ink-3: oklch(0.69 0.012 149);
+  --primary: oklch(0.79 0.15 149);
+  --primary-hover: oklch(0.85 0.13 149);
+  --primary-ink: oklch(0.82 0.14 149);
+  --primary-soft: oklch(0.27 0.04 149);
+  --primary-foreground: oklch(0.19 0.04 152);
+  --brand: #4cc06c;
+  --brand-red: #ff5a52;
+  --danger: oklch(0.72 0.17 25);
+  --warn: oklch(0.83 0.14 80);
+  --ok: var(--primary);
+  --focus: oklch(0.79 0.15 149);
+  --code-bg: oklch(0.145 0.01 160);
+  --code-ink: oklch(0.92 0.006 149);
+  --graph-0: var(--ground-2);
+  --graph-1: oklch(0.38 0.07 149);
+  --graph-2: oklch(0.57 0.12 149);
+  --graph-3: oklch(0.79 0.15 149);
+  --sh-keyword: oklch(0.8 0.13 149);
+  --sh-string: oklch(0.83 0.1 75);
+  --sh-class: oklch(0.8 0.09 240);
+  --sh-property: oklch(0.82 0.08 200);
+  --sh-entity: oklch(0.8 0.09 240);
+  --sh-jsxliterals: oklch(0.82 0.08 200);
+  --sh-identifier: var(--code-ink);
+  --sh-sign: oklch(0.7 0.012 149);
+  --sh-comment: oklch(0.64 0.012 149);
+  --sh-number: oklch(0.78 0.12 30);
+  --sh-space: inherit;
+  --grid-line: oklch(0.85 0.04 149 / 0.06);
+  --glow: oklch(0.7 0.14 149 / 0.13);
+}
+
+/* Before the theme script runs (or without JS), follow the system. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    /* Night graphite, same hue. */
+    --ground: oklch(0.175 0.01 160);
+    --ground-2: oklch(0.205 0.011 160);
+    --panel: oklch(0.215 0.011 160);
+    --line: oklch(0.3 0.011 160);
+    --line-strong: oklch(0.42 0.012 160);
+    --ink: oklch(0.955 0.005 149);
+    --ink-2: oklch(0.81 0.01 149);
+    --ink-3: oklch(0.69 0.012 149);
+    --primary: oklch(0.79 0.15 149);
+    --primary-hover: oklch(0.85 0.13 149);
+    --primary-ink: oklch(0.82 0.14 149);
+    --primary-soft: oklch(0.27 0.04 149);
+    --primary-foreground: oklch(0.19 0.04 152);
+    --brand: #4cc06c;
+    --brand-red: #ff5a52;
+    --danger: oklch(0.72 0.17 25);
+    --warn: oklch(0.83 0.14 80);
+    --ok: var(--primary);
+    --focus: oklch(0.79 0.15 149);
+    --code-bg: oklch(0.145 0.01 160);
+    --code-ink: oklch(0.92 0.006 149);
+    --graph-0: var(--ground-2);
+    --graph-1: oklch(0.38 0.07 149);
+    --graph-2: oklch(0.57 0.12 149);
+    --graph-3: oklch(0.79 0.15 149);
+    --sh-keyword: oklch(0.8 0.13 149);
+    --sh-string: oklch(0.83 0.1 75);
+    --sh-class: oklch(0.8 0.09 240);
+    --sh-property: oklch(0.82 0.08 200);
+    --sh-entity: oklch(0.8 0.09 240);
+    --sh-jsxliterals: oklch(0.82 0.08 200);
+    --sh-identifier: var(--code-ink);
+    --sh-sign: oklch(0.7 0.012 149);
+    --sh-comment: oklch(0.64 0.012 149);
+    --sh-number: oklch(0.78 0.12 30);
+    --sh-space: inherit;
+    --grid-line: oklch(0.85 0.04 149 / 0.06);
+    --glow: oklch(0.7 0.14 149 / 0.13);
+  }
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-ground-2: var(--ground-2);
+  --color-panel: var(--panel);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --color-on-primary: var(--primary-foreground);
+  --color-brand: var(--brand);
+  --color-brand-red: var(--brand-red);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
+  --color-ok: var(--ok);
+  /* Legacy names the dashboard still uses: vermilion = danger, yellow = warn, parrot = ok. */
+  --color-vermilion: var(--danger);
+  --color-yellow: var(--warn);
+  --color-parrot: var(--ok);
+  --font-sans: var(--ff-sans);
+  --font-mono: var(--ff-mono);
+  --font-bangla: var(--ff-bangla);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* shadcn/ui-compatible names, resolved from the system tokens above in whichever theme is active. Components
+   can use either vocabulary: bg-background = bg-ground, text-muted-foreground = text-ink-2, border-border =
+   border-line. Note shadcn's "accent" is a quiet hover surface, not a brand colour; the brand green is "primary". */
+:root {
+  --background: var(--ground);
+  --foreground: var(--ink);
+  --card: var(--panel);
+  --card-foreground: var(--ink);
+  --popover: var(--panel);
+  --popover-foreground: var(--ink);
+  --secondary: var(--ground-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--ground-2);
+  --muted-foreground: var(--ink-2);
+  --accent: var(--ground-2);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--panel);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--focus);
+  --radius: 0.375rem;
+  --chart-1: var(--graph-3);
+  --chart-2: var(--graph-2);
+  --chart-3: var(--graph-1);
+  --chart-4: var(--warn);
+  --chart-5: var(--brand-red);
+  --sidebar: var(--ground-2);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--panel);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--focus);
+}
+
+/* Variables that are not colours stay outside @theme so Tailwind does not rename them. */
+:root {
+  --ff-sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
+  --ff-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+  --ff-bangla: "Anek Bangla Variable", "Noto Sans Bengali", sans-serif;
+  --font-code: var(--ff-mono);
+  --vermilion: var(--danger);
+  --yellow: var(--warn);
+  --parrot: var(--ok);
+}
+
+@layer base {
+  html {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--ff-sans);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scrollbar-color: var(--line-strong) var(--ground);
+    /* The sticky header never covers an anchor target or a focused element. */
+    scroll-padding-top: 5rem;
+  }
+  body {
+    min-height: 100dvh;
+    background: var(--ground);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings: "kern";
+  }
+  ::selection {
+    background: var(--primary-soft);
+    color: var(--ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  a {
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1px;
+  }
+  input,
+  textarea,
+  select {
+    caret-color: var(--primary);
+    accent-color: var(--primary);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Display voice: Archivo, semi-expanded, set tight. `.sign` is the old name the dashboard still uses. */
+  .display,
+  .sign {
+    font-family: var(--ff-sans);
+    font-stretch: 112%;
+    font-weight: 620;
+    letter-spacing: -0.022em;
+    line-height: 1.06;
+  }
+  /* Metadata voice: dates, codes, counts, labels in title blocks. */
+  .meta {
+    font-family: var(--ff-mono);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A sheet: the hairline frame that holds the hero, the title blocks and the sign-in card. */
+  .sheet {
+    position: relative;
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+  }
+  /* `.trim` is the old name for a framed panel; kept so older markup still renders. */
+  .trim {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--panel);
+  }
+
+  /* Title block: a grid of hairline cells, each a small mono label over a value. */
+  .tblock {
+    display: grid;
+    border-top: 1px solid var(--line-strong);
+  }
+  .tblock > * {
+    padding: 0.75rem 1rem 0.875rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .tlabel {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--ink-3);
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  /* Tag: a hairline chip for kinds, statuses and post tags. `.plate` is the old name. */
+  .tag,
+  .plate {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375em;
+    min-height: 1.75rem;
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 3px;
+    color: var(--ink-2);
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    line-height: 1.3;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  a.tag:hover,
+  a.plate:hover {
+    border-color: var(--ink-2);
+    color: var(--ink);
+  }
+  .tag[aria-current="page"],
+  .plate[aria-current="page"] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--ground);
+  }
+
+  /* Buttons. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    min-height: 44px;
+    padding: 0.5rem 1.125rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-family: var(--ff-sans);
+    font-size: 0.9375rem;
+    font-weight: 560;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 150ms var(--ease-out-expo),
+      border-color 150ms var(--ease-out-expo),
+      color 150ms var(--ease-out-expo);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+  }
+  .btn-ghost {
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    border-color: var(--ink-2);
+    background: var(--ground-2);
+  }
+  .btn-sm {
+    min-height: 36px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--primary) 55%, transparent);
+  }
+  .link:hover {
+    color: var(--primary-ink);
+    text-decoration-color: currentColor;
+  }
+  /* A quiet "more" link with an arrow that steps right on hover. */
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--ink);
+    font-weight: 560;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+  .more svg {
+    transition: transform 200ms var(--ease-out-expo);
+  }
+  .more:hover {
+    color: var(--primary-ink);
+  }
+  .more:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* Form fields. */
+  .field {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    background: var(--panel);
+    color: var(--ink);
+    font: inherit;
+  }
+  .field:hover {
+    border-color: var(--ink-3);
+  }
+  .field:focus-visible {
+    border-color: var(--focus);
+    outline-offset: 0;
+  }
+  .field::placeholder {
+    color: var(--ink-3);
+  }
+
+  /* Rendered markdown from the Go renderer (posts, events, bios). */
+  .prose {
+    max-width: 68ch;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  .prose > * + * {
+    margin-top: 1.1em;
+  }
+  .prose h2 {
+    margin-top: 2.2em;
+    font-family: var(--ff-sans);
+    font-stretch: 108%;
+    font-size: 1.5rem;
+    font-weight: 620;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+  .prose h3 {
+    margin-top: 1.8em;
+    font-size: 1.1875rem;
+    font-weight: 620;
+    line-height: 1.3;
+  }
+  .prose h2 + *,
+  .prose h3 + * {
+    margin-top: 0.6em;
+  }
+  .prose a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--primary) 60%, transparent);
+  }
+  .prose a:hover {
+    color: var(--primary-ink);
+    text-decoration-color: currentColor;
+  }
+  .prose strong {
+    font-weight: 640;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.4em;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li + li {
+    margin-top: 0.4em;
+  }
+  .prose li::marker {
+    color: var(--ink-3);
+  }
+  .prose blockquote {
+    padding: 0.1em 0 0.1em 1.25em;
+    border-left: 1px solid var(--ink);
+    color: var(--ink);
+    font-size: 1.1875rem;
+    font-weight: 450;
+    line-height: 1.55;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin-block: 2.5em;
+  }
+  .prose img {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .prose th,
+  .prose td {
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .prose th {
+    border-bottom-color: var(--line-strong);
+    font-weight: 620;
+  }
+  .prose :not(pre) > code {
+    padding: 0.1em 0.35em;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--ground-2);
+    font-family: var(--font-code);
+    font-size: 0.86em;
+  }
+  .prose pre {
+    overflow-x: auto;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    font-family: var(--font-code);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    tab-size: 4;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+  .prose pre code {
+    font-size: inherit;
+  }
+  /* The fence's language, from the renderer's class, as a small label on the frame. */
+  .prose pre:has(> code[class*="language-"]) {
+    position: relative;
+    padding-top: 2.25rem;
+  }
+  .prose pre > code[class*="language-"]::before {
+    position: absolute;
+    top: 0.5rem;
+    left: 1.125rem;
+    color: var(--ink-3);
+    font-size: 0.75rem;
+  }
+  .prose pre > code.language-go::before { content: "go"; }
+  .prose pre > code.language-ts::before { content: "ts"; }
+  .prose pre > code.language-tsx::before { content: "tsx"; }
+  .prose pre > code.language-js::before { content: "js"; }
+  .prose pre > code.language-python::before { content: "python"; }
+  .prose pre > code.language-cpp::before { content: "c++"; }
+  .prose pre > code.language-c::before { content: "c"; }
+  .prose pre > code.language-java::before { content: "java"; }
+  .prose pre > code.language-rust::before { content: "rust"; }
+  .prose pre > code.language-sql::before { content: "sql"; }
+  .prose pre > code.language-sh::before,
+  .prose pre > code.language-bash::before { content: "shell"; }
+  .prose pre > code.language-json::before { content: "json"; }
+  .prose pre > code.language-yaml::before { content: "yaml"; }
+
+}
+
+@layer components {
+  /* The hero's engineering grid: major lines every 96px, minor every 24px, fading out toward the bottom. */
+  .blueprint {
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(color-mix(in oklab, var(--grid-line) 45%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--grid-line) 45%, transparent) 1px, transparent 1px);
+    background-size:
+      96px 96px,
+      96px 96px,
+      24px 24px,
+      24px 24px;
+    background-position: -1px -1px;
+    mask-image: radial-gradient(ellipse 90% 85% at 70% 30%, black 30%, transparent 100%);
+  }
+  /* A soft light over the grid; it follows a mouse pointer (HeroBackdrop sets --gx/--gy). */
+  .glow {
+    background: radial-gradient(520px circle at var(--gx, 78%) var(--gy, 28%), var(--glow), transparent 70%);
+  }
+
+  /* A small code window: hairline frame, a quiet title bar, key/value rows. */
+  .window {
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+  .kv {
+    display: grid;
+    grid-template-columns: 4.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+  .kv > dt {
+    color: var(--ink-3);
+    font-family: var(--ff-mono);
+    font-size: 0.8125rem;
+  }
+  .kv > dt::after {
+    content: ":";
+  }
+
+  /* The prompt's caret blinks a few times after the command is typed, then rests. */
+  .caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    margin-left: 0.15em;
+    vertical-align: -0.2em;
+    background: var(--primary);
+    animation: blink 1.05s steps(1) 1.3s 6;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-dot {
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Portfolios get printed and saved as PDF: drop the chrome, keep the CV. */
+@media print {
+  [data-theme] {
+    --ground: #fff;
+    --ground-2: #fff;
+    --panel: #fff;
+    --ink: #000;
+    --ink-2: #222;
+    --ink-3: #444;
+    --line: #bbb;
+    --line-strong: #888;
+    --primary-ink: #000;
+  }
+  .no-print,
+  body > header,
+  body > footer,
+  #site-header,
+  #site-footer {
+    display: none !important;
+  }
+  a {
+    text-decoration: none;
+  }
+}

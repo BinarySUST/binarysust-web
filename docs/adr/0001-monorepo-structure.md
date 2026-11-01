@@ -57,6 +57,15 @@ package may be named `api`; JS packages are scoped `@binarysust/*`. The feature 
 Turborepo release breaks it, the fallback is a thin `package.json` adapter in `apps/api`, with no other
 changes.
 
+### Local environment: one `.env`, loaded by dotenv-cli
+
+The root `.env` (copied from `.env.example` on first `pnpm dev`) is the only local configuration. Root
+scripts that need it run under `dotenv -e .env -- …` (`dev`, `test`, `db:*`, `snapshot`); the variables
+never come from a Go-side loader, so `apps/api` keeps reading plain `os.Getenv` and production (Render)
+is unchanged. Turborepo runs in strict env mode: `dev` tasks pass the environment through
+(`passThroughEnv`), `api#test` declares `EKMAN_TEST_DATABASE_URL`, and `@binarysust/web#build` hashes
+`SITE_URL` and `VITE_*`. `pnpm build` and `pnpm lint` do not read `.env`, so CI and local builds match.
+
 ### Versions
 
 Always the latest stable release of every tool and dependency at the time of the change (Go, Node LTS, pnpm,

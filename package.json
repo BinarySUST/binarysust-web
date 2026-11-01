@@ -6,7 +6,23 @@
   "engines": {
     "node": ">=26"
   },
-  "scripts": {},
+  "scripts": {
+    "dev": "pnpm db:up && dotenv -e .env -- turbo run dev",
+    "build": "turbo run build",
+    "test": "dotenv -e .env -- turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "turbo run format",
+    "gen": "turbo run gen",
+    "db:up": "pnpm env:init && docker compose -f infra/docker/compose.yaml up -d --wait",
+    "db:down": "docker compose -f infra/docker/compose.yaml down",
+    "db:migrate": "pnpm db:up && dotenv -e .env -- go -C apps/api run ./cmd/server migrate",
+    "db:seed": "pnpm db:migrate && dotenv -e .env -- go -C apps/api run ./cmd/seed",
+    "db:reset": "docker compose -f infra/docker/compose.yaml down --volumes && pnpm db:seed",
+    "snapshot": "dotenv -e .env -- go -C apps/api run ./cmd/snapshot -out ../web",
+    "env:init": "[ -f .env ] || cp .env.example .env; mkdir -p .data/media"
+  },
   "devDependencies": {
     "dotenv-cli": "11.1.0",
     "turbo": "2.11.10"

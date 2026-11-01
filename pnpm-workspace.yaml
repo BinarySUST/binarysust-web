@@ -2,12 +2,14 @@ packages:
   - apps/*
   - packages/*
 
-# Packages whose install scripts may run (native binaries).
+# Install scripts: native binaries may run; lefthook's own postinstall is not needed (the root `prepare`
+# script runs `lefthook install`).
 allowBuilds:
   esbuild: true
+  lefthook: false
   workerd: true
 
 minimumReleaseAgeExclude:
-  - '@tanstack/query-core@5.105.1'
-  - '@tanstack/react-query@5.105.1'
+  - "@tanstack/query-core@5.105.1"
+  - "@tanstack/react-query@5.105.1"
   - globals@17.14.0

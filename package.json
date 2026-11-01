@@ -13,7 +13,8 @@
     "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "format": "turbo run format",
+    "format": "prettier --write . && turbo run format",
+    "format:check": "prettier --check .",
     "gen": "turbo run gen",
     "db:up": "pnpm env:init && docker compose -f infra/docker/compose.yaml up -d --wait",
     "db:down": "docker compose -f infra/docker/compose.yaml down",
@@ -21,10 +22,16 @@
     "db:seed": "pnpm db:migrate && dotenv -e .env -- go -C apps/api run ./cmd/seed",
     "db:reset": "docker compose -f infra/docker/compose.yaml down --volumes && pnpm db:seed",
     "snapshot": "dotenv -e .env -- go -C apps/api run ./cmd/snapshot -out ../web",
-    "env:init": "[ -f .env ] || cp .env.example .env; mkdir -p .data/media"
+    "env:init": "[ -f .env ] || cp .env.example .env; mkdir -p .data/media",
+    "prepare": "lefthook install"
   },
   "devDependencies": {
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
     "dotenv-cli": "11.1.0",
+    "eslint": "10.14.0",
+    "lefthook": "2.2.2",
+    "prettier": "3.9.10",
     "turbo": "2.11.10"
   }
 }

@@ -1,0 +1,16 @@
+# Generated or vendored: never hand-formatted.
+pnpm-lock.yaml
+go.work.sum
+**/dist
+**/.turbo
+**/.tanstack
+**/.wrangler
+**/playwright-report
+**/test-results
+.data
+apps/web/.snapshot
+apps/web/public/data
+apps/web/src/routeTree.gen.ts
+apps/web/.impeccable
+apps/api/openapi.json
+packages/api-client/src/schema.d.ts

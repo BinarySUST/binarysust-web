@@ -16,3 +16,7 @@ public/_redirects
 public/_routes.json
 public/version.json
 .impeccable/hook.cache.json
+
+# Playwright
+playwright-report
+test-results

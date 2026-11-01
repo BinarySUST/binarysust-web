@@ -310,7 +310,7 @@ func (s *Service) myRSVPs(ctx context.Context, c ekman.Caller, _ *struct{}) ([]R
 	for rows.Next() {
 		var e ev
 		if err := rows.Scan(&e.id, &e.item.EventSlug, &e.item.EventTitle, &e.item.StartsAt); err != nil {
-			rows.Close()
+			rows.Close() //nolint:sqlclosecheck // closed before the next query on this connection, not deferred
 			return nil, err
 		}
 		e.item.StartsAt = e.item.StartsAt.UTC()

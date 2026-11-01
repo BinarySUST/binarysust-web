@@ -55,6 +55,18 @@
         "openapi.json"
       ],
       "cache": false
+    },
+    "lint": {
+      "command": [
+        "go",
+        "run",
+        "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0",
+        "run"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/.golangci.yml"
+      ]
     }
   }
 }

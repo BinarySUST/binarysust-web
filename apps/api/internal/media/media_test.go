@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -97,7 +98,7 @@ func TestGitHubBucket(t *testing.T) {
 	if err := b.Delete(ctx, "avatars/missing.png"); err != nil {
 		t.Fatalf("deleting a missing key: %v", err)
 	}
-	if _, err := b.Put(ctx, "../escape", strings.NewReader("x"), "text/plain"); err != storage.ErrInvalidKey {
+	if _, err := b.Put(ctx, "../escape", strings.NewReader("x"), "text/plain"); !errors.Is(err, storage.ErrInvalidKey) {
 		t.Fatalf("key escape: %v", err)
 	}
 	b.Token = "wrong"
@@ -127,7 +128,7 @@ func multipartBody(t *testing.T, data []byte) (io.Reader, string) {
 func upload(t *testing.T, base, purpose string, data []byte, user string, perms ...string) (int, media.Object, string) {
 	t.Helper()
 	body, ct := multipartBody(t, data)
-	req, err := http.NewRequest("POST", base+"/api/v1/media?purpose="+purpose, body)
+	req, err := http.NewRequest(http.MethodPost, base+"/api/v1/media?purpose="+purpose, body)
 	if err != nil {
 		t.Fatal(err)
 	}

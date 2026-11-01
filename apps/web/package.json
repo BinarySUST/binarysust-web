@@ -8,7 +8,9 @@
     "build": "pnpm slices && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit && tsc --noEmit -p functions",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@binarysust/api-client": "workspace:*",
@@ -25,6 +27,7 @@
     "@binarysust/eslint-config": "workspace:*",
     "@binarysust/typescript-config": "workspace:*",
     "@cloudflare/workers-types": "^5.20261031.1",
+    "@playwright/test": "1.64.1",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "^24.19.2",
     "@types/react": "19.3.0",
@@ -35,6 +38,7 @@
     "tsx": "4.23.15",
     "typescript": "6.0.3",
     "vite": "8.3.5",
+    "vitest": "5.0.5",
     "wrangler": "4.156.0"
   }
 }

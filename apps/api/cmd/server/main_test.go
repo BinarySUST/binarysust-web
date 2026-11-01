@@ -134,7 +134,7 @@ func TestBootAndOpenAPI(t *testing.T) {
 	}
 	// The editor's live preview writes nothing, so it must never republish.
 	for _, ri := range app.Routes() {
-		if ri.Method == "POST" && ri.Pattern == "/api/v1/posts/preview" && republish.ShouldPublish("POST", 200, ri, true) {
+		if ri.Method == http.MethodPost && ri.Pattern == "/api/v1/posts/preview" && republish.ShouldPublish("POST", 200, ri, true) {
 			t.Error("POST /posts/preview republishes")
 		}
 	}

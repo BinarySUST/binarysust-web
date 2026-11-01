@@ -108,7 +108,7 @@ func (s *Service) Published(ctx context.Context) (Public, error) {
 		var h PositionHeld
 		var life bool
 		if err := rows.Scan(&pid, &h.Term, &h.Title, &life); err != nil {
-			rows.Close()
+			rows.Close() //nolint:sqlclosecheck // closed before the next query on this connection, not deferred
 			return out, err
 		}
 		history[pid] = append(history[pid], h)

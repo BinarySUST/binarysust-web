@@ -1,0 +1,31 @@
+# golangci-lint v2 (https://golangci-lint.run/docs/configuration/file/). `pnpm lint` runs it for apps/api through
+# Turborepo with a pinned `go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@<version>` (apps/api/turbo.json),
+# so every machine and CI use the same version without installing anything.
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  enable:
+    - bodyclose
+    - errorlint
+    - misspell
+    - nilerr
+    - rowserrcheck
+    - sqlclosecheck
+    - unconvert
+    - usestdlibvars
+  exclusions:
+    presets:
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/BinarySUST/binarysust-web

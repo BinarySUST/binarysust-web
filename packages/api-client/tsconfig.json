@@ -1,4 +1,4 @@
 {
   "extends": "@binarysust/typescript-config/react-library.json",
-  "include": ["src", "eslint.config.js"]
+  "include": ["src", "eslint.config.js", "vitest.config.ts"]
 }

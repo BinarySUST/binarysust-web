@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Packages whose install scripts may run (native binaries).
+allowBuilds:
+  esbuild: true
+  workerd: true
+
+minimumReleaseAgeExclude:
+  - '@tanstack/query-core@5.105.1'
+  - '@tanstack/react-query@5.105.1'

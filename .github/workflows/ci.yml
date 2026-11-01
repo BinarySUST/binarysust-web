@@ -91,6 +91,13 @@ jobs:
       - name: Lint (ESLint, golangci-lint), typecheck, unit tests (Vitest, go test -race), build
         run: pnpm turbo run lint typecheck test build $AFFECTED
 
+      # TanStack Router writes src/routeTree.gen.ts during dev and build. It is committed so a clean checkout
+      # typechecks; the build regenerates it, and any difference means a route changed without committing it.
+      - name: Generated route tree is committed
+        run: |
+          git diff --exit-code -- apps/web/src/routeTree.gen.ts \
+            || (echo "::error::Run 'pnpm dev' or 'pnpm build' and commit apps/web/src/routeTree.gen.ts" && exit 1)
+
       - name: Playwright browsers
         id: playwright
         run: |

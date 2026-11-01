@@ -4,7 +4,6 @@ dist
 .tanstack
 .wrangler
 .snapshot/site.json
-src/routeTree.gen.ts
 .impeccable/review
 
 # Written by `pnpm slices` (scripts/slices.ts) from the snapshot on every dev start and build.

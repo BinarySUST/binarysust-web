@@ -3,7 +3,7 @@ import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { Mark } from "@binarysust/ui/components/mark";
+import { Logo } from "@binarysust/ui/components/logo";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { type Account, ApiError, type Me, api, loginUrl, unwrap, warmApi } from "@binarysust/api-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@binarysust/ui/components/avatar";
@@ -87,8 +87,8 @@ function Shell() {
         <aside className="border-b border-line bg-ground-2 lg:sticky lg:top-0 lg:h-dvh lg:border-r lg:border-b-0">
           <div className="flex h-16 items-center gap-2 px-4">
             <Link to="/" className="flex items-center gap-2 text-ink no-underline">
-              <Mark className="h-4 w-[70px] text-ink-2" />
-              <span className="sign">Dashboard</span>
+              <Logo className="h-9" />
+              <span className="sign border-l border-line pl-2">Dashboard</span>
             </Link>
             <div className="ml-auto flex items-center lg:hidden">
               <ThemeToggle />

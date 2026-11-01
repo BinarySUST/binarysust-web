@@ -1,0 +1,51 @@
+# Keep every dependency on its latest release (docs/adr/0001-monorepo-structure.md, "Versions").
+# One grouped pull request per ecosystem per week; majors are separate so they get a closer look.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Dhaka
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      npm-minor-and-patch:
+        update-types: [minor, patch]
+      npm-major:
+        update-types: [major]
+
+  - package-ecosystem: gomod
+    directory: /apps/api
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Dhaka
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      go-modules:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Dhaka
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directory: /apps/api
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Dhaka
+    commit-message:
+      prefix: "chore(deps)"

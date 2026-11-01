@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
     "dev": {
-      "command": ["go", "run", "./cmd/server"],
+      "command": ["go", "run", "./cmd/server", "serve", "--migrate"],
       "cache": false,
       "persistent": true,
       "passThroughEnv": ["*"]

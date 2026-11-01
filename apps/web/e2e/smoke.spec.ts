@@ -41,8 +41,12 @@ test("an event with registration shows the RSVP call to action", async ({ page }
   await expect(page.getByRole("heading", { level: 1, name: event!.title })).toBeVisible();
   const cta = page.getByRole("button", { name: "Sign in to reserve" });
   await expect(cta).toBeVisible();
-  await cta.click();
-  await expect(page).toHaveURL(new RegExp(`/login\\?next=${encodeURIComponent(`/events/${event!.slug}`)}`));
+  // The button is in the pre-rendered HTML; it works once React has hydrated the island.
+  await expect(async () => {
+    await cta.click();
+    await expect(page).toHaveURL(/\/login\?next=/, { timeout: 1_000 });
+  }).toPass();
+  expect(new URL(page.url()).searchParams.get("next")).toBe(`/events/${event!.slug}`);
 });
 
 test("the dashboard sends a visitor to sign in", async ({ page }) => {

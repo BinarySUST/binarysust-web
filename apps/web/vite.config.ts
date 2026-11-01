@@ -10,7 +10,7 @@ import { loadSnapshot } from "./src/content/snapshot.server.ts";
 // client-only: they are served by _shell.html through public/_redirects.
 const CLIENT_ONLY = /^\/(dashboard|login)(\/|$)/;
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   // One instant shared by the pre-render and the browser bundle, so "upcoming" hydrates without a mismatch.
   define: { __BUILD_TIME__: JSON.stringify(Date.now()) },
   resolve: { alias: { "~": fileURLToPath(new URL("./src", import.meta.url)) } },
@@ -31,7 +31,10 @@ export default defineConfig({
     tanstackStart({
       // The SPA shell (dist/client/_shell.html) is rendered at a client-only path, so it does not collide
       // with the pre-rendered "/" page. It serves /login and /dashboard/* via public/_redirects.
-      spa: { enabled: true, maskPath: "/login" },
+      // Build only: in dev, SPA mode would serve every page as the empty shell and render content after load
+      // (a visible flash). Without it, dev server-renders public pages from the snapshot like the pre-render
+      // does, while /login and /dashboard stay client-only through their routes' `ssr: false`.
+      spa: { enabled: command === "build", maskPath: "/login" },
       sitemap: { enabled: false }, // scripts/slices.ts writes sitemap.xml from the snapshot
       prerender: {
         enabled: true,
@@ -49,4 +52,4 @@ export default defineConfig({
     }),
     viteReact(),
   ],
-});
+}));

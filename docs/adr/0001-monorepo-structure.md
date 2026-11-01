@@ -34,8 +34,8 @@ binarysust-web/
 │   ├── api-client/             @binarysust/api-client — types generated from apps/api/openapi.json
 │   │                           (openapi-typescript) + the one openapi-fetch client + ApiError. Generated
 │   │                           code is committed and CI-checked for drift.
-│   ├── eslint-config/          @binarysust/eslint-config — shared flat configs (react, node), import-boundary rules
-│   └── typescript-config/      @binarysust/typescript-config — base/react/library tsconfigs
+│   ├── eslint-config/          @binarysust/eslint-config — shared flat configs (base, react), import-boundary rules
+│   └── typescript-config/      @binarysust/typescript-config — base / react-library / vite-app tsconfigs
 ├── infra/
 │   ├── docker/compose.yaml     local Postgres + Caddy
 │   └── caddy/Caddyfile         binarysust.localhost edge (mirrors production)

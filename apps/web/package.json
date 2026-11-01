@@ -25,21 +25,19 @@
     "sugar-high": "2.6.1"
   },
   "devDependencies": {
+    "@binarysust/eslint-config": "workspace:*",
+    "@binarysust/typescript-config": "workspace:*",
     "@cloudflare/workers-types": "^5.20261031.1",
-    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "^24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "6.1.2",
     "eslint": "10.14.0",
-    "eslint-plugin-react-hooks": "7.1.1",
-    "globals": "^17.13.0",
     "openapi-typescript": "7.13.0",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.72.1",
     "vite": "8.3.5",
     "wrangler": "4.156.0"
   }

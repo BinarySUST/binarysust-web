@@ -1,5 +1,5 @@
-// The one place for enum VALUES in the web app. The TYPES come from the API: Go string types
-// with an Enum() method become OpenAPI enums (api/internal/apidoc), so `make gen` turns them into
+// The one place for enum VALUES in the apps. The TYPES come from the API: Go string types
+// with an Enum() method become OpenAPI enums (apps/api/internal/apidoc), so `pnpm gen` turns them into
 // unions in schema.d.ts. These lists add display order (and the dashboard's labels), and
 // `exhaustive` makes `tsc` fail when the API gains or loses a value, so they cannot drift.
 import type { components } from "./schema";

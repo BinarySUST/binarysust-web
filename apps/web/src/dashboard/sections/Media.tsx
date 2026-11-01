@@ -2,7 +2,7 @@
 // .data/media behind Caddy), so photos never slow down the main site's builds.
 import { useState } from "react";
 import { Icon } from "~/components/Icon";
-import { MEDIA_PURPOSES, type MediaObject, type MediaPurpose } from "~/lib/api/client";
+import { MEDIA_PURPOSES, type MediaObject, type MediaPurpose } from "@binarysust/api-client";
 import { MAX_SIDE } from "~/lib/image";
 import { UploadButton } from "../MediaUpload";
 import { useMe } from "../me";

@@ -1,17 +1,11 @@
-// The only way browser code talks to the Go API. Same origin: /api/* is proxied by the Pages
+// The only way browser code talks to the Go API (the ESLint boundary rules ban openapi-fetch and
+// fetch('/api/...') everywhere else). Same origin: /api/* is proxied by the Pages
 // Function in production and by Caddy (or Vite) in development, so cookies just work.
 import createClient, { type Middleware } from "openapi-fetch";
 import { useSyncExternalStore } from "react";
 import type { MediaPurpose } from "./enums";
-import type { components, paths } from "./schema";
-
-export type { MediaPurpose };
-
-export type Schemas = components["schemas"];
-export type Permission = Schemas["Permission"];
-export type Account = Schemas["access.Account"];
-/** Who is signed in: permissions and roles from GET /auth/me, name/handle/avatar from GET /me. */
-export type Me = Schemas["ekman.Me"] & { account: Account };
+import { toApiError } from "./error";
+import type { Permission, Schemas, paths } from "./types";
 
 /** Paths in the generated schema already carry this prefix; it is kept for links built by hand. */
 export const API_BASE = "/api/v1";
@@ -96,54 +90,11 @@ export function googleStartUrl(next: string) {
   return `${API_BASE}/auth/google/start?next=${encodeURIComponent(next)}`;
 }
 
-/**
- * ekman's error envelope: `{"error":{"code","message","fields","requestId"}}`. A 422 carries
- * `fields` (input name -> problem), which forms show next to the input they belong to.
- */
-export type ErrorBody = Schemas["Error"]["error"];
-
-export class ApiError extends Error {
-  readonly code: string;
-  readonly fields: Record<string, string>;
-  readonly requestId: string | undefined;
-  constructor(
-    public status: number,
-    body: Partial<ErrorBody> | undefined,
-  ) {
-    super(body?.message ? sentence(body.message) : fallbackMessage(status));
-    this.code = body?.code ?? "http_" + status;
-    this.fields = body?.fields ?? {};
-    this.requestId = body?.requestId;
-  }
-}
-
-const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1) + (/[.!?]$/.test(s) ? "" : ".");
-
-function fallbackMessage(status: number): string {
-  if (status === 401) return "Your session has ended. Sign in again.";
-  if (status === 403) return "Your roles do not allow this.";
-  if (status === 404) return "Not found. It may have been deleted.";
-  if (status >= 500) return `The server could not finish that (${status}). Try again in a moment.`;
-  return `Request failed (${status}).`;
-}
-
-/** Pulls ekman's envelope out of whatever openapi-fetch parsed (JSON object, or text from a proxy). */
-export function toApiError(status: number, error: unknown): ApiError {
-  const body = typeof error === "object" && error !== null && "error" in error ? (error as { error: Partial<ErrorBody> }).error : undefined;
-  return new ApiError(status, body);
-}
-
-/** Throw on API errors so TanStack Query sees them. 204 responses resolve to undefined. */
-export function unwrap<T>(r: { data?: T; error?: unknown; response: Response }): T {
-  if (r.error !== undefined || !r.response.ok) throw toApiError(r.response.status, r.error);
-  return r.data as T;
-}
-
 // --- Media ----------------------------------------------------------------------------------
 // POST /api/v1/media takes a multipart body, which openapi-fetch does not build, so this helper
 // sends it by hand. Its purpose and result are typed from the generated schema.
 
-/** Upload purposes (api/internal/media Purposes) and the permission each needs. */
+/** Upload purposes (apps/api/internal/media Purposes) and the permission each needs. */
 export const MEDIA_PURPOSES = {
   avatar: { label: "Avatar", requires: "profile.edit_own", accept: "image/*" },
   cv: { label: "CV (PDF)", requires: "profile.edit_own", accept: "application/pdf" },

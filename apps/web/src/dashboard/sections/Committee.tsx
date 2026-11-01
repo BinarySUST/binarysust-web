@@ -4,8 +4,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { type FormEvent, useId, useState } from "react";
-import { type Schemas, api, unwrap } from "~/lib/api/client";
-import { GROUP_LABEL, POSITION_CATEGORIES, POSITION_GROUPS, type PositionGroup, type RoleName, oneOf } from "~/lib/api/enums";
+import { type Schemas, api, unwrap } from "@binarysust/api-client";
+import { GROUP_LABEL, POSITION_CATEGORIES, POSITION_GROUPS, type PositionGroup, type RoleName, oneOf } from "@binarysust/api-client";
 import { formatShort } from "~/lib/format";
 import { useMe } from "../me";
 import type { SectionProps } from "../sections";

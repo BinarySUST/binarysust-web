@@ -3,7 +3,7 @@
 // Permission comes from the API's generated types.
 import type { ComponentType } from "react";
 import type { IconName } from "~/components/Icon";
-import type { Me, Permission } from "~/lib/api/client";
+import type { Me, Permission } from "@binarysust/api-client";
 import { BlogSection } from "./sections/Blog";
 import { CommitteeSection } from "./sections/Committee";
 import { EventsSection } from "./sections/Events";

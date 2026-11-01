@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "~/components/Icon";
 import { Mark } from "~/components/Mark";
 import { ThemeToggle } from "~/components/ThemeToggle";
-import { type Account, ApiError, type Me, api, loginUrl, unwrap, warmApi } from "~/lib/api/client";
+import { type Account, ApiError, type Me, api, loginUrl, unwrap, warmApi } from "@binarysust/api-client";
 import { MeContext } from "./me";
 import { visibleSections } from "./sections";
 import { ErrorBox, WakingBanner } from "./ui";

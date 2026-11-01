@@ -2,7 +2,7 @@ import { type QueryClient, type QueryKey, useMutation } from "@tanstack/react-qu
 import { Link } from "@tanstack/react-router";
 import { Children, type ReactElement, type ReactNode, cloneElement, isValidElement, useEffect, useId, useRef, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { ApiError, useWaking } from "~/lib/api/client";
+import { ApiError, useWaking } from "@binarysust/api-client";
 
 export function SectionHead({ title, children }: { title: string; children?: ReactNode }) {
   return (

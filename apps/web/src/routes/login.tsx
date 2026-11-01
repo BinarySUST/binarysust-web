@@ -2,7 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Icon } from "~/components/Icon";
 import { Logo } from "~/components/Logo";
-import { API_BASE, googleStartUrl, warmApi } from "~/lib/api/client";
+import { API_BASE, googleStartUrl, warmApi } from "@binarysust/api-client";
 
 /** Only same-site paths survive as ?next=, so the sign-in flow can't bounce visitors elsewhere. */
 function safeNext(v: unknown): string {

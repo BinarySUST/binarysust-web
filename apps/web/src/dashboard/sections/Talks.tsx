@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { type Schemas, api, unwrap } from "~/lib/api/client";
+import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { formatShort } from "~/lib/format";
 import { HandlePicker } from "../PersonLookup";
 import type { SectionProps } from "../sections";

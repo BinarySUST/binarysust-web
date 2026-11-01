@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type FormEvent, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { type Schemas, api, unwrap } from "~/lib/api/client";
-import { SOCIAL_KINDS, oneOf } from "~/lib/api/enums";
+import { type Schemas, api, unwrap } from "@binarysust/api-client";
+import { SOCIAL_KINDS, oneOf } from "@binarysust/api-client";
 import { ImageField, UploadButton } from "../MediaUpload";
 import { ErrorBox, Field, Loading, SaveBar, SectionHead, errorFor, fieldErrors, invalidate, orNull, splitList } from "../ui";
 

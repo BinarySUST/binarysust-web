@@ -4,7 +4,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useId, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { type Schemas, api, unwrap } from "~/lib/api/client";
+import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { Field } from "./ui";
 
 type PersonRef = Schemas["people.PersonRef"];

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Me } from "~/lib/api/client";
+import type { Me } from "@binarysust/api-client";
 
 export const MeContext = createContext<Me | null>(null);
 

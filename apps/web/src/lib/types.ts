@@ -1,10 +1,10 @@
-// The public snapshot contract, derived from the API's generated types (`pnpm gen:api`).
-// The Go types in api/internal/site are the source of truth (GET /api/v1/site/preview returns
+// The public snapshot contract, derived from the API's generated types (`pnpm gen`).
+// The Go types in apps/api/internal/site are the source of truth (GET /api/v1/site/preview returns
 // site.Snapshot). Go string types with an Enum() method arrive here as unions already
-// (api/internal/apidoc), so this file only names them; the one narrowing left is the public
+// (apps/api/internal/apidoc), so this file only names them; the one narrowing left is the public
 // event status, which the snapshot restricts to published and cancelled.
-// Enum value lists for code that iterates them (selects, filters) live in ./api/enums.ts.
-import type { components } from "./api/schema";
+// Enum value lists for code that iterates them (selects, filters) live in @binarysust/api-client (enums.ts).
+import type { components } from "@binarysust/api-client";
 
 type S = components["schemas"];
 /** T with the keys of R replaced by R's types. */

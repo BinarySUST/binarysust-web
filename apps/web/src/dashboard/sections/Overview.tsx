@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Icon } from "~/components/Icon";
-import { api, unwrap } from "~/lib/api/client";
+import { api, unwrap } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
 import { useMe } from "../me";
 import { visibleSections } from "../sections";

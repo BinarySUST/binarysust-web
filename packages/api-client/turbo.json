@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/turbo/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "gen": {
+      "dependsOn": ["api#gen"],
+      "inputs": ["../../apps/api/openapi.json"],
+      "outputs": ["src/schema.d.ts"]
+    }
+  }
+}

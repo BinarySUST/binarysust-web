@@ -9,8 +9,8 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Link, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useEffect, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { type Me, type Schemas, api, unwrap } from "~/lib/api/client";
-import { POST_STATE_LABEL, type PostAction, type PostState } from "~/lib/api/enums";
+import { type Me, type Schemas, api, unwrap } from "@binarysust/api-client";
+import { POST_STATE_LABEL, type PostAction, type PostState } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
 import { ImageField } from "../MediaUpload";
 import { useMe } from "../me";

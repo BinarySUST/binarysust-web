@@ -1,0 +1,31 @@
+{
+  "name": "@binarysust/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "gen": "openapi-typescript ../../apps/api/openapi.json -o src/schema.d.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "openapi-fetch": "0.17.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@binarysust/eslint-config": "workspace:*",
+    "@binarysust/typescript-config": "workspace:*",
+    "@types/react": "19.3.0",
+    "eslint": "10.14.0",
+    "openapi-typescript": "7.13.0",
+    "react": "19.3.1",
+    "typescript": "6.0.3"
+  }
+}

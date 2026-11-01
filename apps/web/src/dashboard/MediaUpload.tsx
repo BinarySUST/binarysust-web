@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useId, useRef } from "react";
 import { Icon } from "~/components/Icon";
-import { MEDIA_PURPOSES, type MediaObject, type MediaPurpose, uploadMedia } from "~/lib/api/client";
+import { MEDIA_PURPOSES, type MediaObject, type MediaPurpose, uploadMedia } from "@binarysust/api-client";
 import { prepareUpload } from "~/lib/image";
 
 /** api/internal/media Purposes MaxBytes, so the resizer knows when to drop quality. */

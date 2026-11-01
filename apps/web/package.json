@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "pnpm slices",
-    "dev": "vite dev",
+    "dev": "pnpm slices && vite dev --port 3000 --strictPort",
     "slices": "tsx scripts/slices.ts",
     "build": "pnpm slices && vite build",
     "preview": "vite preview",

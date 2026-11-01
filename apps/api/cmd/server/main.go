@@ -3,11 +3,12 @@
 //	server [serve]            serve on :$PORT (default 8080)
 //	server serve --migrate    apply migrations, then serve (Render's free plan has no pre-deploy step)
 //	server migrate            apply migrations
-//	server openapi            print the OpenAPI document, enums included (no database needed)
+//	server openapi [-o file]  print (or write) the OpenAPI document, enums included (no database needed)
 package main
 
 import (
 	"context"
+	"flag"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -141,6 +142,24 @@ func notifier(cfg Config, logger *slog.Logger) republish.Notifier {
 	return republish.Log{Logger: logger}
 }
 
+func writeOpenAPI(app *ekman.App, args []string) error {
+	fs := flag.NewFlagSet("openapi", flag.ContinueOnError)
+	out := fs.String("o", "", "write the document to this file instead of stdout")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	doc, err := club.OpenAPI(app)
+	if err != nil {
+		return err
+	}
+	doc = append(doc, '\n')
+	if *out == "" {
+		_, err = os.Stdout.Write(doc)
+		return err
+	}
+	return os.WriteFile(*out, doc, 0o644)
+}
+
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	cfg := LoadConfig(os.Getenv)
@@ -155,14 +174,13 @@ func main() {
 		logger.Error("configure", "err", err.Error())
 		os.Exit(1)
 	}
-	// `openapi`: ekman's document plus the enums it cannot express (club.OpenAPI).
+	// `openapi [-o file]`: ekman's document plus the enums it cannot express (club.OpenAPI),
+	// written to stdout or to file (`pnpm gen` writes openapi.json without a shell redirect).
 	if len(os.Args) > 1 && os.Args[1] == "openapi" {
-		doc, err := club.OpenAPI(app)
-		if err != nil {
+		if err := writeOpenAPI(app, os.Args[2:]); err != nil {
 			logger.Error("openapi", "err", err.Error())
 			os.Exit(1)
 		}
-		_, _ = os.Stdout.Write(append(doc, '\n'))
 		return
 	}
 	serving := len(os.Args) < 2 || os.Args[1] == "serve"

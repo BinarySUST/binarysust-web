@@ -1,0 +1,60 @@
+{
+  "$schema": "../../node_modules/turbo/schema.json",
+  "extends": [
+    "//"
+  ],
+  "tasks": {
+    "dev": {
+      "command": [
+        "go",
+        "run",
+        "./cmd/server"
+      ],
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": [
+        "*"
+      ]
+    },
+    "build": {
+      "command": [
+        "go",
+        "build",
+        "-trimpath",
+        "-o",
+        "bin/server",
+        "./cmd/server"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!bin/**"
+      ],
+      "outputs": [
+        "bin/server"
+      ]
+    },
+    "test": {
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./..."
+      ],
+      "env": [
+        "EKMAN_TEST_DATABASE_URL"
+      ],
+      "outputs": []
+    },
+    "gen": {
+      "command": [
+        "go",
+        "run",
+        "./cmd/server",
+        "openapi",
+        "-o",
+        "openapi.json"
+      ],
+      "cache": false
+    }
+  }
+}

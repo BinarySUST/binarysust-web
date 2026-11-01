@@ -6,5 +6,9 @@
   "engines": {
     "node": ">=26"
   },
-  "scripts": {}
+  "scripts": {},
+  "devDependencies": {
+    "dotenv-cli": "11.1.0",
+    "turbo": "2.11.10"
+  }
 }

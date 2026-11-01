@@ -1,0 +1,16 @@
+{
+  "$schema": "../../node_modules/turbo/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".snapshot/**", "!public/data/**"],
+      "env": ["SITE_URL", "VITE_*"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": ["VITE_*", "API_ORIGIN", "SITE_URL"]
+    }
+  }
+}

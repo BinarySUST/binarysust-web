@@ -2,6 +2,9 @@ packages:
   - apps/*
   - packages/*
 
+# Exact versions in package.json (Dependabot bumps them; the lockfile pins the rest).
+savePrefix: ""
+
 # Install scripts: native binaries may run; lefthook's own postinstall is not needed (the root `prepare`
 # script runs `lefthook install`).
 allowBuilds:

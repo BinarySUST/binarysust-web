@@ -9,6 +9,10 @@ import { type Affiliation, AFFILIATIONS as AFFILIATION_VALUES, PERSON_STATUSES, 
 import { ImageField } from "../MediaUpload";
 import type { SectionProps } from "../sections";
 import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, orNull, td } from "../ui";
+import { buttonVariants } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
+import { Checkbox } from "@binarysust/ui/components/checkbox";
 
 type PersonIn = Schemas["people.PersonIn"];
 type Person = Schemas["people.Person"];
@@ -40,20 +44,20 @@ function PeopleList() {
   return (
     <>
       <SectionHead title="People">
-        <Link to="/dashboard/$" params={{ _splat: "people/new" }} className="btn btn-primary">
+        <Link to="/dashboard/$" params={{ _splat: "people/new" }} className={buttonVariants()}>
           <Icon name="plus" size={18} /> Add person
         </Link>
       </SectionHead>
       <div className="mb-5 flex flex-wrap gap-3">
-        <input className="field !w-72" type="search" placeholder="Search name, handle or email" aria-label="Search people" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <select className="field !w-48" aria-label="Filter by status" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <Input className="w-72" type="search" placeholder="Search name, handle or email" aria-label="Search people" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <NativeSelect className="w-48" aria-label="Filter by status" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">Every status</option>
           {PERSON_STATUSES.map((s) => (
             <option key={s} value={s}>
               {s[0]?.toUpperCase() + s.slice(1)}
             </option>
           ))}
-        </select>
+        </NativeSelect>
       </div>
       {q.error ? (
         <ErrorBox error={q.error} retry={() => void q.refetch()} />
@@ -147,45 +151,45 @@ function PersonForm({ id, initial, status }: { id: string | null; initial: Perso
       )}
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" error={fe.name}>
-          <input className="field" value={f.name} onChange={(e) => set("name", e.target.value)} />
+          <Input value={f.name} onChange={(e) => set("name", e.target.value)} />
         </Field>
         <Field label="Handle" hint={id ? "Changing it keeps the old URL working as a redirect." : `/people/${f.handle || "…"}`} error={fe.handle}>
-          <input className="field" value={f.handle} onChange={(e) => set("handle", e.target.value.toLowerCase())} />
+          <Input value={f.handle} onChange={(e) => set("handle", e.target.value.toLowerCase())} />
         </Field>
         <Field label="Email" hint="Their Google sign-in links to this person when the emails match." error={fe.email}>
-          <input className="field" type="email" value={f.email ?? ""} onChange={(e) => set("email", orNull(e.target.value))} />
+          <Input type="email" value={f.email ?? ""} onChange={(e) => set("email", orNull(e.target.value))} />
         </Field>
         <Field label="Affiliation" error={fe.affiliation}>
-          <select className="field" value={f.affiliation} onChange={(e) => set("affiliation", oneOf(AFFILIATION_VALUES, e.target.value))}>
+          <NativeSelect value={f.affiliation} onChange={(e) => set("affiliation", oneOf(AFFILIATION_VALUES, e.target.value))}>
             {AFFILIATION_VALUES.map((a) => (
               <option key={a} value={a}>
                 {AFFILIATION_LABEL[a]}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </Field>
         <Field label="Department" error={fe.department}>
-          <input className="field" value={f.department} onChange={(e) => set("department", e.target.value)} />
+          <Input value={f.department} onChange={(e) => set("department", e.target.value)} />
         </Field>
         <Field label="Batch" hint="Admission year, e.g. 2021." error={fe.batch}>
-          <input className="field" type="number" inputMode="numeric" value={f.batch ?? ""} onChange={(e) => set("batch", e.target.value ? Number(e.target.value) : null)} />
+          <Input type="number" inputMode="numeric" value={f.batch ?? ""} onChange={(e) => set("batch", e.target.value ? Number(e.target.value) : null)} />
         </Field>
         <Field label="Member since" hint="Set for students who joined the club." error={fe.memberSince}>
-          <input className="field" type="date" value={f.memberSince ?? ""} onChange={(e) => set("memberSince", orNull(e.target.value))} />
+          <Input type="date" value={f.memberSince ?? ""} onChange={(e) => set("memberSince", orNull(e.target.value))} />
         </Field>
         <Field label="Graduated on" hint="On or before today makes a student an alumnus." error={fe.graduatedOn}>
-          <input className="field" type="date" value={f.graduatedOn ?? ""} onChange={(e) => set("graduatedOn", orNull(e.target.value))} />
+          <Input type="date" value={f.graduatedOn ?? ""} onChange={(e) => set("graduatedOn", orNull(e.target.value))} />
         </Field>
         <div className="sm:col-span-2">
           <Field label="Headline" error={fe.headline}>
-            <input className="field" value={f.headline} onChange={(e) => set("headline", e.target.value)} maxLength={160} />
+            <Input value={f.headline} onChange={(e) => set("headline", e.target.value)} maxLength={160} />
           </Field>
         </div>
         <div className="sm:col-span-2">
           <ImageField label="Photo" purpose="avatar" value={f.avatarUrl} onChange={(v) => set("avatarUrl", v)} error={fe.avatarUrl} />
         </div>
         <label className="flex items-center gap-3 sm:col-span-2">
-          <input type="checkbox" className="size-5 accent-[var(--vermilion)]" checked={f.listed} onChange={(e) => set("listed", e.target.checked)} />
+          <Checkbox className="size-5" checked={f.listed} onCheckedChange={(checked) => set("listed", checked)} />
           Listed in the public directory
         </label>
       </div>

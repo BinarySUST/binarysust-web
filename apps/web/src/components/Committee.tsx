@@ -3,6 +3,7 @@ import type { CommitteeSlice } from "~/lib/slices";
 import type { Seat } from "~/lib/types";
 import { Avatar } from "./Avatar";
 import { SectionHead } from "./Page";
+import { badgeVariants } from "@binarysust/ui/components/badge";
 
 // A committee can hold thirty seats. Lead with the officers, then group the rest by kind of post so the page stays
 // scannable: officers get portraits, secretaries a compact grid, executive members a dense list.
@@ -111,7 +112,7 @@ export function CommitteeView({ data }: { data: CommitteeSlice }) {
                   to="/committee/$term"
                   params={{ term: t.slug }}
                   aria-current={active ? "page" : undefined}
-                  className="tag min-h-9 px-3 text-[0.8125rem]"
+                  className={badgeVariants({ className: "min-h-9 px-3 text-[0.8125rem]" })}
                 >
                   {t.label}
                 </Link>

@@ -1,0 +1,7 @@
+{
+  "extends": "@binarysust/typescript-config/react-library.json",
+  "compilerOptions": {
+    "paths": { "@binarysust/ui/*": ["./src/*"] }
+  },
+  "include": ["src", "eslint.config.js"]
+}

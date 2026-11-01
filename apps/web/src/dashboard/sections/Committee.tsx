@@ -25,6 +25,10 @@ import {
   invalidate,
   td,
 } from "../ui";
+import { Button } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
+import { Checkbox } from "@binarysust/ui/components/checkbox";
 
 type TermRow = Schemas["people.TermRow"];
 type TermIn = Schemas["people.TermIn"];
@@ -117,13 +121,13 @@ function TermForm({ id, initial }: { id?: string; initial: TermIn }) {
       <h2 className="mb-4 text-lg font-semibold">{id ? "Edit term" : "New term"}</h2>
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label="Slug" hint="Like 2026-27." error={fe.slug}>
-          <input className="field" value={f.slug} onChange={(e) => set("slug", e.target.value)} />
+          <Input value={f.slug} onChange={(e) => set("slug", e.target.value)} />
         </Field>
         <Field label="Label" error={fe.label}>
-          <input className="field" value={f.label} onChange={(e) => set("label", e.target.value)} />
+          <Input value={f.label} onChange={(e) => set("label", e.target.value)} />
         </Field>
         <Field label="Starts on" error={fe.startsOn}>
-          <input className="field" type="date" value={f.startsOn} onChange={(e) => set("startsOn", e.target.value)} />
+          <Input type="date" value={f.startsOn} onChange={(e) => set("startsOn", e.target.value)} />
         </Field>
       </div>
       <SaveBar
@@ -179,9 +183,9 @@ function Handover({ term, current }: { term: TermRow; current: TermRow | undefin
         {current ? `${current.label} is the current term.` : "No term is current yet."} When {term.label}'s seats are filled,
         hand over.
       </p>
-      <button type="button" className="btn btn-primary mt-4" onClick={() => setOpen(true)}>
+      <Button type="button" className="mt-4" onClick={() => setOpen(true)}>
         Make {term.label} current
-      </button>
+      </Button>
       {make.isSuccess && <p className="mt-3 text-ink-2">Handed over. The public site republishes in a few minutes.</p>}
       <ConfirmDialog
         open={open}
@@ -224,8 +228,8 @@ function PersonPicker({ value, onChange, error, label = "Person" }: { value: str
   const options = people.data ?? [];
   return (
     <Field label={label} hint="Type a name or @handle and pick from the list." error={error ?? (text && !value ? "Pick someone from the list." : undefined)}>
-      <input
-        className="field"
+      <Input
+        
         list={listId}
         value={text}
         onChange={(e) => {
@@ -234,7 +238,7 @@ function PersonPicker({ value, onChange, error, label = "Person" }: { value: str
           const m = /@([a-z0-9-]+)\)?$/.exec(v);
           onChange(options.find((p) => p.handle === m?.[1])?.id ?? "");
         }}
-      />
+ />
       <datalist id={listId}>
         {options.map((p) => (
           <option key={p.id} value={`${p.name} (@${p.handle})`} />
@@ -301,9 +305,9 @@ function Seats({ term }: { term: TermRow }) {
                 {s.name} <span className="text-ink-3">@{s.handle}</span>
               </td>
               <td className={`${td} text-right`}>
-                <button type="button" className="link text-sm" onClick={() => remove.mutate(s.id)}>
+                <Button type="button" variant="link" className="text-sm" onClick={() => remove.mutate(s.id)}>
                   Remove
-                </button>
+                </Button>
               </td>
             </tr>
           ))}
@@ -319,7 +323,7 @@ function Seats({ term }: { term: TermRow }) {
       >
         <PersonPicker key={pickerKey} value={personId} onChange={(v) => (setPersonId(v), add.reset())} error={fe.personId} />
         <Field label="Position" error={fe.positionId}>
-          <select className="field" value={positionId} onChange={(e) => (setPositionId(e.target.value), add.reset())}>
+          <NativeSelect value={positionId} onChange={(e) => (setPositionId(e.target.value), add.reset())}>
             <option value="">Choose…</option>
             {POSITION_GROUPS.map((g) => {
               const inGroup = positions.data?.filter((p) => p.group === g) ?? [];
@@ -333,11 +337,11 @@ function Seats({ term }: { term: TermRow }) {
                 </optgroup>
               );
             })}
-          </select>
+          </NativeSelect>
         </Field>
-        <button type="submit" className="btn btn-primary sm:mt-7" disabled={add.isPending || !personId || !positionId}>
+        <Button type="submit" className="sm:mt-7" disabled={add.isPending || !personId || !positionId}>
           {add.isPending ? "Adding…" : "Add seat"}
-        </button>
+        </Button>
         {add.error && !fe.personId && !fe.positionId && <p className="font-semibold text-vermilion sm:col-span-3">{add.error.message}</p>}
       </form>
     </section>
@@ -379,9 +383,9 @@ function Positions() {
                       {p.lifetime && " · lifetime"}
                     </span>
                   </p>
-                  <button type="button" className="link text-sm" onClick={() => setEditing(p.id)}>
+                  <Button type="button" variant="link" className="text-sm" onClick={() => setEditing(p.id)}>
                     Edit
-                  </button>
+                  </Button>
                 </div>
               )}
               <PositionRolesEditor positionId={p.id} title={p.title} current={rolesOf(p.id)} roles={roles.data} />
@@ -430,39 +434,39 @@ function PositionForm({ id, initial, onDone }: { id?: string; initial: PositionI
     >
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label="Title" error={fe.title}>
-          <input className="field" value={f.title} onChange={(e) => set("title", e.target.value)} />
+          <Input value={f.title} onChange={(e) => set("title", e.target.value)} />
         </Field>
         <Field label="Slug" error={fe.slug}>
-          <input className="field" value={f.slug} onChange={(e) => set("slug", e.target.value)} />
+          <Input value={f.slug} onChange={(e) => set("slug", e.target.value)} />
         </Field>
         <Field label="Rank" hint="Lower is listed first." error={fe.rank}>
-          <input className="field" type="number" value={f.rank} onChange={(e) => set("rank", Number(e.target.value))} />
+          <Input type="number" value={f.rank} onChange={(e) => set("rank", Number(e.target.value))} />
         </Field>
         <Field label="Committee" error={fe.category}>
-          <select className="field" value={f.category} onChange={(e) => set("category", oneOf(POSITION_CATEGORIES, e.target.value))}>
+          <NativeSelect value={f.category} onChange={(e) => set("category", oneOf(POSITION_CATEGORIES, e.target.value))}>
             <option value="executive">Executive</option>
             <option value="advisor">Advisory</option>
-          </select>
+          </NativeSelect>
         </Field>
         <Field label="Group" hint="How the public committee page groups seats." error={fe.group}>
-          <select className="field" value={f.group} onChange={(e) => set("group", oneOf(POSITION_GROUPS, e.target.value))}>
+          <NativeSelect value={f.group} onChange={(e) => set("group", oneOf(POSITION_GROUPS, e.target.value))}>
             {POSITION_GROUPS.map((g: PositionGroup) => (
               <option key={g} value={g}>
                 {GROUP_LABEL[g]}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </Field>
         <label className="flex items-center gap-3 sm:mt-7">
-          <input type="checkbox" className="size-5 accent-[var(--vermilion)]" checked={f.lifetime} onChange={(e) => set("lifetime", e.target.checked)} />
+          <Checkbox className="size-5" checked={f.lifetime} onCheckedChange={(checked) => set("lifetime", checked)} />
           Lifetime: holders become lifetime members
         </label>
       </div>
       <SaveBar pending={save.isPending} error={save.error} success={save.isSuccess && !id} label={id ? "Save position" : "Create position"} shown={["title", "slug", "category", "group", "rank"]}>
         {onDone && (
-          <button type="button" className="btn btn-ghost" onClick={onDone}>
+          <Button type="button" variant="outline" onClick={onDone}>
             Cancel
-          </button>
+          </Button>
         )}
       </SaveBar>
     </form>
@@ -493,7 +497,7 @@ function PositionRolesEditor({ positionId, title, current, roles }: { positionId
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {roles.map((r) => (
           <label key={r.name} className="flex items-center gap-2 text-sm" title={r.allPermissions ? "Every permission" : r.permissions.join(", ")}>
-            <input type="checkbox" className="size-4 accent-[var(--vermilion)]" checked={current.includes(r.name)} onChange={(e) => toggle(r.name, e.target.checked)} aria-label={`${title}: ${r.title}`} />
+            <Checkbox className="size-4" checked={current.includes(r.name)} onCheckedChange={(checked) => toggle(r.name, checked)} aria-label={`${title}: ${r.title}`} />
             {r.title}
           </label>
         ))}
@@ -561,9 +565,9 @@ function Grants() {
               <td className={td}>{g.termSlug ? `During ${g.termSlug}` : "Permanent"}</td>
               <td className={`${td} tabular`}>{formatShort(g.createdAt)}</td>
               <td className={`${td} text-right`}>
-                <button type="button" className="link text-sm" onClick={() => remove.mutate(g.id)}>
+                <Button type="button" variant="link" className="text-sm" onClick={() => remove.mutate(g.id)}>
                   Revoke
-                </button>
+                </Button>
               </td>
             </tr>
           ))}
@@ -581,30 +585,30 @@ function Grants() {
         <div className="grid gap-4 sm:grid-cols-3">
           <PersonPicker key={pickerKey} value={personId} onChange={(v) => (setPersonId(v), create.reset())} error={fe.personId} />
           <Field label="Role" error={fe.role}>
-            <select className="field" value={role} onChange={(e) => (setRole(roles.data?.find((r) => r.name === e.target.value)?.name ?? ""), create.reset())}>
+            <NativeSelect value={role} onChange={(e) => (setRole(roles.data?.find((r) => r.name === e.target.value)?.name ?? ""), create.reset())}>
               <option value="">Choose…</option>
               {roles.data?.map((r) => (
                 <option key={r.name} value={r.name}>
                   {r.title}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </Field>
           <Field label="Applies" error={fe.termId}>
-            <select className="field" value={termId} onChange={(e) => (setTermId(e.target.value), create.reset())}>
+            <NativeSelect value={termId} onChange={(e) => (setTermId(e.target.value), create.reset())}>
               <option value="">Permanently</option>
               {terms.data?.map((t) => (
                 <option key={t.id} value={t.id}>
                   During {t.label}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </Field>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <button type="submit" className="btn btn-primary" disabled={create.isPending || !personId || !role}>
+          <Button type="submit" disabled={create.isPending || !personId || !role}>
             {create.isPending ? "Granting…" : "Grant role"}
-          </button>
+          </Button>
           {create.error && !fe.personId && !fe.role && !fe.termId && <span className="font-semibold text-vermilion">{create.error.message}</span>}
         </div>
       </form>

@@ -7,6 +7,9 @@ import { SPONSOR_TIERS, oneOf } from "@binarysust/api-client";
 import { ImageField } from "../MediaUpload";
 import type { SectionProps } from "../sections";
 import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, td } from "../ui";
+import { buttonVariants } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
 
 type SponsorIn = Schemas["sponsors.In"];
 type Sponsor = Schemas["sponsors.Sponsor"];
@@ -23,7 +26,7 @@ function SponsorList() {
   return (
     <>
       <SectionHead title="Sponsors">
-        <Link to="/dashboard/$" params={{ _splat: "sponsors/new" }} className="btn btn-primary">
+        <Link to="/dashboard/$" params={{ _splat: "sponsors/new" }} className={buttonVariants()}>
           <Icon name="plus" size={18} /> New sponsor
         </Link>
       </SectionHead>
@@ -102,30 +105,30 @@ function SponsorForm({ id, initial }: { id: string | null; initial: SponsorIn })
       </SectionHead>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" error={fe.name}>
-          <input className="field" value={f.name} onChange={(e) => set("name", e.target.value)} />
+          <Input value={f.name} onChange={(e) => set("name", e.target.value)} />
         </Field>
         <Field label="Tier" error={fe.tier}>
-          <select className="field" value={f.tier} onChange={(e) => set("tier", oneOf(SPONSOR_TIERS, e.target.value))}>
+          <NativeSelect value={f.tier} onChange={(e) => set("tier", oneOf(SPONSOR_TIERS, e.target.value))}>
             {SPONSOR_TIERS.map((t) => (
               <option key={t} value={t}>
                 {t[0]?.toUpperCase() + t.slice(1)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </Field>
         <div className="sm:col-span-2">
           <Field label="Website" error={fe.url}>
-            <input className="field" type="url" value={f.url} onChange={(e) => set("url", e.target.value)} placeholder="https://" />
+            <Input type="url" value={f.url} onChange={(e) => set("url", e.target.value)} placeholder="https://" />
           </Field>
         </div>
         <div className="sm:col-span-2">
           <ImageField label="Logo" purpose="logo" value={f.logoUrl || null} onChange={(v) => set("logoUrl", v ?? "")} error={fe.logoUrl} hint="A wide logo on a transparent background works best." />
         </div>
         <Field label="Since (year)" error={fe.since}>
-          <input className="field" type="number" inputMode="numeric" value={f.since} onChange={(e) => set("since", Number(e.target.value))} />
+          <Input type="number" inputMode="numeric" value={f.since} onChange={(e) => set("since", Number(e.target.value))} />
         </Field>
         <Field label="Until (year)" hint="Empty while the sponsorship is active." error={fe.until}>
-          <input className="field" type="number" inputMode="numeric" value={f.until ?? ""} onChange={(e) => set("until", e.target.value ? Number(e.target.value) : null)} />
+          <Input type="number" inputMode="numeric" value={f.until ?? ""} onChange={(e) => set("until", e.target.value ? Number(e.target.value) : null)} />
         </Field>
       </div>
       <SaveBar

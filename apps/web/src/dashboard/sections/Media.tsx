@@ -7,6 +7,8 @@ import { MAX_SIDE } from "~/lib/image";
 import { UploadButton } from "../MediaUpload";
 import { useMe } from "../me";
 import { Field, SectionHead } from "../ui";
+import { Button } from "@binarysust/ui/components/button";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
 
 export function MediaSection() {
   const me = useMe();
@@ -34,13 +36,13 @@ export function MediaSection() {
       <div className="flex max-w-2xl flex-wrap items-end gap-4 rounded-xl border border-line bg-panel p-5">
         <div className="w-64">
           <Field label="What is it for?" hint="Each kind has its own size and type limits.">
-            <select className="field" value={purpose} onChange={(e) => setPurpose(e.target.value as MediaPurpose)}>
+            <NativeSelect value={purpose} onChange={(e) => setPurpose(e.target.value as MediaPurpose)}>
               {purposes.map((p) => (
                 <option key={p} value={p}>
                   {MEDIA_PURPOSES[p].label}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </Field>
         </div>
         <div className="pb-7">
@@ -71,9 +73,9 @@ export function MediaSection() {
                     {o.contentType} · {(o.size / 1024).toFixed(0)} KB
                   </p>
                 </div>
-                <button type="button" className="btn btn-ghost !min-h-10 !text-sm" onClick={() => void copy(o.url)}>
+                <Button type="button" variant="outline" size="sm" onClick={() => void copy(o.url)}>
                   {copied === o.url ? "Copied" : "Copy URL"}
-                </button>
+                </Button>
               </li>
             ))}
           </ul>

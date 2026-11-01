@@ -7,6 +7,7 @@ import { content } from "~/lib/content";
 import { formatFull } from "~/lib/format";
 import { highlightHtml } from "~/lib/highlight";
 import { seo } from "~/lib/seo";
+import { badgeVariants } from "@binarysust/ui/components/badge";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => content.post(params.slug),
@@ -59,7 +60,7 @@ function Post() {
           <ul className="mt-12 flex flex-wrap gap-2 border-t border-line pt-6" aria-label="Tags">
             {post.tags.map((t) => (
               <li key={t}>
-                <Link to="/blog/tag/$tag" params={{ tag: t }} className="tag min-h-9 px-3">
+                <Link to="/blog/tag/$tag" params={{ tag: t }} className={badgeVariants({ className: "min-h-9 px-3" })}>
                   #{t}
                 </Link>
               </li>

@@ -21,8 +21,8 @@ export const BRAND = {
     { label: "LinkedIn", href: "https://www.linkedin.com/company/binary-sust" },
   ],
   /**
-   * The official logo. Set to "/brand/logo.svg" once that file is in public/brand/; until then <Logo> sets the
-   * name in type.
+   * The official logo, a path each app serves from its own public/ (apps/web/public/brand/logo.png). Set it to
+   * "/brand/logo.svg" once that file exists; null makes <Logo> set the name in type.
    */
   logoSrc: "/brand/logo.png" as string | null,
 } as const;

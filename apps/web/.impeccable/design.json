@@ -321,8 +321,7 @@
         "--parrot": "--ok",
         "--font-code": "--ff-mono",
         ".sign": ".display",
-        ".plate": ".tag",
-        ".trim": "6px framed panel"
+        ".plate": "Badge (outline)"
       }
     },
     "typographyMeta": {

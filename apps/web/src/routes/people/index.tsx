@@ -6,6 +6,9 @@ import { content } from "~/lib/content";
 import { seo } from "~/lib/seo";
 import { STATUS_ORDER } from "~/lib/slices";
 import type { PersonStatus } from "~/lib/types";
+import { Button } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
 
 export const Route = createFileRoute("/people/")({
   loader: () => content.people(),
@@ -78,18 +81,18 @@ function People() {
           <div className="grid gap-4 sm:grid-cols-2 md:w-[28rem]">
             <label className="block">
               <span className="tlabel mb-2">Skill</span>
-              <select className="field" value={skill} onChange={(e) => setSkill(e.target.value)}>
+              <NativeSelect value={skill} onChange={(e) => setSkill(e.target.value)}>
                 <option value="">Any skill</option>
                 {skills.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </label>
             <label className="block">
               <span className="tlabel mb-2">Name or company</span>
-              <input className="field" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search people" />
+              <Input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search people" />
             </label>
           </div>
         </form>
@@ -101,9 +104,9 @@ function People() {
         ) : (
           <div className="border border-dashed border-line-strong p-10 text-center">
             <p className="font-semibold">Nobody matches those filters.</p>
-            <button type="button" className="btn btn-ghost mt-4" onClick={() => (writeSearch({ status: "", skill: "" }), setQ(""))}>
+            <Button type="button" variant="outline" className="mt-4" onClick={() => (writeSearch({ status: "", skill: "" }), setQ(""))}>
               Clear filters
-            </button>
+            </Button>
           </div>
         )}
       </div>

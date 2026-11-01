@@ -1,8 +1,9 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Icon } from "~/components/Icon";
-import { Logo } from "~/components/Logo";
+import { Logo } from "@binarysust/ui/components/logo";
 import { API_BASE, googleStartUrl, warmApi } from "@binarysust/api-client";
+import { buttonVariants } from "@binarysust/ui/components/button";
 
 /** Only same-site paths survive as ?next=, so the sign-in flow can't bounce visitors elsewhere. */
 function safeNext(v: unknown): string {
@@ -36,7 +37,7 @@ function Login() {
           <p className="mt-3 text-ink-2">
             Use your Google account. Any account can sign in to reserve seats; committee members also get the dashboard.
           </p>
-          <a href={googleStartUrl(next)} className="btn btn-ghost mt-8 w-full bg-panel">
+          <a href={googleStartUrl(next)} className={buttonVariants({ variant: "outline", className: "mt-8 w-full bg-panel" })}>
             <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
               <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z" />
               <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 6.9-10.3 6.9-17.7z" />
@@ -46,7 +47,7 @@ function Login() {
             Continue with Google
           </a>
           {devHost && (
-            <a href={`${API_BASE}/auth/dev/start?next=${encodeURIComponent(next)}`} className="btn btn-ghost mt-3 w-full">
+            <a href={`${API_BASE}/auth/dev/start?next=${encodeURIComponent(next)}`} className={buttonVariants({ variant: "outline", className: "mt-3 w-full" })}>
               <Icon name="code" size={18} /> Dev sign-in (local only)
             </a>
           )}

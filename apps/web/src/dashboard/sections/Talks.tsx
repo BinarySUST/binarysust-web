@@ -7,6 +7,10 @@ import { formatShort } from "~/lib/format";
 import { HandlePicker } from "../PersonLookup";
 import type { SectionProps } from "../sections";
 import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, orNull, slugify, td } from "../ui";
+import { buttonVariants } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { Textarea } from "@binarysust/ui/components/textarea";
+import { Checkbox } from "@binarysust/ui/components/checkbox";
 
 type TalkIn = Schemas["talks.In"];
 type Talk = Schemas["talks.Talk"];
@@ -22,7 +26,7 @@ function TalkList() {
   return (
     <>
       <SectionHead title="Talks">
-        <Link to="/dashboard/$" params={{ _splat: "talks/new" }} className="btn btn-primary">
+        <Link to="/dashboard/$" params={{ _splat: "talks/new" }} className={buttonVariants()}>
           <Icon name="plus" size={18} /> New talk
         </Link>
       </SectionHead>
@@ -96,37 +100,37 @@ function TalkForm({ id, initial }: { id: string | null; initial: TalkIn }) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Field label="Title" error={fe.title}>
-            <input
-              className="field"
+            <Input
+              
               value={f.title}
               onChange={(e) => {
                 const title = e.target.value;
                 setF((x) => ({ ...x, title, slug: id || x.slug !== slugify(x.title) ? x.slug : slugify(title) }));
                 save.reset();
               }}
-            />
+ />
           </Field>
         </div>
         <Field label="URL slug" error={fe.slug}>
-          <input className="field" value={f.slug} onChange={(e) => set("slug", e.target.value)} />
+          <Input value={f.slug} onChange={(e) => set("slug", e.target.value)} />
         </Field>
         <HandlePicker label="Speaker" hint="Add them under People first if they are new." error={fe.speaker} value={f.speaker} onChange={(v) => set("speaker", v)} />
         <Field label="Date" error={fe.date}>
-          <input className="field" type="date" value={f.date.slice(0, 10)} onChange={(e) => set("date", e.target.value ? `${e.target.value}T00:00:00Z` : "")} />
+          <Input type="date" value={f.date.slice(0, 10)} onChange={(e) => set("date", e.target.value ? `${e.target.value}T00:00:00Z` : "")} />
         </Field>
         <label className="flex items-center gap-3 sm:mt-7">
-          <input type="checkbox" className="size-5 accent-[var(--vermilion)]" checked={f.featured} onChange={(e) => set("featured", e.target.checked)} />
+          <Checkbox className="size-5" checked={f.featured} onCheckedChange={(checked) => set("featured", checked)} />
           Feature on the home page
         </label>
         <Field label="Video link" error={fe.videoUrl}>
-          <input className="field" type="url" value={f.videoUrl ?? ""} onChange={(e) => set("videoUrl", orNull(e.target.value))} />
+          <Input type="url" value={f.videoUrl ?? ""} onChange={(e) => set("videoUrl", orNull(e.target.value))} />
         </Field>
         <Field label="Slides link" error={fe.slidesUrl}>
-          <input className="field" type="url" value={f.slidesUrl ?? ""} onChange={(e) => set("slidesUrl", orNull(e.target.value))} />
+          <Input type="url" value={f.slidesUrl ?? ""} onChange={(e) => set("slidesUrl", orNull(e.target.value))} />
         </Field>
         <div className="sm:col-span-2">
           <Field label="Summary" hint="Markdown." error={fe.summaryMarkdown}>
-            <textarea className="field min-h-40 text-sm" value={f.summaryMarkdown} onChange={(e) => set("summaryMarkdown", e.target.value)} />
+            <Textarea className="min-h-40 text-sm" value={f.summaryMarkdown} onChange={(e) => set("summaryMarkdown", e.target.value)} />
           </Field>
         </div>
       </div>

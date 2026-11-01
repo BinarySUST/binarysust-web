@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, unwrap } from "@binarysust/api-client";
 import { formatShort, formatTime } from "~/lib/format";
 import { Empty, ErrorBox, Loading, SectionHead } from "../ui";
+import { Button } from "@binarysust/ui/components/button";
 
 export function RsvpsSection() {
   const qc = useQueryClient();
@@ -39,14 +40,14 @@ export function RsvpsSection() {
                   {r.ticket && <span className="ml-2 text-ink-3">Ticket {r.ticket.slice(0, 8)}</span>}
                 </p>
               </div>
-              <button
+              <Button
                 type="button"
-                className="btn btn-ghost !min-h-10 !text-sm"
+                variant="outline" size="sm"
                 disabled={cancel.isPending && cancel.variables === r.eventSlug}
                 onClick={() => cancel.mutate(r.eventSlug)}
               >
                 Cancel
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

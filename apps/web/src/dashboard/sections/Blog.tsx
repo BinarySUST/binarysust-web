@@ -33,6 +33,9 @@ import {
   splitList,
   td,
 } from "../ui";
+import { Button, buttonVariants } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { Textarea } from "@binarysust/ui/components/textarea";
 
 type Post = Schemas["blog.Post"];
 type PostIn = Schemas["blog.PostIn"];
@@ -64,7 +67,7 @@ function PostList({ view }: { view: "mine" | "review" | "all" }) {
     <>
       <SectionHead title="Blog">
         {canWrite && (
-          <Link to="/dashboard/$" params={{ _splat: "blog/new" }} className="btn btn-primary">
+          <Link to="/dashboard/$" params={{ _splat: "blog/new" }} className={buttonVariants()}>
             <Icon name="plus" size={18} /> New post
           </Link>
         )}
@@ -147,7 +150,7 @@ function NewPost() {
         <BackLink to="blog">Back to posts</BackLink>
       </SectionHead>
       <Field label="Title" error={fe.title} hint="You can change it later. The draft is private until an editor publishes it.">
-        <input className="field" value={title} onChange={(e) => (setTitle(e.target.value), create.reset())} autoFocus />
+        <Input value={title} onChange={(e) => (setTitle(e.target.value), create.reset())} autoFocus />
       </Field>
       <SaveBar pending={create.isPending} error={create.error} success={false} label="Start draft" shown={["title"]} />
     </form>
@@ -257,20 +260,21 @@ function PostForm({ post }: { post: Post }) {
         </span>
         <div className="ml-auto flex flex-wrap gap-2">
           {actions.map((a) => (
-            <button
+            <Button
               key={a.action}
               type="button"
-              className={`btn ${a.primary ? "btn-primary" : "btn-ghost"} !min-h-10 !text-sm`}
+              variant={a.primary ? "default" : "outline"}
+              size="sm"
               disabled={move.isPending}
               onClick={() => (a.action === "request_changes" || a.action === "unpublish" ? setDialog(a.action) : move.mutate({ action: a.action }))}
             >
               {a.label}
-            </button>
+            </Button>
           ))}
           {canDelete && (
-            <button type="button" className="btn btn-ghost !min-h-10 !text-sm" onClick={() => setDialog("delete")}>
+            <Button type="button" variant="outline" size="sm" onClick={() => setDialog("delete")}>
               Delete
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -296,24 +300,24 @@ function PostForm({ post }: { post: Post }) {
         <form onSubmit={onSubmit} className="min-w-0 space-y-5" noValidate>
           <fieldset disabled={!editable} className="space-y-5">
             <Field label="Title" error={fe.title}>
-              <input className="field" value={f.title} onChange={(e) => set("title", e.target.value)} />
+              <Input value={f.title} onChange={(e) => set("title", e.target.value)} />
             </Field>
             <Field label="URL slug" hint={`/blog/${f.slug || "…"}`} error={fe.slug}>
-              <input className="field" value={f.slug} onChange={(e) => set("slug", e.target.value)} />
+              <Input value={f.slug} onChange={(e) => set("slug", e.target.value)} />
             </Field>
             <Field label="Excerpt" hint="Shown on the blog list and in link previews." error={fe.excerpt}>
-              <textarea className="field min-h-20" value={f.excerpt} onChange={(e) => set("excerpt", e.target.value)} maxLength={400} />
+              <Textarea className="min-h-20" value={f.excerpt} onChange={(e) => set("excerpt", e.target.value)} maxLength={400} />
             </Field>
             <Field label="Tags" hint="Comma-separated, at most 8: go, icpc, web." error={errorFor(fe, "tags", true)}>
-              <input className="field" value={tags} onChange={(e) => setTags(e.target.value)} />
+              <Input value={tags} onChange={(e) => setTags(e.target.value)} />
             </Field>
             <ImageField label="Cover image" purpose="post" value={f.coverUrl} onChange={(v) => set("coverUrl", v)} error={fe.coverUrl} />
             <Field label="Body" hint="Markdown." error={fe.bodyMarkdown}>
-              <textarea
-                className="field min-h-[28rem] font-[var(--font-code)] text-sm"
+              <Textarea
+                className="min-h-[28rem] font-[var(--font-code)] text-sm"
                 value={f.bodyMarkdown}
                 onChange={(e) => set("bodyMarkdown", e.target.value)}
-              />
+ />
             </Field>
           </fieldset>
           {editable && (
@@ -366,7 +370,7 @@ function PostForm({ post }: { post: Post }) {
       >
         <p>The post goes back to draft, and the author sees your note.</p>
         <Field label="What should change?" error={fieldErrors(move.error).note}>
-          <textarea className="field min-h-28" value={note} onChange={(e) => setNote(e.target.value)} />
+          <Textarea className="min-h-28" value={note} onChange={(e) => setNote(e.target.value)} />
         </Field>
       </ConfirmDialog>
       <ConfirmDialog

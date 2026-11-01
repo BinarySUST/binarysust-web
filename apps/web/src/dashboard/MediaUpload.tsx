@@ -5,6 +5,8 @@ import { useId, useRef } from "react";
 import { Icon } from "~/components/Icon";
 import { MEDIA_PURPOSES, type MediaObject, type MediaPurpose, uploadMedia } from "@binarysust/api-client";
 import { prepareUpload } from "~/lib/image";
+import { Button } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
 
 /** api/internal/media Purposes MaxBytes, so the resizer knows when to drop quality. */
 const MAX_BYTES: Record<MediaPurpose, number> = {
@@ -56,9 +58,9 @@ export function UploadButton({
           e.target.value = "";
         }}
       />
-      <button type="button" className="btn btn-ghost !min-h-10 !text-sm" disabled={up.isPending} onClick={() => input.current?.click()}>
+      <Button type="button" variant="outline" size="sm" disabled={up.isPending} onClick={() => input.current?.click()}>
         <Icon name="image" size={16} /> {up.isPending ? "Uploading…" : label}
-      </button>
+      </Button>
       <span aria-live="polite" className="text-sm">
         {up.error && <span className="font-semibold text-vermilion">{up.error.message}</span>}
       </span>
@@ -97,22 +99,22 @@ export function ImageField({
           </span>
         )}
         <div className="min-w-0 flex-1 space-y-2">
-          <input
+          <Input
             id={id}
-            className="field"
+            
             type="url"
             aria-describedby={error || hint ? `${id}-note` : undefined}
             aria-invalid={error ? true : undefined}
             placeholder="https://"
             value={value ?? ""}
             onChange={(e) => onChange(e.target.value.trim() ? e.target.value.trim() : null)}
-          />
+ />
           <div className="flex flex-wrap items-center gap-3">
             <UploadButton purpose={purpose} onUploaded={(o) => onChange(o.url)} />
             {value && (
-              <button type="button" className="link text-sm" onClick={() => onChange(null)}>
+              <Button type="button" variant="link" className="text-sm" onClick={() => onChange(null)}>
                 Remove
-              </button>
+              </Button>
             )}
           </div>
         </div>

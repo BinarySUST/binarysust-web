@@ -6,6 +6,8 @@ import { useEffect, useId, useState } from "react";
 import { Icon } from "~/components/Icon";
 import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { Field } from "./ui";
+import { Input } from "@binarysust/ui/components/input";
+import { Button } from "@binarysust/ui/components/button";
 
 type PersonRef = Schemas["people.PersonRef"];
 
@@ -54,13 +56,13 @@ export function HandlePicker({
   const match = found.data?.find((p) => p.handle === value);
   return (
     <Field label={label} hint={match ? `${match.name}${hint ? ` · ${hint}` : ""}` : hint} error={error}>
-      <input
-        className="field"
+      <Input
+        
         list={listId}
         autoComplete="off"
         value={value}
         onChange={(e) => onChange(e.target.value.trim().replace(/^@/, "").toLowerCase())}
-      />
+ />
       <Options id={listId} people={found.data} />
     </Field>
   );
@@ -95,8 +97,8 @@ export function HandleListPicker({
   return (
     <div>
       <Field label={label} hint={hint ?? "Type a name or handle and pick from the list."} error={error}>
-        <input
-          className="field"
+        <Input
+          
           list={listId}
           autoComplete="off"
           value={text}
@@ -113,7 +115,7 @@ export function HandleListPicker({
               add(text.trim().replace(/^@/, ""));
             }
           }}
-        />
+ />
         <Options id={listId} people={found.data?.filter((p) => !value.includes(p.handle))} />
       </Field>
       {value.length > 0 && (
@@ -122,14 +124,16 @@ export function HandleListPicker({
             <li key={h} className="inline-flex items-center gap-1 rounded-full border border-line bg-panel py-0.5 pr-1 pl-3 text-sm">
               {names[h] ? `${names[h]} ` : ""}
               <span className="text-ink-3">@{h}</span>
-              <button
+              <Button
                 type="button"
-                className="ml-1 grid size-7 place-items-center rounded-full hover:bg-ground-2"
+                variant="ghost"
+                size="icon-sm"
+                className="ml-1 size-7 rounded-full"
                 aria-label={`Remove @${h}`}
                 onClick={() => onChange(value.filter((x) => x !== h))}
               >
                 <Icon name="close" size={14} />
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

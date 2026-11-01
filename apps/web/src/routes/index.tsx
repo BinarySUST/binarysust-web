@@ -9,9 +9,9 @@ import { Stats } from "~/components/landing/Stats";
 import { Section } from "~/components/Page";
 import { PostList } from "~/components/PostList";
 import { Rsvp } from "~/components/Rsvp";
-import { buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "@binarysust/ui/components/button";
 import { SponsorGrid } from "~/components/SponsorGrid";
-import { BRAND } from "~/lib/brand";
+import { BRAND } from "@binarysust/ui/lib/brand";
 import { content } from "~/lib/content";
 import { formatFull, formatShort, formatTime } from "~/lib/format";
 import { seo } from "~/lib/seo";
@@ -286,10 +286,10 @@ function Landing() {
             </p>
           </div>
           <div className="flex flex-col items-start gap-3 md:pt-2">
-            <Link to="/events" className="btn btn-primary">
+            <Link to="/events" className={buttonVariants()}>
               See upcoming events <Icon name="arrow" size={18} />
             </Link>
-            <a href={`mailto:${BRAND.email}`} className="btn btn-ghost max-w-full">
+            <a href={`mailto:${BRAND.email}`} className={buttonVariants({ variant: "outline", className: "max-w-full" })}>
               <Icon name="mail" size={18} /> <span className="truncate">{BRAND.email}</span>
             </a>
             <p className="mt-2 text-sm text-ink-3">

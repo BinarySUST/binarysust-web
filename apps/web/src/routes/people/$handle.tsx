@@ -6,6 +6,8 @@ import { content } from "~/lib/content";
 import { formatShort } from "~/lib/format";
 import { seo } from "~/lib/seo";
 import type { SocialKind } from "~/lib/types";
+import { buttonVariants } from "@binarysust/ui/components/button";
+import { Badge, badgeVariants } from "@binarysust/ui/components/badge";
 
 export const Route = createFileRoute("/people/$handle")({
   loader: ({ params }) => content.person(params.handle),
@@ -61,17 +63,17 @@ function Portfolio() {
           <h1 className="display text-[clamp(2.25rem,5.5vw,3.5rem)]">{p.name}</h1>
           <p className="mt-2 flex flex-wrap items-center gap-3">
             <span className="meta text-primary-ink">@{p.handle}</span>
-            {(p as { lifetimeMember?: boolean }).lifetimeMember === true && <span className="tag">Lifetime member</span>}
+            {(p as { lifetimeMember?: boolean }).lifetimeMember === true && <Badge>Lifetime member</Badge>}
           </p>
           <p className="mt-4 max-w-[48ch] text-xl leading-snug text-ink-2">{p.headline}</p>
           <div className="no-print mt-6 flex flex-wrap items-center gap-2">
             {p.cvUrl && (
-              <a href={p.cvUrl} className="btn btn-primary btn-sm">
+              <a href={p.cvUrl} className={buttonVariants({ size: "sm" })}>
                 <Icon name="file" size={16} /> Download CV
               </a>
             )}
             {p.socials.map((s) => (
-              <a key={s.url + s.kind} href={s.url} rel="me noopener" className="btn btn-ghost btn-sm">
+              <a key={s.url + s.kind} href={s.url} rel="me noopener" className={buttonVariants({ variant: "outline", size: "sm" })}>
                 {SOCIAL[s.kind]} <Icon name="external" size={14} className="text-ink-3" />
               </a>
             ))}
@@ -155,7 +157,7 @@ function Portfolio() {
               <ul className="flex flex-wrap gap-2">
                 {p.skills.map((s) => (
                   <li key={s}>
-                    <a href={`/people?skill=${encodeURIComponent(s)}`} className="tag min-h-8 px-2.5 text-[0.8125rem]">
+                    <a href={`/people?skill=${encodeURIComponent(s)}`} className={badgeVariants({ className: "min-h-8 px-2.5 text-[0.8125rem]" })}>
                       {s}
                     </a>
                   </li>

@@ -3,9 +3,12 @@ import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Icon } from "~/components/Icon";
-import { Mark } from "~/components/Mark";
+import { Mark } from "@binarysust/ui/components/mark";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { type Account, ApiError, type Me, api, loginUrl, unwrap, warmApi } from "@binarysust/api-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@binarysust/ui/components/avatar";
+import { Button } from "@binarysust/ui/components/button";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@binarysust/ui/components/sheet";
 import { MeContext } from "./me";
 import { visibleSections } from "./sections";
 import { ErrorBox, WakingBanner } from "./ui";
@@ -69,13 +72,21 @@ function Shell() {
     );
   }
 
-  const nav = visibleSections(me.data);
   const current = path.replace(/^\/dashboard\/?/, "").split("/")[0] ?? "";
 
   async function signOut() {
     await api.POST("/api/v1/auth/logout").catch(() => undefined);
     window.location.assign("/");
   }
+
+  const navigation = (
+    <DashNav
+      me={me.data}
+      current={current}
+      onNavigate={() => setNavOpen(false)}
+      onSignOut={() => void signOut()}
+    />
+  );
 
   return (
     <MeContext.Provider value={me.data}>
@@ -88,50 +99,18 @@ function Shell() {
             </Link>
             <div className="ml-auto flex items-center lg:hidden">
               <ThemeToggle />
-              <button
-                type="button"
-                className="inline-flex size-11 items-center justify-center rounded-lg"
-                aria-expanded={navOpen}
-                aria-controls="dash-nav"
-                aria-label={navOpen ? "Close menu" : "Open menu"}
-                onClick={() => setNavOpen((o) => !o)}
-              >
-                <Icon name={navOpen ? "close" : "menu"} size={24} />
-              </button>
+              <Sheet open={navOpen} onOpenChange={setNavOpen}>
+                <SheetTrigger render={<Button variant="ghost" size="icon" aria-label="Open menu" />}>
+                  <Icon name="menu" size={24} />
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[min(20rem,85vw)] overflow-y-auto bg-ground-2 px-3 pt-16 pb-4">
+                  <SheetTitle className="sr-only">Dashboard menu</SheetTitle>
+                  {navigation}
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
-          <nav id="dash-nav" aria-label="Dashboard" className={`${navOpen ? "block" : "hidden"} px-3 pb-4 lg:block`}>
-            <Identity account={me.data.account} roles={me.data.roles} />
-            <ul className="space-y-1">
-              {nav.map((s) => {
-                const active = s.path === current;
-                return (
-                  <li key={s.path}>
-                    <Link
-                      to="/dashboard/$"
-                      params={{ _splat: s.path }}
-                      onClick={() => setNavOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={`flex min-h-11 items-center gap-3 rounded-lg px-3 font-medium no-underline ${active ? "bg-ink text-ground" : "text-ink-2 hover:bg-panel hover:text-ink"}`}
-                    >
-                      <Icon name={s.icon} size={19} /> {s.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-            <div className="mt-6 space-y-1 border-t border-line pt-4">
-              <a href="/" className="flex min-h-11 items-center gap-3 rounded-lg px-3 text-ink-2 no-underline hover:bg-panel hover:text-ink">
-                <Icon name="external" size={19} /> Public site
-              </a>
-              <button type="button" onClick={signOut} className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left text-ink-2 hover:bg-panel hover:text-ink">
-                <Icon name="logout" size={19} /> Sign out
-              </button>
-              <div className="hidden px-1 pt-2 lg:block">
-                <ThemeToggle />
-              </div>
-            </div>
-          </nav>
+          <div className="hidden px-3 pb-4 lg:block">{navigation}</div>
         </aside>
         <main id="main" className="min-w-0 px-4 py-8 sm:px-8 lg:py-12">
           <WakingBanner />
@@ -152,6 +131,49 @@ function Shell() {
   );
 }
 
+/** The section list (from sections.tsx), shown in the sidebar on wide screens and in a sheet on narrow ones. */
+function DashNav({ me, current, onNavigate, onSignOut }: { me: Me; current: string; onNavigate: () => void; onSignOut: () => void }) {
+  const item = "flex min-h-11 items-center gap-3 rounded-lg px-3 no-underline";
+  return (
+    <nav aria-label="Dashboard">
+      <Identity account={me.account} roles={me.roles} />
+      <ul className="space-y-1">
+        {visibleSections(me).map((s) => {
+          const active = s.path === current;
+          return (
+            <li key={s.path}>
+              <Link
+                to="/dashboard/$"
+                params={{ _splat: s.path }}
+                onClick={onNavigate}
+                aria-current={active ? "page" : undefined}
+                className={`${item} font-medium ${active ? "bg-ink text-ground" : "text-ink-2 hover:bg-panel hover:text-ink"}`}
+              >
+                <Icon name={s.icon} size={19} /> {s.title}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="mt-6 space-y-1 border-t border-line pt-4">
+        <a href="/" className={`${item} text-ink-2 hover:bg-panel hover:text-ink`}>
+          <Icon name="external" size={19} /> Public site
+        </a>
+        <Button
+          variant="ghost"
+          onClick={onSignOut}
+          className="w-full justify-start gap-3 rounded-lg px-3 text-base font-normal text-ink-2 hover:text-ink hover:not-disabled:bg-panel"
+        >
+          <Icon name="logout" size={19} /> Sign out
+        </Button>
+        <div className="hidden px-1 pt-2 lg:block">
+          <ThemeToggle />
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 function Identity({ account, roles }: { account: Account; roles: string[] }) {
   const name = account.name || account.email;
   const initials = name
@@ -162,13 +184,10 @@ function Identity({ account, roles }: { account: Account; roles: string[] }) {
     .join("");
   return (
     <div className="mb-4 flex items-center gap-3 rounded-lg border border-line bg-panel p-3">
-      {account.avatarUrl ? (
-        <img src={account.avatarUrl} alt="" className="size-10 shrink-0 rounded-full object-cover" referrerPolicy="no-referrer" />
-      ) : (
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink font-semibold text-ground" aria-hidden="true">
-          {initials}
-        </span>
-      )}
+      <Avatar className="size-10">
+        {account.avatarUrl && <AvatarImage src={account.avatarUrl} alt="" referrerPolicy="no-referrer" />}
+        <AvatarFallback className="bg-ink font-semibold text-ground">{initials}</AvatarFallback>
+      </Avatar>
       <div className="min-w-0">
         <p className="truncate font-semibold text-ink">{name}</p>
         <p className="truncate text-sm text-ink-3">

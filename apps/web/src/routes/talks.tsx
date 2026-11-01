@@ -5,6 +5,7 @@ import { PageHead } from "~/components/Page";
 import { content } from "~/lib/content";
 import { formatFull } from "~/lib/format";
 import { seo } from "~/lib/seo";
+import { buttonVariants } from "@binarysust/ui/components/button";
 
 export const Route = createFileRoute("/talks")({
   loader: () => content.talks(),
@@ -48,12 +49,12 @@ function Talks() {
               <div className="prose mt-4 text-ink-2" dangerouslySetInnerHTML={{ __html: t.summaryHtml }} />
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 {t.videoUrl && (
-                  <a href={t.videoUrl} className="btn btn-primary btn-sm">
+                  <a href={t.videoUrl} className={buttonVariants({ size: "sm" })}>
                     <Icon name="play" size={14} /> Watch
                   </a>
                 )}
                 {t.slidesUrl && (
-                  <a href={t.slidesUrl} className="btn btn-ghost btn-sm">
+                  <a href={t.slidesUrl} className={buttonVariants({ variant: "outline", size: "sm" })}>
                     <Icon name="file" size={14} /> Slides
                   </a>
                 )}

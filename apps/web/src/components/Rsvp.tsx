@@ -5,8 +5,8 @@ import { formatShort } from "~/lib/format";
 import { useClientNow, useClientValue } from "~/lib/useNow";
 import type { PublicEvent } from "~/lib/types";
 import { Icon } from "./Icon";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+import { Badge } from "@binarysust/ui/components/badge";
+import { Button } from "@binarysust/ui/components/button";
 
 type Props = Pick<PublicEvent, "slug" | "registration" | "endsAt" | "status"> & { compact?: boolean };
 

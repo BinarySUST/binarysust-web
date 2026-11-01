@@ -2,9 +2,10 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { Icon } from "~/components/Icon";
 import { PageHead, Section } from "~/components/Page";
 import { Stats } from "~/components/landing/Stats";
-import { BRAND } from "~/lib/brand";
+import { BRAND } from "@binarysust/ui/lib/brand";
 import { content } from "~/lib/content";
 import { seo } from "~/lib/seo";
+import { buttonVariants } from "@binarysust/ui/components/button";
 
 export const Route = createFileRoute("/about")({
   loader: () => content.landing(),
@@ -66,10 +67,10 @@ function About() {
             <p className="border-t border-line px-5 py-3 text-sm text-ink-2">{BRAND.university}</p>
           </section>
           <div className="flex flex-wrap gap-3">
-            <Link to="/advisors" className="btn btn-ghost btn-sm">
+            <Link to="/advisors" className={buttonVariants({ variant: "outline", size: "sm" })}>
               Our advisors
             </Link>
-            <Link to="/alumni" className="btn btn-ghost btn-sm">
+            <Link to="/alumni" className={buttonVariants({ variant: "outline", size: "sm" })}>
               Alumni
             </Link>
           </div>

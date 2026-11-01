@@ -1,5 +1,5 @@
-import { BRAND } from "~/lib/brand";
-import { Mark } from "./Mark";
+import { BRAND } from "@binarysust/ui/lib/brand";
+import { Mark } from "@binarysust/ui/components/mark";
 
 /**
  * The club's name as a lockup. When BRAND.logoSrc points at the official SVG it is used instead; until then the

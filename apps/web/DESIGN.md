@@ -103,11 +103,11 @@ Small, firm radii: 2px (focus ring, graph cells), 3px (tags, inline code), 4px (
 
 ## Components
 
-- **Buttons:** primary (primary fill) and ghost (strong hairline, sunken fill on hover); 44px min height, 36px `btn-sm`; 1px press-down on active; 150ms colour transitions on the expo-out ease.
-- **Tag** (`.tag`, legacy `.plate`): hairline mono chip for kinds, statuses and post tags; current state inverts to ink.
-- **Field:** strong hairline, panel fill, focus swaps border to primary with a flush outline.
+- **Buttons** (`Button` / `buttonVariants`): default (primary fill) and outline (strong hairline, sunken fill on hover), plus ghost and link; 44px min height, 36px `size="sm"`; 1px press-down on active; 150ms colour transitions on the expo-out ease.
+- **Tag** (`Badge` / `badgeVariants`, variant outline): hairline mono chip for kinds, statuses and post tags; `aria-current="page"` inverts it to ink.
+- **Field** (`Input`, `Textarea`, `NativeSelect`): strong hairline, panel fill, focus swaps border to primary with a flush outline.
 - **Window:** strong-hairline 6px frame, quiet title bar, `.kv` mono-label/value rows. Holds the next event with a real Reserve button.
-- **Sheet / title block:** `.sheet` square framed panel; `.tblock` hairline cells, each a mono `.tlabel` over a value. `.trim` (legacy) is the 6px framed panel.
+- **Sheet / title block:** `.sheet` square framed panel; `.tblock` hairline cells, each a mono `.tlabel` over a value.
 - **Section head, DateBlock, EventRow, Avatar** (initials on a handle-hashed quiet tint), **ActivityGraph** (4 green levels from real activity), **SponsorGrid** (shared-hairline cells), **prose** with sugar-high syntax colours (`--sh-*`) and a mono language label on each fence.
 - **Motion:** the prompt types once then the caret blinks six times and rests; the live dot pulses; the glow follows a fine pointer. All of it stops under `prefers-reduced-motion`, and all content is present without JS.
 
@@ -128,12 +128,16 @@ Small, firm radii: 2px (focus ring, graph cells), 3px (tags, inline code), 4px (
 
 ## shadcn/ui vocabulary
 
-`src/styles.css` also defines the shadcn/ui theme variables in both themes, resolved from the system tokens:
+The tokens, fonts and base styles live in `packages/ui/src/styles/globals.css` (`@binarysust/ui/globals.css`).
+It also defines the shadcn/ui theme variables in both themes, resolved from the system tokens:
 `--background` (ground), `--foreground` (ink), `--card`/`--popover` (panel), `--primary` (drafting green) and
 `--primary-foreground`, `--secondary`/`--muted`/`--accent` (sunken ground; in shadcn "accent" is a quiet hover
 surface, not a brand colour), `--muted-foreground` (ink-2), `--destructive` (danger), `--border` (line), `--input`
-(line-strong), `--ring` (focus), `--radius` (6px), `--chart-1..5`, `--sidebar*`. Tailwind utilities exist for each
-(`bg-background`, `text-muted-foreground`, `border-border`). Small primitives with shadcn-shaped APIs live in
-`src/components/ui/`: `Button` / `buttonVariants` (variant default | outline | ghost | link, size default | sm),
-`Badge` / `badgeVariants` (outline | default | destructive), `Card` (+ Header, Title, Content, Footer).
+(line-strong), `--ring` (focus), `--radius` (4px; the scale is xs 2px, sm 3px, md 4px, lg and up 6px),
+`--chart-1..5`, `--sidebar*`. Tailwind utilities exist for each (`bg-background`, `text-muted-foreground`,
+`border-border`); unnamed borders default to the hairline.
 
+The components are shadcn/ui (style `base-nova`: Base UI primitives) in `packages/ui/src/components/`, added with
+the shadcn CLI and re-skinned only through these tokens and their variant classes: no shadows, no backdrop blur,
+hairline frames instead of rings, the global 2px focus outline instead of focus rings, square 4px avatars.
+Apps import them as `@binarysust/ui/components/<name>`; the brand `<Logo>` and `<Mark>` are there too.

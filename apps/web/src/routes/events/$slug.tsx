@@ -4,8 +4,8 @@ import { DateBlock, KindTag } from "~/components/events";
 import { Icon } from "~/components/Icon";
 import { subtitle } from "~/components/People";
 import { Rsvp } from "~/components/Rsvp";
-import { Badge } from "~/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Badge } from "@binarysust/ui/components/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@binarysust/ui/components/card";
 import { content } from "~/lib/content";
 import { formatRange } from "~/lib/format";
 import { highlightHtml } from "~/lib/highlight";
@@ -77,7 +77,7 @@ function EventPage() {
         <aside className="space-y-10 lg:sticky lg:top-6 lg:self-start">
           <Card role="region" aria-labelledby="details">
             <CardHeader>
-              <CardTitle id="details">Details</CardTitle>
+              <CardTitle render={<h2 id="details" />}>Details</CardTitle>
             </CardHeader>
             <dl>
               <div className="border-b border-line px-5 py-3">

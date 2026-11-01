@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { buttonVariants } from "@binarysust/ui/components/button";
 
 export function NotFound() {
   return (
@@ -9,10 +10,10 @@ export function NotFound() {
       </p>
       <p className="meta mt-3 text-ink-3">HTTP 404</p>
       <div className="mt-9 flex flex-wrap gap-3">
-        <Link to="/" className="btn btn-primary">
+        <Link to="/" className={buttonVariants()}>
           Go to the home page
         </Link>
-        <Link to="/events" className="btn btn-ghost">
+        <Link to="/events" className={buttonVariants({ variant: "outline" })}>
           See events
         </Link>
       </div>

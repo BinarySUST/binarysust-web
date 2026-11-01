@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Icon } from "./Icon";
-import { Logo } from "./Logo";
+import { Logo } from "@binarysust/ui/components/logo";
 import { ThemeToggle } from "./ThemeToggle";
+import { Button, buttonVariants } from "@binarysust/ui/components/button";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@binarysust/ui/components/sheet";
 
 export const NAV = [
   { to: "/events", label: "Events" },
@@ -25,14 +27,6 @@ export function SiteHeader() {
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
-
-  // Escape closes the mobile menu.
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
 
   return (
     <header
@@ -71,48 +65,55 @@ export function SiteHeader() {
         </nav>
         <div className="ml-auto flex items-center gap-1 lg:ml-3">
           <ThemeToggle />
-          <a href="/login" className="btn btn-ghost btn-sm hidden sm:inline-flex">
+          <a href="/login" className={buttonVariants({ variant: "outline", size: "sm", className: "hidden sm:inline-flex" })}>
             Sign in
           </a>
-          <button
-            type="button"
-            className="inline-flex size-11 items-center justify-center rounded-[4px] text-ink hover:bg-ground-2 lg:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => setOpen((o) => !o)}
-          >
-            <Icon name={open ? "close" : "menu"} size={22} />
-          </button>
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger
+              render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}
+            >
+              <Icon name="menu" size={22} />
+            </SheetTrigger>
+            <SheetContent
+              side="top"
+              showCloseButton={false}
+              className="max-h-dvh gap-0 overflow-y-auto overscroll-contain border-line-strong bg-ground lg:hidden"
+            >
+              <div className="mx-auto flex h-16 w-full max-w-7xl items-center px-4 sm:px-6">
+                <SheetTitle className="sr-only">Menu</SheetTitle>
+                <Link to="/" onClick={() => setOpen(false)} className="flex items-center self-stretch text-ink no-underline" aria-label="Binary SUST, home">
+                  <Logo />
+                </Link>
+                <Button variant="ghost" size="icon" className="ml-auto" aria-label="Close menu" onClick={() => setOpen(false)}>
+                  <Icon name="close" size={22} />
+                </Button>
+              </div>
+              <nav id="mobile-nav" aria-label="Main">
+                <ul className="mx-auto max-w-7xl px-4 pb-4 sm:px-6">
+                  {NAV.map((n) => (
+                    <li key={n.to} className="border-b border-line">
+                      <Link
+                        to={n.to}
+                        onClick={() => setOpen(false)}
+                        className="flex min-h-12 items-center justify-between text-lg text-ink no-underline"
+                        activeProps={{ "aria-current": "page", className: "font-semibold" }}
+                      >
+                        {n.label}
+                        <Icon name="arrow" size={18} className="text-ink-3" />
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="pt-4 sm:hidden">
+                    <a href="/login" className={buttonVariants({ variant: "outline", className: "w-full" })}>
+                      Sign in
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-      <nav
-        id="mobile-nav"
-        aria-label="Main"
-        hidden={!open}
-        className="absolute inset-x-0 top-full max-h-[calc(100dvh-3.5rem)] overflow-y-auto overscroll-contain border-b border-line-strong bg-ground lg:hidden"
-      >
-        <ul className="mx-auto max-w-7xl px-4 pb-4 sm:px-6">
-          {NAV.map((n) => (
-            <li key={n.to} className="border-b border-line">
-              <Link
-                to={n.to}
-                onClick={() => setOpen(false)}
-                className="flex min-h-12 items-center justify-between text-lg text-ink no-underline"
-                activeProps={{ "aria-current": "page", className: "font-semibold" }}
-              >
-                {n.label}
-                <Icon name="arrow" size={18} className="text-ink-3" />
-              </Link>
-            </li>
-          ))}
-          <li className="pt-4 sm:hidden">
-            <a href="/login" className="btn btn-ghost w-full">
-              Sign in
-            </a>
-          </li>
-        </ul>
-      </nav>
     </header>
   );
 }

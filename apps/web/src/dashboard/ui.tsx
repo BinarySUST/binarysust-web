@@ -1,8 +1,23 @@
 import { type QueryClient, type QueryKey, useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Children, type ReactElement, type ReactNode, cloneElement, isValidElement, useEffect, useId, useRef, useState } from "react";
+import { Children, type ReactElement, type ReactNode, cloneElement, isValidElement, useId, useState } from "react";
 import { Icon } from "~/components/Icon";
 import { ApiError, useWaking } from "@binarysust/api-client";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@binarysust/ui/components/alert-dialog";
+import { Button } from "@binarysust/ui/components/button";
+import { FieldDescription, FieldError, FieldLabel, Field as UiField } from "@binarysust/ui/components/field";
+import { Input } from "@binarysust/ui/components/input";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
+import { Table as UiTable, TableBody, TableHead, TableHeader, TableRow } from "@binarysust/ui/components/table";
+import { Textarea } from "@binarysust/ui/components/textarea";
 
 export function SectionHead({ title, children }: { title: string; children?: ReactNode }) {
   return (
@@ -37,9 +52,9 @@ export function ErrorBox({ error, retry }: { error: unknown; retry?: () => void 
       </p>
       {error instanceof ApiError && error.requestId && <p className="mt-1 text-sm text-ink-3">Request {error.requestId}</p>}
       {retry && (
-        <button type="button" onClick={retry} className="btn btn-ghost mt-3 !min-h-9 !text-sm">
+        <Button type="button" onClick={retry} variant="outline" size="sm" className="mt-3">
           Try again
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -51,34 +66,35 @@ export function Empty({ children }: { children: ReactNode }) {
 
 export function Table({ head, children }: { head: string[]; children: ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-line">
-      <table className="w-full min-w-[36rem] text-left text-[0.95rem]">
-        <thead className="bg-ground-2 text-sm text-ink-2">
-          <tr>
+    <div className="overflow-hidden rounded-lg border border-line">
+      <UiTable className="min-w-[36rem] text-left text-[0.95rem]">
+        <TableHeader className="bg-ground-2 text-sm">
+          <TableRow className="hover:bg-transparent">
             {head.map((h, i) => (
-              <th key={h || i} scope="col" className="px-4 py-3 font-semibold">
+              <TableHead key={h || i} scope="col" className="h-auto px-4 py-3 font-semibold text-ink-2">
                 {h}
-              </th>
+              </TableHead>
             ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-line">{children}</tbody>
-      </table>
+          </TableRow>
+        </TableHeader>
+        <TableBody className="divide-y divide-line">{children}</TableBody>
+      </UiTable>
     </div>
   );
 }
 
 export const td = "px-4 py-3";
 
-const CONTROLS = new Set(["input", "select", "textarea"]);
+/** The controls Field wires to its label: @binarysust/ui inputs, or native ones for custom widgets. */
+const CONTROLS = new Set<unknown>(["input", "select", "textarea", Input, NativeSelect, Textarea]);
 type ControlProps = { id?: string; "aria-describedby"?: string; "aria-invalid"?: boolean | "true" | "false" };
 
 /**
  * A labelled input. `error` is the API's message for this field (422 `fields`), shown under it.
  *
- * The label is a real `<label htmlFor>`: Field gives its first native control (input, select or
- * textarea among its direct children) an id, and points `aria-describedby` at the hint or error.
- * Anything else (a custom widget) is wrapped in a group named by the label.
+ * The label is a real `<label htmlFor>`: Field gives its first control (Input, NativeSelect or Textarea
+ * among its direct children) an id, and points `aria-describedby` at the hint or error. Anything else
+ * (a custom widget) is wrapped in a group named by the label.
  */
 export function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: ReactNode }) {
   const base = useId();
@@ -86,7 +102,7 @@ export function Field({ label, hint, error, children }: { label: string; hint?: 
   const noteId = `${base}-note`;
   const note = error ?? hint;
   const items = Children.toArray(children);
-  const at = items.findIndex((c) => isValidElement(c) && typeof c.type === "string" && CONTROLS.has(c.type));
+  const at = items.findIndex((c) => isValidElement(c) && CONTROLS.has(c.type));
   const control = at >= 0 ? (items[at] as ReactElement<ControlProps>) : undefined;
   const controlId = control ? (control.props.id ?? `${base}-control`) : undefined;
   const describedBy = [control?.props["aria-describedby"], note ? noteId : undefined].filter(Boolean).join(" ") || undefined;
@@ -95,36 +111,36 @@ export function Field({ label, hint, error, children }: { label: string; hint?: 
         i === at ? cloneElement(control, { id: controlId, "aria-describedby": describedBy, "aria-invalid": error ? true : control.props["aria-invalid"] }) : c,
       )
     : items;
-  const body = (
-    <>
+  const labelClass = "text-sm font-semibold text-ink-2";
+  return (
+    <UiField
+      data-invalid={error ? true : undefined}
+      aria-labelledby={controlId ? undefined : labelId}
+      aria-describedby={!controlId && note ? noteId : undefined}
+      className="gap-1.5"
+    >
+      {controlId ? (
+        <FieldLabel htmlFor={controlId} id={labelId} className={labelClass}>
+          {label}
+        </FieldLabel>
+      ) : (
+        <span id={labelId} className={labelClass}>
+          {label}
+        </span>
+      )}
       {wired}
       {error ? (
-        <span id={noteId} className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-vermilion">
+        <FieldError id={noteId} className="flex items-center gap-1.5 font-semibold">
           <Icon name="alert" size={14} /> {error}
-        </span>
+        </FieldError>
       ) : (
         hint && (
-          <span id={noteId} className="mt-1 block text-sm text-ink-3">
+          <FieldDescription id={noteId} className="text-ink-3">
             {hint}
-          </span>
+          </FieldDescription>
         )
       )}
-    </>
-  );
-  return controlId ? (
-    <div>
-      <label htmlFor={controlId} id={labelId} className="mb-1.5 block text-sm font-semibold text-ink-2">
-        {label}
-      </label>
-      {body}
-    </div>
-  ) : (
-    <div role="group" aria-labelledby={labelId} aria-describedby={note ? noteId : undefined}>
-      <span id={labelId} className="mb-1.5 block text-sm font-semibold text-ink-2">
-        {label}
-      </span>
-      {body}
-    </div>
+    </UiField>
   );
 }
 
@@ -172,9 +188,9 @@ export function SaveBar({
   const hasFields = Object.keys(fields).length > 0;
   return (
     <div className={`flex flex-wrap items-center gap-4 border-t border-line pt-6 ${sticky ? "sticky bottom-0 -mx-4 bg-ground px-4 pb-4" : ""}`}>
-      <button type="submit" className="btn btn-primary" disabled={pending}>
+      <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : label}
-      </button>
+      </Button>
       {children}
       <span aria-live="polite" className="text-sm">
         {problem ? (
@@ -228,7 +244,7 @@ export function BackLink({ to, children }: { to: string; children: ReactNode }) 
   );
 }
 
-/** A modal confirmation on the native <dialog> (focus trap, Esc to close). */
+/** A modal confirmation (Base UI alert dialog: focus trap, Esc to close). */
 export function ConfirmDialog({
   open,
   title,
@@ -248,39 +264,28 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onClose: () => void;
 }) {
-  const ref = useRef<HTMLDialogElement>(null);
-  const titleId = useId();
-  useEffect(() => {
-    const d = ref.current;
-    if (!d) return;
-    if (open && !d.open) d.showModal();
-    if (!open && d.open) d.close();
-  }, [open]);
   return (
-    <dialog
-      ref={ref}
-      aria-labelledby={titleId}
-      onClose={onClose}
-      className="m-auto w-[min(34rem,calc(100vw-2rem))] rounded-xl border border-line bg-ground p-6 text-ink backdrop:bg-black/50"
-    >
-      <h2 id={titleId} className="text-xl font-semibold">
-        {title}
-      </h2>
-      <div className="mt-3 space-y-3 text-ink-2">{children}</div>
-      {error ? (
-        <div className="mt-4">
-          <ErrorBox error={error} />
-        </div>
-      ) : null}
-      <div className="mt-6 flex flex-wrap justify-end gap-3">
-        <button type="button" className="btn btn-ghost" onClick={onClose} disabled={pending}>
-          Cancel
-        </button>
-        <button type="button" className="btn btn-primary" onClick={onConfirm} disabled={pending}>
-          {pending ? "Working…" : confirmLabel}
-        </button>
-      </div>
-    </dialog>
+    <AlertDialog open={open} onOpenChange={(next) => !next && onClose()}>
+      <AlertDialogContent className="gap-0 p-6 data-[size=default]:max-w-[min(34rem,calc(100vw-2rem))] data-[size=default]:sm:max-w-[34rem]">
+        <AlertDialogHeader className="place-items-start text-left">
+          <AlertDialogTitle className="text-xl font-semibold">{title}</AlertDialogTitle>
+          <AlertDialogDescription render={<div />} className="mt-3 space-y-3 text-base text-ink-2">
+            {children}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        {error ? (
+          <div className="mt-4">
+            <ErrorBox error={error} />
+          </div>
+        ) : null}
+        <AlertDialogFooter className="-mx-6 -mb-6 mt-6 px-6">
+          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+          <Button type="button" onClick={onConfirm} disabled={pending}>
+            {pending ? "Working…" : confirmLabel}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
@@ -309,9 +314,9 @@ export function DeleteButton({
   });
   return (
     <>
-      <button type="button" className="btn btn-ghost !min-h-10 !text-sm" onClick={() => setOpen(true)}>
+      <Button type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>
         Delete {what}
-      </button>
+      </Button>
       <ConfirmDialog
         open={open}
         title={`Delete this ${what}?`}

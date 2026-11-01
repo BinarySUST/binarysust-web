@@ -30,6 +30,11 @@ import {
   td,
   toLocalInput,
 } from "../ui";
+import { Button, buttonVariants } from "@binarysust/ui/components/button";
+import { Input } from "@binarysust/ui/components/input";
+import { NativeSelect } from "@binarysust/ui/components/native-select";
+import { Textarea } from "@binarysust/ui/components/textarea";
+import { Checkbox } from "@binarysust/ui/components/checkbox";
 
 type EventInput = Schemas["events.EventInput"];
 type Event = Schemas["events.Event"];
@@ -47,7 +52,7 @@ function EventList() {
   return (
     <>
       <SectionHead title="Events">
-        <Link to="/dashboard/$" params={{ _splat: "events/new" }} className="btn btn-primary">
+        <Link to="/dashboard/$" params={{ _splat: "events/new" }} className={buttonVariants()}>
           <Icon name="plus" size={18} /> New event
         </Link>
       </SectionHead>
@@ -201,51 +206,51 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Field label="Title" error={fe.title}>
-            <input
-              className="field"
+            <Input
+              
               value={f.title}
               onChange={(e) => {
                 const title = e.target.value;
                 setF((x) => ({ ...x, title, slug: id || x.slug !== slugify(x.title) ? x.slug : slugify(title) }));
               }}
-            />
+ />
           </Field>
         </div>
         <Field label="URL slug" hint={`/events/${f.slug || "…"}`} error={fe.slug}>
-          <input className="field" value={f.slug} onChange={(e) => set("slug", e.target.value)} />
+          <Input value={f.slug} onChange={(e) => set("slug", e.target.value)} />
         </Field>
         <Field label="Kind" error={fe.kind}>
-          <select className="field" value={f.kind} onChange={(e) => set("kind", oneOf(EVENT_KINDS, e.target.value))}>
+          <NativeSelect value={f.kind} onChange={(e) => set("kind", oneOf(EVENT_KINDS, e.target.value))}>
             {Object.entries(KIND_LABEL).map(([k, label]) => (
               <option key={k} value={k}>
                 {label}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </Field>
         <Field label="Starts" error={fe.startsAt}>
-          <input className="field" type="datetime-local" value={toLocalInput(f.startsAt)} onChange={(e) => set("startsAt", e.target.value ? fromLocalInput(e.target.value) : "")} />
+          <Input type="datetime-local" value={toLocalInput(f.startsAt)} onChange={(e) => set("startsAt", e.target.value ? fromLocalInput(e.target.value) : "")} />
         </Field>
         <Field label="Ends" error={fe.endsAt}>
-          <input className="field" type="datetime-local" value={toLocalInput(f.endsAt)} onChange={(e) => set("endsAt", e.target.value ? fromLocalInput(e.target.value) : "")} />
+          <Input type="datetime-local" value={toLocalInput(f.endsAt)} onChange={(e) => set("endsAt", e.target.value ? fromLocalInput(e.target.value) : "")} />
         </Field>
         <Field label="Venue" error={fe.venue}>
-          <input className="field" value={f.venue ?? ""} onChange={(e) => set("venue", e.target.value || null)} />
+          <Input value={f.venue ?? ""} onChange={(e) => set("venue", e.target.value || null)} />
         </Field>
         <Field label="Online link" error={fe.onlineUrl}>
-          <input className="field" type="url" value={f.onlineUrl ?? ""} onChange={(e) => set("onlineUrl", e.target.value || null)} />
+          <Input type="url" value={f.onlineUrl ?? ""} onChange={(e) => set("onlineUrl", e.target.value || null)} />
         </Field>
         <div className="sm:col-span-2">
           <ImageField label="Cover image" purpose="event" value={f.coverUrl ?? null} onChange={(v) => set("coverUrl", v)} error={fe.coverUrl} hint="Resized to WebP, at most 1600 px." />
         </div>
         <div className="sm:col-span-2">
           <Field label="Summary" hint="One or two sentences, shown on lists and link previews." error={fe.summary}>
-            <textarea className="field min-h-20" value={f.summary} onChange={(e) => set("summary", e.target.value)} maxLength={280} />
+            <Textarea className="min-h-20" value={f.summary} onChange={(e) => set("summary", e.target.value)} maxLength={280} />
           </Field>
         </div>
         <div className="sm:col-span-2">
           <Field label="Details" hint="Markdown." error={fe.bodyMarkdown}>
-            <textarea className="field min-h-48 text-sm" value={f.bodyMarkdown} onChange={(e) => set("bodyMarkdown", e.target.value)} />
+            <Textarea className="min-h-48 text-sm" value={f.bodyMarkdown} onChange={(e) => set("bodyMarkdown", e.target.value)} />
           </Field>
         </div>
         <div className="sm:col-span-2">
@@ -256,11 +261,10 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
       <fieldset className="rounded-lg border border-line p-5">
         <legend className="px-1 font-semibold">Registration</legend>
         <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            className="size-5 accent-[var(--vermilion)]"
+          <Checkbox
+            className="size-5"
             checked={f.registration !== null}
-            onChange={(e) => set("registration", e.target.checked ? { opensAt: "", closesAt: "", capacity: null } : null)}
+            onCheckedChange={(checked) => set("registration", checked ? { opensAt: "", closesAt: "", capacity: null } : null)}
           />
           Require RSVP (window and capacity are set together)
         </label>
@@ -268,20 +272,20 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
         {f.registration && (
           <div className="mt-5 grid gap-5 sm:grid-cols-3">
             <Field label="Opens" error={fe["registration.opensAt"]}>
-              <input className="field" type="datetime-local" value={toLocalInput(f.registration.opensAt)} onChange={(e) => setReg({ opensAt: e.target.value ? fromLocalInput(e.target.value) : "" })} />
+              <Input type="datetime-local" value={toLocalInput(f.registration.opensAt)} onChange={(e) => setReg({ opensAt: e.target.value ? fromLocalInput(e.target.value) : "" })} />
             </Field>
             <Field label="Closes" error={fe["registration.closesAt"]}>
-              <input className="field" type="datetime-local" value={toLocalInput(f.registration.closesAt)} onChange={(e) => setReg({ closesAt: e.target.value ? fromLocalInput(e.target.value) : "" })} />
+              <Input type="datetime-local" value={toLocalInput(f.registration.closesAt)} onChange={(e) => setReg({ closesAt: e.target.value ? fromLocalInput(e.target.value) : "" })} />
             </Field>
             <Field label="Capacity" hint="Empty means no limit." error={fe["registration.capacity"]}>
-              <input
-                className="field"
+              <Input
+                
                 type="number"
                 min={1}
                 inputMode="numeric"
                 value={f.registration.capacity ?? ""}
                 onChange={(e) => setReg({ capacity: e.target.value ? Number(e.target.value) : null })}
-              />
+ />
             </Field>
           </div>
         )}
@@ -290,7 +294,7 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
       <fieldset className="space-y-4 rounded-lg border border-line p-5">
         <legend className="px-1 font-semibold">After the event</legend>
         <Field label="Recap" hint="Markdown, shown on the event page once it has happened." error={fe.recapMarkdown}>
-          <textarea className="field min-h-32 text-sm" value={f.recapMarkdown ?? ""} onChange={(e) => set("recapMarkdown", e.target.value)} />
+          <Textarea className="min-h-32 text-sm" value={f.recapMarkdown ?? ""} onChange={(e) => set("recapMarkdown", e.target.value)} />
         </Field>
         <div>
           <p className="mb-2 text-sm font-semibold text-ink-2">Photos</p>
@@ -299,16 +303,16 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
             {photos.map((p, i) => (
               <li key={p.url + i} className="flex items-center gap-3">
                 <img src={p.url} alt="" className="h-14 w-20 shrink-0 rounded border border-line object-cover" />
-                <input
-                  className="field"
+                <Input
+                  
                   aria-label={`Caption for photo ${i + 1}`}
                   placeholder="Caption"
                   value={p.caption}
                   onChange={(e) => set("photos", photos.map((x, j) => (j === i ? { ...x, caption: e.target.value } : x)))}
-                />
-                <button type="button" className="btn btn-ghost !px-3" aria-label={`Remove photo ${i + 1}`} onClick={() => set("photos", photos.filter((_, j) => j !== i))}>
+ />
+                <Button type="button" variant="outline" className="px-3" aria-label={`Remove photo ${i + 1}`} onClick={() => set("photos", photos.filter((_, j) => j !== i))}>
                   <Icon name="close" size={18} />
-                </button>
+                </Button>
               </li>
             ))}
           </ul>
@@ -319,11 +323,11 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
       </fieldset>
 
       <Field label="Status" error={fe.status}>
-        <select className="field max-w-xs" value={f.status} onChange={(e) => set("status", oneOf(EVENT_STATUSES, e.target.value))}>
+        <NativeSelect className="max-w-xs" value={f.status} onChange={(e) => set("status", oneOf(EVENT_STATUSES, e.target.value))}>
           <option value="draft">Draft (not public)</option>
           <option value="published">Published</option>
           <option value="cancelled">Cancelled (stays public, marked cancelled)</option>
-        </select>
+        </NativeSelect>
       </Field>
 
       <SaveBar
@@ -399,8 +403,8 @@ function Registrants({ id }: { id: string }) {
       <div className="mt-10 mb-4 flex flex-wrap items-end justify-between gap-4">
         <h2 className="text-lg font-semibold">Registrants</h2>
         <div className="flex flex-wrap items-center gap-3">
-          <input className="field !w-64" type="search" placeholder="Filter by name, email or ticket" aria-label="Filter registrants" value={filter} onChange={(x) => setFilter(x.target.value)} />
-          <a href={csvUrl(e.slug)} download className="btn btn-ghost !min-h-10 !text-sm">
+          <Input className="w-64" type="search" placeholder="Filter by name, email or ticket" aria-label="Filter registrants" value={filter} onChange={(x) => setFilter(x.target.value)} />
+          <a href={csvUrl(e.slug)} download className={buttonVariants({ variant: "outline", size: "sm" })}>
             <Icon name="file" size={16} /> Download CSV
           </a>
         </div>
@@ -458,12 +462,12 @@ function CheckIn({ slug, onDone }: { slug: string; onDone: () => void }) {
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-0 flex-1">
           <Field label="Ticket code" hint="Type or scan the code from the attendee's ticket." error={fe.ticket}>
-            <input className="field font-[var(--font-code)] uppercase" autoComplete="off" value={ticket} onChange={(e) => (setTicket(e.target.value), check.reset())} />
+            <Input className="font-[var(--font-code)] uppercase" autoComplete="off" value={ticket} onChange={(e) => (setTicket(e.target.value), check.reset())} />
           </Field>
         </div>
-        <button type="submit" className="btn btn-primary" disabled={check.isPending || !ticket.trim()}>
+        <Button type="submit" disabled={check.isPending || !ticket.trim()}>
           {check.isPending ? "Checking…" : "Check in"}
-        </button>
+        </Button>
       </div>
       <div aria-live="polite" className="mt-3">
         {check.data && (

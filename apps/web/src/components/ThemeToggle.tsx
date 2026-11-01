@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { Button } from "@binarysust/ui/components/button";
 import { Icon } from "./Icon";
 
 type Theme = "dark" | "light";
@@ -20,9 +21,11 @@ export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, read, (): Theme => "light");
   const next: Theme = theme === "dark" ? "light" : "dark";
   return (
-    <button
+    <Button
       type="button"
-      className="inline-flex size-11 items-center justify-center rounded-[4px] text-ink-2 hover:bg-ground-2 hover:text-ink"
+      variant="ghost"
+      size="icon"
+      className="text-ink-2 hover:text-ink"
       aria-label={`Switch to ${next} theme`}
       title={`Switch to ${next} theme`}
       onClick={() => {
@@ -35,6 +38,6 @@ export function ThemeToggle() {
       }}
     >
       <Icon name={theme === "dark" ? "sun" : "moon"} />
-    </button>
+    </Button>
   );
 }

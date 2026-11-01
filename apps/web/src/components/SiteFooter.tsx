@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { BRAND } from "~/lib/brand";
+import { BRAND } from "@binarysust/ui/lib/brand";
 import { Icon } from "./Icon";
-import { Logo } from "./Logo";
+import { Logo } from "@binarysust/ui/components/logo";
 import { NAV } from "./SiteHeader";
 
 const MORE = [

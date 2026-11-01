@@ -45,7 +45,11 @@ function NextEvent({ next }: { next: EventCard | undefined }) {
             <div className="kv">
               <dt>event</dt>
               <dd className="text-[1.1875rem] leading-snug font-semibold">
-                <Link to="/events/$slug" params={{ slug: next.slug }} className="text-ink no-underline hover:underline hover:decoration-primary">
+                <Link
+                  to="/events/$slug"
+                  params={{ slug: next.slug }}
+                  className="text-ink no-underline hover:underline hover:decoration-primary"
+                >
                   {next.title}
                 </Link>
               </dd>
@@ -117,7 +121,7 @@ export function LandingPage() {
               <span className="text-ink-3">{BRAND.motto}</span>
             </p>
             <div className="mt-7 max-w-[38rem] border-l border-line-strong pl-5 sm:mt-9">
-<Prompt command="binary --mission" />
+              <Prompt command="binary --mission" />
               <p className="mt-2.5 text-[clamp(1.25rem,2.2vw,1.5rem)] leading-snug text-ink">{BRAND.mission}</p>
             </div>
           </div>
@@ -271,8 +275,8 @@ export function LandingPage() {
               Turn up to one session.
             </h2>
             <p className="mt-5 max-w-[56ch] text-lg text-ink-2">
-              That is how most members started. Any SUST student can come, from any department: sign in with Google to
-              reserve a seat, and write to the committee if you want to help run things.
+              That is how most members started. Any SUST student can come, from any department: sign in with Google to reserve a seat, and
+              write to the committee if you want to help run things.
             </p>
           </div>
           <div className="flex flex-col items-start gap-3 md:pt-2">

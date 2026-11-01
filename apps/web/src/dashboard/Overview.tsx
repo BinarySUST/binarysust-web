@@ -20,7 +20,12 @@ function PublishStatus() {
   });
 
   if (status.error) return <ErrorBox error={status.error} retry={() => void status.refetch()} />;
-  if (!status.data) return <p className="text-ink-2" role="status">Checking publish status…</p>;
+  if (!status.data)
+    return (
+      <p className="text-ink-2" role="status">
+        Checking publish status…
+      </p>
+    );
 
   const { state, contentChangedAt, live } = status.data;
   const isLive = state === "live";
@@ -52,11 +57,15 @@ export function Overview() {
     <>
       <SectionHead title={`Hello${me.account.name ? `, ${me.account.name.split(" ")[0]}` : ""}`} />
       <section className="rounded-xl border border-line bg-panel p-6" aria-labelledby="publish">
-        <h2 id="publish" className="mb-4 text-lg font-semibold">Public site</h2>
+        <h2 id="publish" className="mb-4 text-lg font-semibold">
+          Public site
+        </h2>
         <PublishStatus />
       </section>
       <section className="mt-8" aria-labelledby="yours">
-        <h2 id="yours" className="mb-4 text-lg font-semibold">What you can do</h2>
+        <h2 id="yours" className="mb-4 text-lg font-semibold">
+          What you can do
+        </h2>
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {sections.map((s) => (
             <li key={s.path}>

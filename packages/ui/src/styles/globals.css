@@ -524,29 +524,53 @@
     color: var(--ink-3);
     font-size: 0.75rem;
   }
-  .prose pre > code.language-go::before { content: "go"; }
-  .prose pre > code.language-ts::before { content: "ts"; }
-  .prose pre > code.language-tsx::before { content: "tsx"; }
-  .prose pre > code.language-js::before { content: "js"; }
-  .prose pre > code.language-python::before { content: "python"; }
-  .prose pre > code.language-cpp::before { content: "c++"; }
-  .prose pre > code.language-c::before { content: "c"; }
-  .prose pre > code.language-java::before { content: "java"; }
-  .prose pre > code.language-rust::before { content: "rust"; }
-  .prose pre > code.language-sql::before { content: "sql"; }
+  .prose pre > code.language-go::before {
+    content: "go";
+  }
+  .prose pre > code.language-ts::before {
+    content: "ts";
+  }
+  .prose pre > code.language-tsx::before {
+    content: "tsx";
+  }
+  .prose pre > code.language-js::before {
+    content: "js";
+  }
+  .prose pre > code.language-python::before {
+    content: "python";
+  }
+  .prose pre > code.language-cpp::before {
+    content: "c++";
+  }
+  .prose pre > code.language-c::before {
+    content: "c";
+  }
+  .prose pre > code.language-java::before {
+    content: "java";
+  }
+  .prose pre > code.language-rust::before {
+    content: "rust";
+  }
+  .prose pre > code.language-sql::before {
+    content: "sql";
+  }
   .prose pre > code.language-sh::before,
-  .prose pre > code.language-bash::before { content: "shell"; }
-  .prose pre > code.language-json::before { content: "json"; }
-  .prose pre > code.language-yaml::before { content: "yaml"; }
-
+  .prose pre > code.language-bash::before {
+    content: "shell";
+  }
+  .prose pre > code.language-json::before {
+    content: "json";
+  }
+  .prose pre > code.language-yaml::before {
+    content: "yaml";
+  }
 }
 
 @layer components {
   /* The hero's engineering grid: major lines every 96px, minor every 24px, fading out toward the bottom. */
   .blueprint {
     background-image:
-      linear-gradient(var(--grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
       linear-gradient(color-mix(in oklab, var(--grid-line) 45%, transparent) 1px, transparent 1px),
       linear-gradient(90deg, color-mix(in oklab, var(--grid-line) 45%, transparent) 1px, transparent 1px);
     background-size:

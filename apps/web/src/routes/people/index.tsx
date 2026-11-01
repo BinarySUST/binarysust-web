@@ -6,6 +6,10 @@ import { PeoplePage } from "~/features/people/components/PeoplePage";
 export const Route = createFileRoute("/people/")({
   loader: () => content.people(),
   head: () =>
-    seo({ title: "People", description: "Members, committee, advisors and alumni of Binary SUST, with their portfolios.", path: "/people" }),
+    seo({
+      title: "People",
+      description: "Members, committee, advisors and alumni of Binary SUST, with their portfolios.",
+      path: "/people",
+    }),
   component: PeoplePage,
 });

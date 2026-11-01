@@ -57,12 +57,11 @@ export function HandlePicker({
   return (
     <Field label={label} hint={match ? `${match.name}${hint ? ` · ${hint}` : ""}` : hint} error={error}>
       <Input
-        
         list={listId}
         autoComplete="off"
         value={value}
         onChange={(e) => onChange(e.target.value.trim().replace(/^@/, "").toLowerCase())}
- />
+      />
       <Options id={listId} people={found.data} />
     </Field>
   );
@@ -98,7 +97,6 @@ export function HandleListPicker({
     <div>
       <Field label={label} hint={hint ?? "Type a name or handle and pick from the list."} error={error}>
         <Input
-          
           list={listId}
           autoComplete="off"
           value={text}
@@ -115,7 +113,7 @@ export function HandleListPicker({
               add(text.trim().replace(/^@/, ""));
             }
           }}
- />
+        />
         <Options id={listId} people={found.data?.filter((p) => !value.includes(p.handle))} />
       </Field>
       {value.length > 0 && (

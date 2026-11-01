@@ -30,8 +30,8 @@ export function MediaSection() {
     <>
       <SectionHead title="Media" />
       <p className="mb-8 max-w-2xl text-ink-2">
-        Upload a file and paste its URL anywhere that takes a link. Photos are resized in your browser to WebP, at most{" "}
-        {MAX_SIDE} px on the long side, before they are sent.
+        Upload a file and paste its URL anywhere that takes a link. Photos are resized in your browser to WebP, at most {MAX_SIDE} px on the
+        long side, before they are sent.
       </p>
       <div className="flex max-w-2xl flex-wrap items-end gap-4 rounded-xl border border-line bg-panel p-5">
         <div className="w-64">

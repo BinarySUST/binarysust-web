@@ -1,7 +1,7 @@
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "cn";
 
 // The drawing sheet's tag: a hairline mono chip for kinds, statuses and post tags (apps/web/DESIGN.md).
 // As a link, aria-current="page" inverts it to ink.
@@ -20,11 +20,11 @@ const badgeVariantsBase = cva(
     defaultVariants: {
       variant: "outline",
     },
-  }
-)
+  },
+);
 
 /** The variant classes, conflict-merged so `className` overrides win when used on links (`<a className={...}>`). */
-const badgeVariants = (props?: Parameters<typeof badgeVariantsBase>[0]) => cn(badgeVariantsBase(props))
+const badgeVariants = (props?: Parameters<typeof badgeVariantsBase>[0]) => cn(badgeVariantsBase(props));
 
 function Badge({
   className,
@@ -38,14 +38,14 @@ function Badge({
       {
         className: cn(badgeVariants({ variant }), className),
       },
-      props
+      props,
     ),
     render,
     state: {
       slot: "badge",
       variant,
     },
-  })
+  });
 }
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants };

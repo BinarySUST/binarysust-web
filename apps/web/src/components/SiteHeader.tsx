@@ -69,9 +69,7 @@ export function SiteHeader() {
             Sign in
           </a>
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger
-              render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}
-            >
+            <SheetTrigger render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}>
               <Icon name="menu" size={22} />
             </SheetTrigger>
             <SheetContent
@@ -81,7 +79,12 @@ export function SiteHeader() {
             >
               <div className="mx-auto flex h-16 w-full max-w-7xl items-center px-4 sm:px-6">
                 <SheetTitle className="sr-only">Menu</SheetTitle>
-                <Link to="/" onClick={() => setOpen(false)} className="flex items-center self-stretch text-ink no-underline" aria-label="Binary SUST, home">
+                <Link
+                  to="/"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center self-stretch text-ink no-underline"
+                  aria-label="Binary SUST, home"
+                >
                   <Logo />
                 </Link>
                 <Button variant="ghost" size="icon" className="ml-auto" aria-label="Close menu" onClick={() => setOpen(false)}>

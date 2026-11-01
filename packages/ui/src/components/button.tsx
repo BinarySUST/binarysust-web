@@ -1,6 +1,6 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "cn";
 
 // Re-skinned for the Binary SUST drawing sheet (apps/web/DESIGN.md): 44px controls, 4px radius, hairline
 // outline variant, no shadows. Focus uses the global 2px :focus-visible outline from globals.css.
@@ -29,11 +29,11 @@ const buttonVariantsBase = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
 
 /** The variant classes, conflict-merged so `className` overrides win when used on links (`<a className={...}>`). */
-const buttonVariants = (props?: Parameters<typeof buttonVariantsBase>[0]) => cn(buttonVariantsBase(props))
+const buttonVariants = (props?: Parameters<typeof buttonVariantsBase>[0]) => cn(buttonVariantsBase(props));
 
 function Button({
   className,
@@ -41,13 +41,7 @@ function Button({
   size = "default",
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariantsBase>) {
-  return (
-    <ButtonPrimitive
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
+  return <ButtonPrimitive data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props} />;
 }
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

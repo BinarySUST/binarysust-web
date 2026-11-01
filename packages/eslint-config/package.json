@@ -9,6 +9,9 @@
     "./react": "./react.js",
     "./rules": "./rules.js"
   },
+  "scripts": {
+    "lint": "eslint ."
+  },
   "dependencies": {
     "@eslint/js": "10.0.1",
     "eslint-import-resolver-typescript": "4.4.5",
@@ -16,6 +19,10 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.14.0",
     "typescript-eslint": "8.72.1"
+  },
+  "devDependencies": {
+    "eslint": "10.14.0",
+    "typescript": "6.0.3"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",

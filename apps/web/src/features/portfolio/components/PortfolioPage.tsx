@@ -82,13 +82,17 @@ export function PortfolioPage() {
         <div className="min-w-0 space-y-14">
           {p.bioHtml && (
             <section aria-labelledby="bio">
-              <h2 id="bio" className="mb-4 text-lg font-semibold">About</h2>
+              <h2 id="bio" className="mb-4 text-lg font-semibold">
+                About
+              </h2>
               <div className="prose text-[1.0625rem]" dangerouslySetInnerHTML={{ __html: p.bioHtml }} />
             </section>
           )}
           {p.projects.length > 0 && (
             <section aria-labelledby="projects">
-              <h2 id="projects" className="mb-2 text-lg font-semibold">Projects</h2>
+              <h2 id="projects" className="mb-2 text-lg font-semibold">
+                Projects
+              </h2>
               <ul>
                 {p.projects.map((pr) => (
                   <li key={pr.title} className="border-b border-line py-5 first:border-t">
@@ -122,10 +126,15 @@ export function PortfolioPage() {
           )}
           {p.achievements.length > 0 && (
             <section aria-labelledby="achievements">
-              <h2 id="achievements" className="mb-2 text-lg font-semibold">Achievements</h2>
+              <h2 id="achievements" className="mb-2 text-lg font-semibold">
+                Achievements
+              </h2>
               <ol>
                 {p.achievements.map((a) => (
-                  <li key={a.title} className="grid gap-x-6 gap-y-1 border-b border-line py-4 first:border-t sm:grid-cols-[8.5rem_minmax(0,1fr)]">
+                  <li
+                    key={a.title}
+                    className="grid gap-x-6 gap-y-1 border-b border-line py-4 first:border-t sm:grid-cols-[8.5rem_minmax(0,1fr)]"
+                  >
                     <p className="meta pt-0.5 text-ink-3">{a.date ? formatShort(a.date) : ""}</p>
                     <div>
                       <p className="font-semibold">{a.title}</p>
@@ -141,11 +150,16 @@ export function PortfolioPage() {
         <aside className="space-y-10">
           {p.skills.length > 0 && (
             <section aria-labelledby="skills">
-              <h2 id="skills" className="mb-3 text-lg font-semibold">Skills</h2>
+              <h2 id="skills" className="mb-3 text-lg font-semibold">
+                Skills
+              </h2>
               <ul className="flex flex-wrap gap-2">
                 {p.skills.map((s) => (
                   <li key={s}>
-                    <a href={`/people?skill=${encodeURIComponent(s)}`} className={badgeVariants({ className: "min-h-8 px-2.5 text-[0.8125rem]" })}>
+                    <a
+                      href={`/people?skill=${encodeURIComponent(s)}`}
+                      className={badgeVariants({ className: "min-h-8 px-2.5 text-[0.8125rem]" })}
+                    >
                       {s}
                     </a>
                   </li>
@@ -155,7 +169,9 @@ export function PortfolioPage() {
           )}
           {p.positions.length > 0 && (
             <section aria-labelledby="positions">
-              <h2 id="positions" className="mb-2 text-lg font-semibold">Binary SUST committee</h2>
+              <h2 id="positions" className="mb-2 text-lg font-semibold">
+                Binary SUST committee
+              </h2>
               <ul>
                 {p.positions.map((pos) => (
                   <li key={pos.term + pos.title} className="flex items-baseline justify-between gap-4 border-b border-line py-2.5">
@@ -170,7 +186,9 @@ export function PortfolioPage() {
           )}
           {p.socials.length > 0 && (
             <section aria-labelledby="links" className="hidden print:block">
-              <h2 id="links" className="mb-2 text-lg font-semibold">Links</h2>
+              <h2 id="links" className="mb-2 text-lg font-semibold">
+                Links
+              </h2>
               <ul className="meta space-y-1">
                 {p.socials.map((s) => (
                   <li key={s.url + s.kind}>

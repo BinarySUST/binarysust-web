@@ -101,14 +101,14 @@ export function ImageField({
         <div className="min-w-0 flex-1 space-y-2">
           <Input
             id={id}
-            
+
             type="url"
             aria-describedby={error || hint ? `${id}-note` : undefined}
             aria-invalid={error ? true : undefined}
             placeholder="https://"
             value={value ?? ""}
             onChange={(e) => onChange(e.target.value.trim() ? e.target.value.trim() : null)}
- />
+          />
           <div className="flex flex-wrap items-center gap-3">
             <UploadButton purpose={purpose} onUploaded={(o) => onChange(o.url)} />
             {value && (

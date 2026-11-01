@@ -40,7 +40,11 @@ export function WakingBanner() {
 }
 
 export function Loading({ what = "Loading" }: { what?: string }) {
-  return <p className="py-10 text-ink-2" role="status">{what}…</p>;
+  return (
+    <p className="py-10 text-ink-2" role="status">
+      {what}…
+    </p>
+  );
 }
 
 export function ErrorBox({ error, retry }: { error: unknown; retry?: () => void }) {
@@ -108,7 +112,13 @@ export function Field({ label, hint, error, children }: { label: string; hint?: 
   const describedBy = [control?.props["aria-describedby"], note ? noteId : undefined].filter(Boolean).join(" ") || undefined;
   const wired = control
     ? items.map((c, i) =>
-        i === at ? cloneElement(control, { id: controlId, "aria-describedby": describedBy, "aria-invalid": error ? true : control.props["aria-invalid"] }) : c,
+        i === at
+          ? cloneElement(control, {
+              id: controlId,
+              "aria-describedby": describedBy,
+              "aria-invalid": error ? true : control.props["aria-invalid"],
+            })
+          : c,
       )
     : items;
   const labelClass = "text-sm font-semibold text-ink-2";
@@ -187,7 +197,9 @@ export function SaveBar({
   const others = Object.entries(fields).filter(([k]) => !isShown(k));
   const hasFields = Object.keys(fields).length > 0;
   return (
-    <div className={`flex flex-wrap items-center gap-4 border-t border-line pt-6 ${sticky ? "sticky bottom-0 -mx-4 bg-ground px-4 pb-4" : ""}`}>
+    <div
+      className={`flex flex-wrap items-center gap-4 border-t border-line pt-6 ${sticky ? "sticky bottom-0 -mx-4 bg-ground px-4 pb-4" : ""}`}
+    >
       <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : label}
       </Button>

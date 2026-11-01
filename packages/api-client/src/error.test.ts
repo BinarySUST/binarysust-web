@@ -46,9 +46,7 @@ describe("toApiError", () => {
   });
 
   it("ignores bodies that are not the envelope (a proxy's HTML or text)", () => {
-    expect(toApiError(502, "<html>Bad gateway</html>").message).toBe(
-      "The server could not finish that (502). Try again in a moment.",
-    );
+    expect(toApiError(502, "<html>Bad gateway</html>").message).toBe("The server could not finish that (502). Try again in a moment.");
     expect(toApiError(500, null).code).toBe("http_500");
   });
 });

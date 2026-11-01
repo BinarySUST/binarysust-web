@@ -25,18 +25,19 @@ export function AboutPage() {
           </ul>
           <h2>How the club runs</h2>
           <p>
-            An executive committee elected for each term runs the club: a president, a general secretary, secretaries for training, events, publication, IT and design, and executive members. An advisory committee of faculty, with the Vice-Chancellor as Chief Patron, guides it.
+            An executive committee elected for each term runs the club: a president, a general secretary, secretaries for training, events,
+            publication, IT and design, and executive members. An advisory committee of faculty, with the Vice-Chancellor as Chief Patron,
+            guides it.
             {currentTerm && (
               <>
                 {" "}
-                The current committee is the <Link to="/committee">{currentTerm.label} committee</Link>; every earlier
-                term stays on record.
+                The current committee is the <Link to="/committee">{currentTerm.label} committee</Link>; every earlier term stays on record.
               </>
             )}
           </p>
           <p>
-            Members keep public portfolios on this site. Alumni stay listed after they graduate, so first-years can see
-            where a SUST degree and a few late-night contests lead.
+            Members keep public portfolios on this site. Alumni stay listed after they graduate, so first-years can see where a SUST degree
+            and a few late-night contests lead.
           </p>
         </div>
         <aside className="space-y-6">

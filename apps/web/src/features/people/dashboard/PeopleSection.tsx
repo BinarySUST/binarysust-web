@@ -8,7 +8,21 @@ import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { type Affiliation, AFFILIATIONS as AFFILIATION_VALUES, PERSON_STATUSES, oneOf } from "@binarysust/api-client";
 import { ImageField } from "~/features/media/components/MediaUpload";
 import type { SectionProps } from "~/dashboard/sections";
-import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, orNull, td } from "~/dashboard/ui";
+import {
+  BackLink,
+  DeleteButton,
+  Empty,
+  ErrorBox,
+  Field,
+  Loading,
+  SaveBar,
+  SectionHead,
+  Table,
+  fieldErrors,
+  invalidate,
+  orNull,
+  td,
+} from "~/dashboard/ui";
 import { buttonVariants } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { NativeSelect } from "@binarysust/ui/components/native-select";
@@ -49,7 +63,14 @@ function PeopleList() {
         </Link>
       </SectionHead>
       <div className="mb-5 flex flex-wrap gap-3">
-        <Input className="w-72" type="search" placeholder="Search name, handle or email" aria-label="Search people" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Input
+          className="w-72"
+          type="search"
+          placeholder="Search name, handle or email"
+          aria-label="Search people"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <NativeSelect className="w-48" aria-label="Filter by status" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">Every status</option>
           {PERSON_STATUSES.map((s) => (
@@ -145,15 +166,19 @@ function PersonForm({ id, initial, status }: { id: string | null; initial: Perso
       </SectionHead>
       {status && (
         <p className="-mt-4 text-ink-2">
-          Status today: <strong className="capitalize text-ink">{status}</strong>. It follows from affiliation, dates and
-          current committee seats.
+          Status today: <strong className="capitalize text-ink">{status}</strong>. It follows from affiliation, dates and current committee
+          seats.
         </p>
       )}
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" error={fe.name}>
           <Input value={f.name} onChange={(e) => set("name", e.target.value)} />
         </Field>
-        <Field label="Handle" hint={id ? "Changing it keeps the old URL working as a redirect." : `/people/${f.handle || "…"}`} error={fe.handle}>
+        <Field
+          label="Handle"
+          hint={id ? "Changing it keeps the old URL working as a redirect." : `/people/${f.handle || "…"}`}
+          error={fe.handle}
+        >
           <Input value={f.handle} onChange={(e) => set("handle", e.target.value.toLowerCase())} />
         </Field>
         <Field label="Email" hint="Their Google sign-in links to this person when the emails match." error={fe.email}>
@@ -172,7 +197,12 @@ function PersonForm({ id, initial, status }: { id: string | null; initial: Perso
           <Input value={f.department} onChange={(e) => set("department", e.target.value)} />
         </Field>
         <Field label="Batch" hint="Admission year, e.g. 2021." error={fe.batch}>
-          <Input type="number" inputMode="numeric" value={f.batch ?? ""} onChange={(e) => set("batch", e.target.value ? Number(e.target.value) : null)} />
+          <Input
+            type="number"
+            inputMode="numeric"
+            value={f.batch ?? ""}
+            onChange={(e) => set("batch", e.target.value ? Number(e.target.value) : null)}
+          />
         </Field>
         <Field label="Member since" hint="Set for students who joined the club." error={fe.memberSince}>
           <Input type="date" value={f.memberSince ?? ""} onChange={(e) => set("memberSince", orNull(e.target.value))} />
@@ -211,8 +241,8 @@ function PersonForm({ id, initial, status }: { id: string | null; initial: Perso
               }}
             >
               <p>
-                Only someone with no committee seats, posts or talks can be deleted; the API says what is in the way otherwise.
-                To hide someone from the public site but keep their history, untick <strong>Listed</strong> instead.
+                Only someone with no committee seats, posts or talks can be deleted; the API says what is in the way otherwise. To hide
+                someone from the public site but keep their history, untick <strong>Listed</strong> instead.
               </p>
             </DeleteButton>
           </span>

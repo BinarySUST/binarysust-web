@@ -20,7 +20,10 @@ export const Route = createFileRoute("/committee/")({
     const data = Route.useLoaderData();
     return (
       <>
-        <PageHead title={`Committee ${data.term.label}`} lede="The students who run Binary SUST this term, and the faculty who advise them." />
+        <PageHead
+          title={`Committee ${data.term.label}`}
+          lede="The students who run Binary SUST this term, and the faculty who advise them."
+        />
         <CommitteeView data={data} />
       </>
     );

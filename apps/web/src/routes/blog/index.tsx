@@ -17,13 +17,22 @@ export const Route = createFileRoute("/blog/")({
           lede={
             <>
               Tutorials, contest editorials and event write-ups by members. Also as an{" "}
-              <a href="/rss.xml" className="link">RSS feed</a>.
+              <a href="/rss.xml" className="link">
+                RSS feed
+              </a>
+              .
             </>
           }
         />
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <TagNav tags={allTags(posts)} />
-          {posts.length ? <div className="border-t border-line-strong"><PostList posts={posts} /></div> : <p className="text-ink-2">No posts yet.</p>}
+          {posts.length ? (
+            <div className="border-t border-line-strong">
+              <PostList posts={posts} />
+            </div>
+          ) : (
+            <p className="text-ink-2">No posts yet.</p>
+          )}
         </div>
       </>
     );

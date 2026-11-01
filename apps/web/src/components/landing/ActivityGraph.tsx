@@ -23,7 +23,9 @@ const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? "" : "s"}`;
 function describe(items: Activity[]): string {
   const c = { event: 0, post: 0, talk: 0 };
   for (const a of items) c[a.kind]++;
-  return [c.event && plural(c.event, "event"), c.post && plural(c.post, "post"), c.talk && plural(c.talk, "talk")].filter(Boolean).join(", ");
+  return [c.event && plural(c.event, "event"), c.post && plural(c.post, "post"), c.talk && plural(c.talk, "talk")]
+    .filter(Boolean)
+    .join(", ");
 }
 
 export function ActivityGraph({ activity, builtAt }: { activity: Activity[]; builtAt: string }) {
@@ -99,9 +101,15 @@ export function ActivityGraph({ activity, builtAt }: { activity: Activity[]; bui
                 {m.label}
               </text>
             ))}
-            <text x={0} y={TOP + 1 * STEP + 9}>Mon</text>
-            <text x={0} y={TOP + 3 * STEP + 9}>Wed</text>
-            <text x={0} y={TOP + 5 * STEP + 9}>Fri</text>
+            <text x={0} y={TOP + 1 * STEP + 9}>
+              Mon
+            </text>
+            <text x={0} y={TOP + 3 * STEP + 9}>
+              Wed
+            </text>
+            <text x={0} y={TOP + 5 * STEP + 9}>
+              Fri
+            </text>
           </g>
           {cells}
         </svg>
@@ -114,7 +122,11 @@ export function ActivityGraph({ activity, builtAt }: { activity: Activity[]; bui
         <span className="meta flex items-center gap-1.5 text-xs text-ink-3" aria-hidden="true">
           Less
           {LEVEL.map((f, i) => (
-            <span key={f} className="inline-block size-[11px] rounded-[2px]" style={{ background: f, outline: i === 0 ? "1px solid var(--line)" : undefined, outlineOffset: -1 }} />
+            <span
+              key={f}
+              className="inline-block size-[11px] rounded-[2px]"
+              style={{ background: f, outline: i === 0 ? "1px solid var(--line)" : undefined, outlineOffset: -1 }}
+            />
           ))}
           More
         </span>

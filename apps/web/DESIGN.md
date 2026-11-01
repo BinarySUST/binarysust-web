@@ -21,16 +21,55 @@ colors:
   ink-3: "oklch(0.49 0.013 155)"
   code-bg: "oklch(0.965 0.005 149)"
 typography:
-  display: { fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif", fontSize: "clamp(3rem, 9vw, 6rem)", fontWeight: 620, lineHeight: 0.96, letterSpacing: "-0.022em", fontVariation: "'wdth' 112" }
-  headline: { fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif", fontSize: "clamp(2.25rem, 5.5vw, 3.75rem)", fontWeight: 620, lineHeight: 1.06, letterSpacing: "-0.022em", fontVariation: "'wdth' 112" }
-  title: { fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif", fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 620, lineHeight: 1.06, letterSpacing: "-0.022em", fontVariation: "'wdth' 112" }
+  display:
+    {
+      fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif",
+      fontSize: "clamp(3rem, 9vw, 6rem)",
+      fontWeight: 620,
+      lineHeight: 0.96,
+      letterSpacing: "-0.022em",
+      fontVariation: "'wdth' 112",
+    }
+  headline:
+    {
+      fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif",
+      fontSize: "clamp(2.25rem, 5.5vw, 3.75rem)",
+      fontWeight: 620,
+      lineHeight: 1.06,
+      letterSpacing: "-0.022em",
+      fontVariation: "'wdth' 112",
+    }
+  title:
+    {
+      fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif",
+      fontSize: "clamp(1.5rem, 3vw, 2rem)",
+      fontWeight: 620,
+      lineHeight: 1.06,
+      letterSpacing: "-0.022em",
+      fontVariation: "'wdth' 112",
+    }
   body: { fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif", fontSize: "1.0625rem", fontWeight: 400, lineHeight: 1.6 }
-  label: { fontFamily: "JetBrains Mono Variable, ui-monospace, SFMono-Regular, monospace", fontSize: "0.8125rem", fontWeight: 400, lineHeight: 1.45, letterSpacing: "0", fontFeature: "'tnum'" }
+  label:
+    {
+      fontFamily: "JetBrains Mono Variable, ui-monospace, SFMono-Regular, monospace",
+      fontSize: "0.8125rem",
+      fontWeight: 400,
+      lineHeight: 1.45,
+      letterSpacing: "0",
+      fontFeature: "'tnum'",
+    }
   bangla: { fontFamily: "Anek Bangla Variable, Noto Sans Bengali, sans-serif", fontSize: "1.625rem", fontWeight: 500, lineHeight: 1 }
 rounded: { xs: "2px", sm: "3px", md: "4px", lg: "6px" }
 spacing: { gutter: "16px", gutter-sm: "24px", section: "96px", head: "32px" }
 components:
-  button-primary: { backgroundColor: "{colors.primary}", textColor: "{colors.primary-foreground}", rounded: "{rounded.md}", padding: "8px 18px", height: "44px" }
+  button-primary:
+    {
+      backgroundColor: "{colors.primary}",
+      textColor: "{colors.primary-foreground}",
+      rounded: "{rounded.md}",
+      padding: "8px 18px",
+      height: "44px",
+    }
   button-primary-hover: { backgroundColor: "{colors.primary-hover}" }
   button-ghost: { backgroundColor: "transparent", textColor: "{colors.ink}", rounded: "{rounded.md}", padding: "8px 18px", height: "44px" }
   button-ghost-hover: { backgroundColor: "{colors.ground-2}" }
@@ -50,6 +89,7 @@ components:
 A well-made engineering document crossed with a developer tool: hairline frames, title blocks for facts, precise mono metadata, real club data shown the way engineers show it (a contribution graph, a code window, a dated schedule). Calm, credible, university-grade. Ornament lives only in the hero background (a faint grid and a pointer-following glow); the text column carries none.
 
 **Key Characteristics:**
+
 - Light and dark are both first-class; light is the default, the system preference decides until the visitor picks.
 - One accent (brand green) for action and "active"; everything else is tinted neutral.
 - One 1px hairline weight for every rule, border and frame; depth by flat plane steps only.
@@ -60,13 +100,16 @@ A well-made engineering document crossed with a developer tool: hairline frames,
 Neutrals tinted toward the brand green hue (149); one green accent; brand red as a single spark. Frontmatter holds the light values; dark ("night graphite", same hue) is in `.impeccable/design.json`. Theme mechanics: `data-theme` on `<html>` overrides; the dark set is duplicated under `prefers-color-scheme: dark` on `:root:not([data-theme])` so no-JS visitors still get it. Any token change must be made in all three blocks.
 
 ### Primary
+
 - **Drafting Green** (`--primary`): buttons, the prompt `$`, section indices, graph peak, focus. Darkened from the logo green until white text on it passes AA. **Primary Ink** is its text-strength variant for links and hover; **Primary Soft** is selection.
 - **Logo Green** (brand): the logo colour itself, graphics only (3:1 on ground), never text.
 
 ### Tertiary
+
 - **Live Red** (brand-red): only the pulsing live dot beside an upcoming event.
 
 ### Neutral
+
 - **Drafting Film** (ground), **Sunken Plane** (ground-2: footer, advisor band, hover fills), **Sheet White** (panel): the three planes.
 - **Hairline** (line) and **Strong Hairline** (line-strong: frames, section rules, tag and field borders).
 - **Ink / Ink 2 / Ink 3**: text, secondary text, metadata labels. All verified ≥4.5:1 on ground and panel in both themes.
@@ -114,12 +157,14 @@ Small, firm radii: 2px (focus ring, graph cells), 3px (tags, inline code), 4px (
 ## Do's and Don'ts
 
 ### Do:
+
 - **Do** give every technical device a real payload: data, code or metadata.
 - **Do** keep focus visible: 2px primary outline, 3px offset, everywhere.
 - **Do** verify AA contrast for every new text/background pair in both themes.
 - **Do** keep the print stylesheet dropping chrome so portfolios print as a CV.
 
 ### Don't:
+
 - **Don't** add eyebrow or kicker labels above headings.
 - **Don't** use shadows, glass, gradient fills or gradient text.
 - **Don't** use brand red for anything but the live dot.

@@ -30,9 +30,7 @@ export function useSaveSponsor(id: string | null, onCreated: (s: Sponsor) => voi
   return useMutation({
     mutationFn: async (body: SponsorIn) =>
       unwrap(
-        id
-          ? await api.PUT("/api/v1/sponsors/{id}", { params: { path: { id } }, body })
-          : await api.POST("/api/v1/sponsors", { body }),
+        id ? await api.PUT("/api/v1/sponsors/{id}", { params: { path: { id } }, body }) : await api.POST("/api/v1/sponsors", { body }),
       ),
     onMutate: (body) => {
       if (id) qc.setQueryData<Sponsor[]>(sponsorKeys.all, (rows) => rows?.map((r) => (r.id === id ? { ...r, ...body } : r)));

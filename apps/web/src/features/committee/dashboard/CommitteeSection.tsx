@@ -89,7 +89,9 @@ function Terms() {
               </td>
               <td className={`${td} tabular`}>{formatShort(t.startsOn)}</td>
               <td className={`${td} tabular`}>{t.seats}</td>
-              <td className={td}>{t.current && <span className="rounded-full bg-parrot/15 px-3 py-0.5 text-sm font-semibold">Current</span>}</td>
+              <td className={td}>
+                {t.current && <span className="rounded-full bg-parrot/15 px-3 py-0.5 text-sm font-semibold">Current</span>}
+              </td>
             </tr>
           ))}
         </Table>
@@ -152,7 +154,8 @@ function TermDetail({ id }: { id: string }) {
     <div className="space-y-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-2xl font-semibold">
-          {term.label} {term.current && <span className="ml-2 rounded-full bg-parrot/15 px-3 py-0.5 align-middle text-sm font-semibold">Current</span>}
+          {term.label}{" "}
+          {term.current && <span className="ml-2 rounded-full bg-parrot/15 px-3 py-0.5 align-middle text-sm font-semibold">Current</span>}
         </h2>
         <BackLink to="committee">All terms</BackLink>
       </div>
@@ -175,13 +178,11 @@ function Handover({ term, current }: { term: TermRow; current: TermRow | undefin
       invalidate(qc, ["terms"], ["people"], ["grants"], ["me"]);
     },
   });
-  if (term.current)
-    return <p className="text-ink-2">This is the current term. Its seats decide who holds committee roles right now.</p>;
+  if (term.current) return <p className="text-ink-2">This is the current term. Its seats decide who holds committee roles right now.</p>;
   return (
     <div className="rounded-xl border border-line bg-panel p-5">
       <p className="text-ink-2">
-        {current ? `${current.label} is the current term.` : "No term is current yet."} When {term.label}'s seats are filled,
-        hand over.
+        {current ? `${current.label} is the current term.` : "No term is current yet."} When {term.label}'s seats are filled, hand over.
       </p>
       <Button type="button" className="mt-4" onClick={() => setOpen(true)}>
         Make {term.label} current
@@ -199,21 +200,23 @@ function Handover({ term, current }: { term: TermRow; current: TermRow | undefin
         <p>This is the yearly handover. One write, and on their next request:</p>
         <ul className="list-disc space-y-1 pl-5">
           <li>
-            Everyone seated in <strong>{term.label}</strong> ({term.seats} {term.seats === 1 ? "seat" : "seats"}) gets the roles
-            their positions carry.
+            Everyone seated in <strong>{term.label}</strong> ({term.seats} {term.seats === 1 ? "seat" : "seats"}) gets the roles their
+            positions carry.
           </li>
           <li>
-            {current ? <>The {current.label} committee</> : "Anyone holding roles through a seat"} loses those roles and their
-            dashboard sections. Nobody revokes anything by hand.
+            {current ? <>The {current.label} committee</> : "Anyone holding roles through a seat"} loses those roles and their dashboard
+            sections. Nobody revokes anything by hand.
           </li>
           <li>Grants scoped to the old term stop applying; permanent grants stay.</li>
           <li>The public committee page and member statuses update with the next build.</li>
         </ul>
-        {term.seats === 0 && <p className="font-semibold text-vermilion">{term.label} has no seats yet. Nobody will hold a seat-based role.</p>}
+        {term.seats === 0 && (
+          <p className="font-semibold text-vermilion">{term.label} has no seats yet. Nobody will hold a seat-based role.</p>
+        )}
         {me.roles.length > 0 && (
           <p className="text-sm">
-            If your own admin role comes from a {current?.label ?? "current"} seat rather than a permanent grant, you will lose
-            access to this page too.
+            If your own admin role comes from a {current?.label ?? "current"} seat rather than a permanent grant, you will lose access to
+            this page too.
           </p>
         )}
       </ConfirmDialog>
@@ -221,15 +224,28 @@ function Handover({ term, current }: { term: TermRow; current: TermRow | undefin
   );
 }
 
-function PersonPicker({ value, onChange, error, label = "Person" }: { value: string; onChange: (id: string) => void; error?: string; label?: string }) {
+function PersonPicker({
+  value,
+  onChange,
+  error,
+  label = "Person",
+}: {
+  value: string;
+  onChange: (id: string) => void;
+  error?: string;
+  label?: string;
+}) {
   const people = usePeople();
   const listId = useId();
   const [text, setText] = useState("");
   const options = people.data ?? [];
   return (
-    <Field label={label} hint="Type a name or @handle and pick from the list." error={error ?? (text && !value ? "Pick someone from the list." : undefined)}>
+    <Field
+      label={label}
+      hint="Type a name or @handle and pick from the list."
+      error={error ?? (text && !value ? "Pick someone from the list." : undefined)}
+    >
       <Input
-        
         list={listId}
         value={text}
         onChange={(e) => {
@@ -238,7 +254,7 @@ function PersonPicker({ value, onChange, error, label = "Person" }: { value: str
           const m = /@([a-z0-9-]+)\)?$/.exec(v);
           onChange(options.find((p) => p.handle === m?.[1])?.id ?? "");
         }}
- />
+      />
       <datalist id={listId}>
         {options.map((p) => (
           <option key={p.id} value={`${p.name} (@${p.handle})`} />
@@ -274,7 +290,10 @@ function Seats({ term }: { term: TermRow }) {
       const key = ["terms", term.id, "seats"];
       await qc.cancelQueries({ queryKey: key });
       const prev = qc.getQueryData<Schemas["people.SeatRow"][]>(key);
-      qc.setQueryData(key, prev?.filter((s) => s.id !== seatId));
+      qc.setQueryData(
+        key,
+        prev?.filter((s) => s.id !== seatId),
+      );
       return { prev };
     },
     onError: (_e, _id, ctx) => qc.setQueryData(["terms", term.id, "seats"], ctx?.prev),
@@ -362,9 +381,9 @@ function Positions() {
   return (
     <div className="space-y-10">
       <p className="max-w-3xl text-ink-2">
-        Each position carries roles. Whoever holds a seat on that position in the <strong>current</strong> term holds those
-        roles. Changing roles here takes effect on each holder's next request. Several people can hold the same position in
-        a term (assistants, executive members). <em>Lifetime</em> positions make their holders lifetime members.
+        Each position carries roles. Whoever holds a seat on that position in the <strong>current</strong> term holds those roles. Changing
+        roles here takes effect on each holder's next request. Several people can hold the same position in a term (assistants, executive
+        members). <em>Lifetime</em> positions make their holders lifetime members.
       </p>
       {positions.data.length === 0 ? (
         <Empty>No positions yet.</Empty>
@@ -396,7 +415,14 @@ function Positions() {
       <div className="max-w-3xl rounded-xl border border-line p-5">
         <h2 className="mb-4 text-lg font-semibold">New position</h2>
         <PositionForm
-          initial={{ title: "", slug: "", category: "executive", group: "member", lifetime: false, rank: (positions.data.filter((p) => p.category === "executive").at(-1)?.rank ?? 0) + 10 }}
+          initial={{
+            title: "",
+            slug: "",
+            category: "executive",
+            group: "member",
+            lifetime: false,
+            rank: (positions.data.filter((p) => p.category === "executive").at(-1)?.rank ?? 0) + 10,
+          }}
           key={positions.data.length}
         />
       </div>
@@ -416,7 +442,9 @@ function PositionForm({ id, initial, onDone }: { id?: string; initial: PositionI
   });
   const save = useMutation({
     mutationFn: async (body: PositionIn) =>
-      unwrap(id ? await api.PUT("/api/v1/positions/{id}", { params: { path: { id } }, body }) : await api.POST("/api/v1/positions", { body })),
+      unwrap(
+        id ? await api.PUT("/api/v1/positions/{id}", { params: { path: { id } }, body }) : await api.POST("/api/v1/positions", { body }),
+      ),
     onSuccess: () => {
       invalidate(qc, ["positions"], ["position-roles"]);
       onDone?.();
@@ -462,7 +490,13 @@ function PositionForm({ id, initial, onDone }: { id?: string; initial: PositionI
           Lifetime: holders become lifetime members
         </label>
       </div>
-      <SaveBar pending={save.isPending} error={save.error} success={save.isSuccess && !id} label={id ? "Save position" : "Create position"} shown={["title", "slug", "category", "group", "rank"]}>
+      <SaveBar
+        pending={save.isPending}
+        error={save.error}
+        success={save.isSuccess && !id}
+        label={id ? "Save position" : "Create position"}
+        shown={["title", "slug", "category", "group", "rank"]}
+      >
         {onDone && (
           <Button type="button" variant="outline" onClick={onDone}>
             Cancel
@@ -473,7 +507,17 @@ function PositionForm({ id, initial, onDone }: { id?: string; initial: PositionI
   );
 }
 
-function PositionRolesEditor({ positionId, title, current, roles }: { positionId: string; title: string; current: RoleName[]; roles: Schemas["access.RoleInfo"][] }) {
+function PositionRolesEditor({
+  positionId,
+  title,
+  current,
+  roles,
+}: {
+  positionId: string;
+  title: string;
+  current: RoleName[];
+  roles: Schemas["access.RoleInfo"][];
+}) {
   const qc = useQueryClient();
   const set = useMutation({
     mutationFn: async (next: RoleName[]) =>
@@ -496,8 +540,17 @@ function PositionRolesEditor({ positionId, title, current, roles }: { positionId
       <legend className="mb-2 text-sm font-semibold text-ink-2">Roles this position carries</legend>
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {roles.map((r) => (
-          <label key={r.name} className="flex items-center gap-2 text-sm" title={r.allPermissions ? "Every permission" : r.permissions.join(", ")}>
-            <Checkbox className="size-4" checked={current.includes(r.name)} onCheckedChange={(checked) => toggle(r.name, checked)} aria-label={`${title}: ${r.title}`} />
+          <label
+            key={r.name}
+            className="flex items-center gap-2 text-sm"
+            title={r.allPermissions ? "Every permission" : r.permissions.join(", ")}
+          >
+            <Checkbox
+              className="size-4"
+              checked={current.includes(r.name)}
+              onCheckedChange={(checked) => toggle(r.name, checked)}
+              aria-label={`${title}: ${r.title}`}
+            />
             {r.title}
           </label>
         ))}
@@ -534,7 +587,10 @@ function Grants() {
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: ["grants"] });
       const prev = qc.getQueryData<Schemas["access.Grant"][]>(["grants"]);
-      qc.setQueryData(["grants"], prev?.filter((g) => g.id !== id));
+      qc.setQueryData(
+        ["grants"],
+        prev?.filter((g) => g.id !== id),
+      );
       return { prev };
     },
     onError: (_e, _id, ctx) => qc.setQueryData(["grants"], ctx?.prev),
@@ -545,8 +601,8 @@ function Grants() {
   return (
     <div className="space-y-10">
       <p className="max-w-3xl text-ink-2">
-        Grants give a role to someone without a seat: a check-in volunteer for one term, or a permanent administrator. Prefer
-        seats where you can, so roles hand over with the committee.
+        Grants give a role to someone without a seat: a check-in volunteer for one term, or a permanent administrator. Prefer seats where
+        you can, so roles hand over with the committee.
       </p>
       {grants.error ? (
         <ErrorBox error={grants.error} retry={() => void grants.refetch()} />
@@ -585,7 +641,10 @@ function Grants() {
         <div className="grid gap-4 sm:grid-cols-3">
           <PersonPicker key={pickerKey} value={personId} onChange={(v) => (setPersonId(v), create.reset())} error={fe.personId} />
           <Field label="Role" error={fe.role}>
-            <NativeSelect value={role} onChange={(e) => (setRole(roles.data?.find((r) => r.name === e.target.value)?.name ?? ""), create.reset())}>
+            <NativeSelect
+              value={role}
+              onChange={(e) => (setRole(roles.data?.find((r) => r.name === e.target.value)?.name ?? ""), create.reset())}
+            >
               <option value="">Choose…</option>
               {roles.data?.map((r) => (
                 <option key={r.name} value={r.name}>
@@ -609,7 +668,9 @@ function Grants() {
           <Button type="submit" disabled={create.isPending || !personId || !role}>
             {create.isPending ? "Granting…" : "Grant role"}
           </Button>
-          {create.error && !fe.personId && !fe.role && !fe.termId && <span className="font-semibold text-vermilion">{create.error.message}</span>}
+          {create.error && !fe.personId && !fe.role && !fe.termId && (
+            <span className="font-semibold text-vermilion">{create.error.message}</span>
+          )}
         </div>
       </form>
     </div>

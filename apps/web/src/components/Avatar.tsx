@@ -16,7 +16,10 @@ function hash(s: string) {
 }
 
 export function initials(name: string) {
-  const words = name.replace(/^(Dr|Prof|Mr|Ms|Mrs)\.?\s+/i, "").split(/\s+/).filter(Boolean);
+  const words = name
+    .replace(/^(Dr|Prof|Mr|Ms|Mrs)\.?\s+/i, "")
+    .split(/\s+/)
+    .filter(Boolean);
   return ((words[0]?.[0] ?? "") + (words.length > 1 ? (words[words.length - 1]?.[0] ?? "") : "")).toUpperCase();
 }
 

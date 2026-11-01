@@ -22,25 +22,20 @@ export const ignores = {
 };
 
 /** @type {import("typescript-eslint").ConfigArray} */
-export default tseslint.config(
-  ignores,
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ["**/*.{js,mjs,ts,tsx}"],
-    languageOptions: { globals: { ...globals.node } },
-    plugins: { "import-x": importX },
-    settings: {
-      "import-x/resolver-next": [createTypeScriptImportResolver({ alwaysTryTypes: true })],
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" },
-      ],
-      "import-x/no-restricted-paths": ["error", pathZones],
-      "no-restricted-imports": restrictedImports(),
-      "no-restricted-syntax": restrictedSyntax(),
-    },
+export default tseslint.config(ignores, js.configs.recommended, ...tseslint.configs.recommended, {
+  files: ["**/*.{js,mjs,ts,tsx}"],
+  languageOptions: { globals: { ...globals.node } },
+  plugins: { "import-x": importX },
+  settings: {
+    "import-x/resolver-next": [createTypeScriptImportResolver({ alwaysTryTypes: true })],
   },
-);
+  rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_", destructuredArrayIgnorePattern: "^_" },
+    ],
+    "import-x/no-restricted-paths": ["error", pathZones],
+    "no-restricted-imports": restrictedImports(),
+    "no-restricted-syntax": restrictedSyntax(),
+  },
+});

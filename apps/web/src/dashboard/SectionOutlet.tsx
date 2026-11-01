@@ -12,7 +12,11 @@ export function SectionOutlet({ splat }: { splat: string }) {
       <>
         <SectionHead title="Not found" />
         <p className="text-ink-2">
-          There is no dashboard section here. <Link to="/dashboard" className="link">Back to the overview</Link>.
+          There is no dashboard section here.{" "}
+          <Link to="/dashboard" className="link">
+            Back to the overview
+          </Link>
+          .
         </p>
       </>
     );

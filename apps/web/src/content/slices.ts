@@ -105,10 +105,7 @@ export const slices = {
 
   people(s: Snapshot): PersonCard[] {
     return [...s.people]
-      .sort(
-        (a, b) =>
-          STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status) || a.name.localeCompare(b.name),
-      )
+      .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status) || a.name.localeCompare(b.name))
       .map(card);
   },
 
@@ -159,9 +156,7 @@ export const slices = {
   },
 
   talks(s: Snapshot): TalkWithSpeaker[] {
-    return [...s.talks]
-      .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
-      .map((t) => slices.talkWithSpeaker(s, t));
+    return [...s.talks].sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).map((t) => slices.talkWithSpeaker(s, t));
   },
 
   sponsors(s: Snapshot): PublicSponsor[] {

@@ -56,8 +56,7 @@ function PostList({ view }: { view: "mine" | "review" | "all" }) {
   const reviewer = isReviewer(me);
   const q = useQuery({
     queryKey: ["posts", view],
-    queryFn: async () =>
-      unwrap(await api.GET("/api/v1/posts", { params: { query: view === "review" ? { state: "in_review" } : {} } })),
+    queryFn: async () => unwrap(await api.GET("/api/v1/posts", { params: { query: view === "review" ? { state: "in_review" } : {} } })),
   });
   // Reviewers get every post from GET /posts; "My posts" keeps only their own.
   const rows = view === "mine" ? q.data?.filter((p) => p.author === me.account.personHandle) : q.data;
@@ -84,8 +83,8 @@ function PostList({ view }: { view: "mine" | "review" | "all" }) {
       )}
       {!canWrite && (
         <p className="mb-6 text-ink-2">
-          Your account is not linked to a member profile yet, so you can't start posts. Ask a people manager to add you with
-          this email address.
+          Your account is not linked to a member profile yet, so you can't start posts. Ask a people manager to add you with this email
+          address.
         </p>
       )}
       {q.error ? (
@@ -93,7 +92,9 @@ function PostList({ view }: { view: "mine" | "review" | "all" }) {
       ) : !rows ? (
         <Loading what="Loading posts" />
       ) : rows.length === 0 ? (
-        <Empty>{view === "review" ? "Nothing is waiting for review." : view === "mine" ? "You have no posts yet. Start one." : "No posts yet."}</Empty>
+        <Empty>
+          {view === "review" ? "Nothing is waiting for review." : view === "mine" ? "You have no posts yet. Start one." : "No posts yet."}
+        </Empty>
       ) : (
         <Table head={view === "mine" ? ["Title", "State", "Updated"] : ["Title", "Author", "State", "Updated"]}>
           {rows.map((p) => (
@@ -158,13 +159,23 @@ function NewPost() {
 }
 
 function PostEditor({ id }: { id: string }) {
-  const q = useQuery({ queryKey: ["posts", id], queryFn: async () => unwrap(await api.GET("/api/v1/posts/{id}", { params: { path: { id } } })) });
+  const q = useQuery({
+    queryKey: ["posts", id],
+    queryFn: async () => unwrap(await api.GET("/api/v1/posts/{id}", { params: { path: { id } } })),
+  });
   if (q.error) return <ErrorBox error={q.error} retry={() => void q.refetch()} />;
   if (!q.data) return <Loading what="Loading post" />;
   return <PostForm post={q.data} key={q.data.id} />;
 }
 
-const toIn = (p: Post): PostIn => ({ title: p.title, slug: p.slug, excerpt: p.excerpt, bodyMarkdown: p.bodyMarkdown, coverUrl: p.coverUrl, tags: p.tags });
+const toIn = (p: Post): PostIn => ({
+  title: p.title,
+  slug: p.slug,
+  excerpt: p.excerpt,
+  bodyMarkdown: p.bodyMarkdown,
+  coverUrl: p.coverUrl,
+  tags: p.tags,
+});
 const same = (a: PostIn, b: PostIn) => JSON.stringify(a) === JSON.stringify(b);
 
 function PostForm({ post }: { post: Post }) {
@@ -213,7 +224,9 @@ function PostForm({ post }: { post: Post }) {
   const move = useMutation({
     mutationFn: async ({ action, note }: { action: Action; note?: string }) => {
       if (editable && dirty) await save.mutateAsync(body());
-      return unwrap(await api.POST("/api/v1/posts/{id}/transitions", { params: { path: { id: post.id } }, body: { action, note: note ?? "" } }));
+      return unwrap(
+        await api.POST("/api/v1/posts/{id}/transitions", { params: { path: { id: post.id } }, body: { action, note: note ?? "" } }),
+      );
     },
     onSuccess: (p) => {
       qc.setQueryData(["posts", p.id], p);
@@ -232,9 +245,11 @@ function PostForm({ post }: { post: Post }) {
   const isAuthor = post.author === me.account.personHandle;
   const reviewer = isReviewer(me);
   const actions: { action: Action; label: string; primary?: boolean }[] = [];
-  if (isAuthor && (post.state === "draft" || post.state === "unpublished")) actions.push({ action: "submit", label: "Submit for review", primary: true });
+  if (isAuthor && (post.state === "draft" || post.state === "unpublished"))
+    actions.push({ action: "submit", label: "Submit for review", primary: true });
   if (isAuthor && post.state === "in_review") actions.push({ action: "withdraw", label: "Withdraw" });
-  if (reviewer && (post.state === "in_review" || post.state === "unpublished")) actions.push({ action: "publish", label: "Approve & publish", primary: true });
+  if (reviewer && (post.state === "in_review" || post.state === "unpublished"))
+    actions.push({ action: "publish", label: "Approve & publish", primary: true });
   if (reviewer && post.state === "in_review") actions.push({ action: "request_changes", label: "Request changes" });
   if (reviewer && post.state === "published") actions.push({ action: "unpublish", label: "Unpublish" });
   const canDelete = reviewer || (isAuthor && post.state === "draft");
@@ -266,7 +281,9 @@ function PostForm({ post }: { post: Post }) {
               variant={a.primary ? "default" : "outline"}
               size="sm"
               disabled={move.isPending}
-              onClick={() => (a.action === "request_changes" || a.action === "unpublish" ? setDialog(a.action) : move.mutate({ action: a.action }))}
+              onClick={() =>
+                a.action === "request_changes" || a.action === "unpublish" ? setDialog(a.action) : move.mutate({ action: a.action })
+              }
             >
               {a.label}
             </Button>
@@ -317,7 +334,7 @@ function PostForm({ post }: { post: Post }) {
                 className="min-h-[28rem] font-[var(--font-code)] text-sm"
                 value={f.bodyMarkdown}
                 onChange={(e) => set("bodyMarkdown", e.target.value)}
- />
+              />
             </Field>
           </fieldset>
           {editable && (

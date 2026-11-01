@@ -3,15 +3,15 @@
 Set this up once with a **club-owned Google account** (for example binary.sust@gmail.com), not a
 personal one, so the next committee inherits it. Use the same account for every service below.
 
-| Piece | Service | Free tier used |
-|---|---|---|
-| Public site + `/api` proxy | Cloudflare Pages | static hosting, unlimited bandwidth |
-| Go API | Render | 1 free web service (sleeps when idle) |
-| Database | Neon | 0.5 GB Postgres, suspends instead of billing |
-| Media | GitHub repo `BinarySUST/binarysust-media` + its own Pages project | |
-| Builds | GitHub Actions | unlimited on public repos |
-| Sign-in | Google OAuth | no billing account needed |
-| Mail (optional) | Brevo | 300 emails/day |
+| Piece                      | Service                                                           | Free tier used                               |
+| -------------------------- | ----------------------------------------------------------------- | -------------------------------------------- |
+| Public site + `/api` proxy | Cloudflare Pages                                                  | static hosting, unlimited bandwidth          |
+| Go API                     | Render                                                            | 1 free web service (sleeps when idle)        |
+| Database                   | Neon                                                              | 0.5 GB Postgres, suspends instead of billing |
+| Media                      | GitHub repo `BinarySUST/binarysust-media` + its own Pages project |                                              |
+| Builds                     | GitHub Actions                                                    | unlimited on public repos                    |
+| Sign-in                    | Google OAuth                                                      | no billing account needed                    |
+| Mail (optional)            | Brevo                                                             | 300 emails/day                               |
 
 ## 1. Neon (database)
 
@@ -67,11 +67,13 @@ The club owns `binarysust.org` at Namecheap (expires 2027-09-20). Cloudflare's f
 ## 5. GitHub
 
 In `BinarySUST/binarysust-web` → Settings → Secrets and variables → Actions:
+
 - `SNAPSHOT_DATABASE_URL`: Neon `site_reader` string
 - `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 
 Tokens the API uses (paste them into Render): create **fine-grained personal access tokens** from the club's
 GitHub account, owned by the `BinarySUST` org:
+
 - `GITHUB_DISPATCH_TOKEN`: repository `binarysust-web`, permission **Contents: read and write** (needed for `repository_dispatch`).
 - `GITHUB_MEDIA_TOKEN`: repository `binarysust-media`, permission **Contents: read and write**.
 
@@ -83,7 +85,7 @@ the long-term replacement (see ARCHITECTURE.md, open questions).
 ## 6. First publish
 
 Actions → **publish** → Run workflow. Open `https://binarysust.org` and sign in with Google once.
-Then make yourself the first admin from the Neon SQL editor. Roles belong to a *person* (a public
+Then make yourself the first admin from the Neon SQL editor. Roles belong to a _person_ (a public
 profile), so create yours, link it, and grant a permanent admin role:
 
 ```sql

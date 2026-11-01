@@ -5,7 +5,20 @@ import { Icon } from "~/components/Icon";
 import { SPONSOR_TIERS, oneOf } from "@binarysust/api-client";
 import { ImageField } from "~/features/media/components/MediaUpload";
 import type { SectionProps } from "~/dashboard/sections";
-import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, td } from "~/dashboard/ui";
+import {
+  BackLink,
+  DeleteButton,
+  Empty,
+  ErrorBox,
+  Field,
+  Loading,
+  SaveBar,
+  SectionHead,
+  Table,
+  fieldErrors,
+  invalidate,
+  td,
+} from "~/dashboard/ui";
 import { buttonVariants } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { NativeSelect } from "@binarysust/ui/components/native-select";
@@ -103,13 +116,25 @@ function SponsorForm({ id, initial }: { id: string | null; initial: SponsorIn })
           </Field>
         </div>
         <div className="sm:col-span-2">
-          <ImageField label="Logo" purpose="logo" value={f.logoUrl || null} onChange={(v) => set("logoUrl", v ?? "")} error={fe.logoUrl} hint="A wide logo on a transparent background works best." />
+          <ImageField
+            label="Logo"
+            purpose="logo"
+            value={f.logoUrl || null}
+            onChange={(v) => set("logoUrl", v ?? "")}
+            error={fe.logoUrl}
+            hint="A wide logo on a transparent background works best."
+          />
         </div>
         <Field label="Since (year)" error={fe.since}>
           <Input type="number" inputMode="numeric" value={f.since} onChange={(e) => set("since", Number(e.target.value))} />
         </Field>
         <Field label="Until (year)" hint="Empty while the sponsorship is active." error={fe.until}>
-          <Input type="number" inputMode="numeric" value={f.until ?? ""} onChange={(e) => set("until", e.target.value ? Number(e.target.value) : null)} />
+          <Input
+            type="number"
+            inputMode="numeric"
+            value={f.until ?? ""}
+            onChange={(e) => set("until", e.target.value ? Number(e.target.value) : null)}
+          />
         </Field>
       </div>
       <SaveBar

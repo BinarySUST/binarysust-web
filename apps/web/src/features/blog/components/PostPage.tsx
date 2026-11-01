@@ -33,7 +33,9 @@ export function PostPage() {
             </span>
           </div>
         </header>
-        {post.coverUrl && <img src={post.coverUrl} alt="" className="mt-10 aspect-[16/9] w-full rounded-[4px] border border-line object-cover" />}
+        {post.coverUrl && (
+          <img src={post.coverUrl} alt="" className="mt-10 aspect-[16/9] w-full rounded-[4px] border border-line object-cover" />
+        )}
         <div className="prose mt-10 text-[1.125rem]" dangerouslySetInnerHTML={{ __html: highlightHtml(post.bodyHtml) }} />
         {post.tags.length > 0 && (
           <ul className="mt-12 flex flex-wrap gap-2 border-t border-line pt-6" aria-label="Tags">

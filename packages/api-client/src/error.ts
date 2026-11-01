@@ -42,4 +42,3 @@ export function unwrap<T>(r: { data?: T; error?: unknown; response: Response }):
   if (r.error !== undefined || !r.response.ok) throw toApiError(r.response.status, r.error);
   return r.data as T;
 }
-

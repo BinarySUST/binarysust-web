@@ -21,8 +21,7 @@ function write(path: string, body: string) {
   writeFileSync(path, body);
 }
 
-const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 // 1. Slices
 rmSync(join(pub, "data"), { recursive: true, force: true });

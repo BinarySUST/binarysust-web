@@ -71,7 +71,11 @@ function PortfolioForm({ initial }: { initial: Portfolio }) {
           </Field>
         </div>
         <Field label="Bio" hint="Markdown. Rendered the same way as the blog." error={fe.bioMarkdown}>
-          <Textarea className="min-h-40 font-[var(--font-code)] text-sm" value={form.bioMarkdown} onChange={(e) => set("bioMarkdown", e.target.value)} />
+          <Textarea
+            className="min-h-40 font-[var(--font-code)] text-sm"
+            value={form.bioMarkdown}
+            onChange={(e) => set("bioMarkdown", e.target.value)}
+          />
         </Field>
         <Field label="Skills" hint="Comma-separated." error={errorFor(fe, "skills", true)}>
           <Input value={skills} onChange={(e) => (setSkills(e.target.value), save.reset())} />
@@ -88,11 +92,15 @@ function PortfolioForm({ initial }: { initial: Portfolio }) {
         {form.socials.map((s, i) => (
           <div key={i} className="grid grid-cols-[8.5rem_1fr_auto] gap-2">
             <NativeSelect
-              
               aria-label={`Link ${i + 1} kind`}
               value={s.kind}
-              onChange={(e) => set("socials", form.socials.map((x, j) => (j === i ? { ...x, kind: oneOf(SOCIAL_KINDS, e.target.value) } : x)))}
->
+              onChange={(e) =>
+                set(
+                  "socials",
+                  form.socials.map((x, j) => (j === i ? { ...x, kind: oneOf(SOCIAL_KINDS, e.target.value) } : x)),
+                )
+              }
+            >
               {SOCIAL_KINDS.map((k) => (
                 <option key={k} value={k}>
                   {k}
@@ -100,13 +108,28 @@ function PortfolioForm({ initial }: { initial: Portfolio }) {
               ))}
             </NativeSelect>
             <Input
-              
               type="url"
               aria-label={`Link ${i + 1} URL`}
               value={s.url}
-              onChange={(e) => set("socials", form.socials.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)))}
- />
-            <Button type="button" variant="outline" className="px-3" aria-label={`Remove link ${i + 1}`} onClick={() => set("socials", form.socials.filter((_, j) => j !== i))}>
+              onChange={(e) =>
+                set(
+                  "socials",
+                  form.socials.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)),
+                )
+              }
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="px-3"
+              aria-label={`Remove link ${i + 1}`}
+              onClick={() =>
+                set(
+                  "socials",
+                  form.socials.filter((_, j) => j !== i),
+                )
+              }
+            >
               <Icon name="close" size={18} />
             </Button>
           </div>
@@ -120,12 +143,26 @@ function PortfolioForm({ initial }: { initial: Portfolio }) {
         <legend className="mb-2 text-lg font-semibold">Projects</legend>
         {errorFor(fe, "projects", true) && <p className="text-sm font-semibold text-vermilion">{errorFor(fe, "projects", true)}</p>}
         {form.projects.map((p, i) => {
-          const up = (patch: Partial<typeof p>) => set("projects", form.projects.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+          const up = (patch: Partial<typeof p>) =>
+            set(
+              "projects",
+              form.projects.map((x, j) => (j === i ? { ...x, ...patch } : x)),
+            );
           return (
             <div key={i} className="space-y-4 rounded-lg border border-line bg-panel p-4">
               <div className="flex items-center justify-between">
                 <p className="font-semibold">Project {i + 1}</p>
-                <Button type="button" variant="link" className="text-sm" onClick={() => set("projects", form.projects.filter((_, j) => j !== i))}>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="text-sm"
+                  onClick={() =>
+                    set(
+                      "projects",
+                      form.projects.filter((_, j) => j !== i),
+                    )
+                  }
+                >
                   Remove
                 </Button>
               </div>
@@ -158,7 +195,11 @@ function PortfolioForm({ initial }: { initial: Portfolio }) {
         <legend className="mb-2 text-lg font-semibold">Achievements</legend>
         {errorFor(fe, "achievements", true) && <p className="text-sm font-semibold text-vermilion">{errorFor(fe, "achievements", true)}</p>}
         {form.achievements.map((a, i) => {
-          const up = (patch: Partial<typeof a>) => set("achievements", form.achievements.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+          const up = (patch: Partial<typeof a>) =>
+            set(
+              "achievements",
+              form.achievements.map((x, j) => (j === i ? { ...x, ...patch } : x)),
+            );
           return (
             <div key={i} className="grid gap-4 rounded-lg border border-line bg-panel p-4 sm:grid-cols-[1fr_11rem]">
               <Field label="Title">
@@ -172,7 +213,17 @@ function PortfolioForm({ initial }: { initial: Portfolio }) {
                   <Input value={a.detail} onChange={(e) => up({ detail: e.target.value })} />
                 </Field>
               </div>
-              <Button type="button" variant="link" className="justify-self-start text-sm" onClick={() => set("achievements", form.achievements.filter((_, j) => j !== i))}>
+              <Button
+                type="button"
+                variant="link"
+                className="justify-self-start text-sm"
+                onClick={() =>
+                  set(
+                    "achievements",
+                    form.achievements.filter((_, j) => j !== i),
+                  )
+                }
+              >
                 Remove
               </Button>
             </div>

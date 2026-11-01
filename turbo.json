@@ -5,18 +5,11 @@
     "experimentalGoWorkspaces": true,
     "experimentalTaskCommand": true
   },
-  "globalDependencies": [
-    ".nvmrc",
-    "tsconfig.json"
-  ],
+  "globalDependencies": [".nvmrc", "tsconfig.json"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "dev": {
       "cache": false,
@@ -25,18 +18,11 @@
     "lint": {},
     "typecheck": {},
     "test": {
-      "outputs": [
-        "coverage/**"
-      ]
+      "outputs": ["coverage/**"]
     },
     "test:e2e": {
-      "dependsOn": [
-        "build"
-      ],
-      "outputs": [
-        "playwright-report/**",
-        "test-results/**"
-      ]
+      "dependsOn": ["build"],
+      "outputs": ["playwright-report/**", "test-results/**"]
     },
     "format": {
       "cache": false

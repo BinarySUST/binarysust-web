@@ -88,17 +88,17 @@ permanent or scoped to the current term. Handover is `POST /terms/{id}/make-curr
 Editing a seat in the current term on a position that carries roles needs `roles.manage` as well
 as `people.manage`, so editing a roster can never escalate privileges.
 
-| Permission | Who |
-|---|---|
-| `profile.edit_own`, `blog.write` | every signed-in user (baseline) |
-| `blog.review` | blog_editor |
-| `events.manage` | event_manager |
-| `events.checkin` | event_manager, checkin_volunteer |
-| `people.manage` | people_manager |
-| `sponsors.manage` | sponsor_manager |
-| `talks.manage` | talks_manager |
-| `media.upload` | every manager role (general uploads) |
-| `roles.manage` | admin only (admin holds everything) |
+| Permission                       | Who                                  |
+| -------------------------------- | ------------------------------------ |
+| `profile.edit_own`, `blog.write` | every signed-in user (baseline)      |
+| `blog.review`                    | blog_editor                          |
+| `events.manage`                  | event_manager                        |
+| `events.checkin`                 | event_manager, checkin_volunteer     |
+| `people.manage`                  | people_manager                       |
+| `sponsors.manage`                | sponsor_manager                      |
+| `talks.manage`                   | talks_manager                        |
+| `media.upload`                   | every manager role (general uploads) |
+| `roles.manage`                   | admin only (admin holds everything)  |
 
 `GET /roles` never returns `*`: a role holding every permission has `allPermissions: true` and lists
 every declared permission.
@@ -110,35 +110,35 @@ as reference data (they exist in production too). Several people can hold one po
 `group` is how the public committee page groups seats; `lifetime` positions make their holders
 lifetime members (`PublicPerson.lifetimeMember`). Seat counts are typical, not enforced.
 
-| Rank | Position | Group | Seats | Default roles (seed) |
-|---|---|---|---|---|
-| 10 | President | leadership | 1 | admin |
-| 20 | Vice President | leadership | 0-2 | |
-| 30 | General Secretary | leadership | 1 | admin |
-| 40 | Director of Training | leadership | 1 | event_manager |
-| 50 | Project Co-ordinator | leadership | 1 | |
-| 60 | Assistant General Secretary | assistant | up to 3 | |
-| 70 | Organizing Secretary | secretary | 1 | sponsor_manager |
-| 80 | Assistant Organizing Secretary | assistant | 2 | |
-| 90 | Event Management Secretary | secretary | 1 | event_manager |
-| 100 | Assistant Event Management Secretary | assistant | 2 | event_manager |
-| 110 | Publication Secretary | secretary | 1 | blog_editor |
-| 120 | Assistant Publication Secretary | assistant | 1 | blog_editor |
-| 130 | IT & Design Secretary | secretary | 1 | sponsor_manager, talks_manager |
-| 140 | Assistant IT & Design Secretary | assistant | 1 | |
-| 150 | Finance Secretary | secretary | 1 | |
-| 160 | Office Secretary | secretary | 1 | people_manager |
-| 170 | Assistant Office Secretary | assistant | 1 | |
-| 180 | Secretary of Internal Affairs | secretary | 1 | people_manager |
-| 190 | Assistant Secretary of Internal Affairs | assistant | 1 | |
-| 200 | Senior Executive Member | member | 2 | checkin_volunteer |
-| 210 | Executive Member | member | 5 | checkin_volunteer |
-| 10 (advisory) | Chief Patron (the Vice-Chancellor) | patron | 1 | |
-| 20 (advisory) | Chief Adviser | adviser | 1 | |
-| 30 (advisory) | Adviser | adviser | 5 or more | |
+| Rank          | Position                                | Group      | Seats     | Default roles (seed)           |
+| ------------- | --------------------------------------- | ---------- | --------- | ------------------------------ |
+| 10            | President                               | leadership | 1         | admin                          |
+| 20            | Vice President                          | leadership | 0-2       |                                |
+| 30            | General Secretary                       | leadership | 1         | admin                          |
+| 40            | Director of Training                    | leadership | 1         | event_manager                  |
+| 50            | Project Co-ordinator                    | leadership | 1         |                                |
+| 60            | Assistant General Secretary             | assistant  | up to 3   |                                |
+| 70            | Organizing Secretary                    | secretary  | 1         | sponsor_manager                |
+| 80            | Assistant Organizing Secretary          | assistant  | 2         |                                |
+| 90            | Event Management Secretary              | secretary  | 1         | event_manager                  |
+| 100           | Assistant Event Management Secretary    | assistant  | 2         | event_manager                  |
+| 110           | Publication Secretary                   | secretary  | 1         | blog_editor                    |
+| 120           | Assistant Publication Secretary         | assistant  | 1         | blog_editor                    |
+| 130           | IT & Design Secretary                   | secretary  | 1         | sponsor_manager, talks_manager |
+| 140           | Assistant IT & Design Secretary         | assistant  | 1         |                                |
+| 150           | Finance Secretary                       | secretary  | 1         |                                |
+| 160           | Office Secretary                        | secretary  | 1         | people_manager                 |
+| 170           | Assistant Office Secretary              | assistant  | 1         |                                |
+| 180           | Secretary of Internal Affairs           | secretary  | 1         | people_manager                 |
+| 190           | Assistant Secretary of Internal Affairs | assistant  | 1         |                                |
+| 200           | Senior Executive Member                 | member     | 2         | checkin_volunteer              |
+| 210           | Executive Member                        | member     | 5         | checkin_volunteer              |
+| 10 (advisory) | Chief Patron (the Vice-Chancellor)      | patron     | 1         |                                |
+| 20 (advisory) | Chief Adviser                           | adviser    | 1         |                                |
+| 30 (advisory) | Adviser                                 | adviser    | 5 or more |                                |
 
 Lifetime: President, General Secretary, Director of Training. Which roles a position carries is data
-(`position_roles`), edited by `roles.manage` in *Committee & roles*. `make seed` fills the defaults above
+(`position_roles`), edited by `roles.manage` in _Committee & roles_. `make seed` fills the defaults above
 (`demo.PositionRoles`, added if missing, never removed); a fresh production database starts with none,
 so the first admin (a permanent grant) sets them in the dashboard.
 
@@ -151,19 +151,19 @@ and the CI check see it. The document ekman serves at runtime (`GET /api/v1/open
 
 ## Environment
 
-| Variable | Meaning |
-|---|---|
-| `DATABASE_URL` | Postgres URL |
-| `PUBLIC_URL` | the site's origin (`/api/*` is proxied there); OAuth redirects, cookie security, `/version.json` |
-| `EKMAN_SECRET` | at least 32 bytes; signs the OAuth state cookie |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in (redirect URI `$PUBLIC_URL/api/v1/auth/google/callback`) |
-| `DEV_ADMIN_EMAIL` | local dev sign-in; ignored unless `PUBLIC_URL` is local |
-| `MEDIA_DIR`, `MEDIA_BASE_URL` | local uploads directory (relative to `api/` when run from there) and its URL |
-| `GITHUB_MEDIA_REPOSITORY`, `GITHUB_MEDIA_TOKEN`, `GITHUB_MEDIA_BRANCH` | production uploads: commit to this repo (Contents API); `MEDIA_BASE_URL` is where it is served |
-| `GITHUB_REPOSITORY`, `GITHUB_DISPATCH_TOKEN` | send `repository_dispatch` `publish` after content writes; unset logs instead |
-| `BREVO_API_KEY`, `MAIL_FROM` | RSVP mail through Brevo; an empty key logs mail |
-| `CORS_ORIGINS` | comma-separated extra origins (normally empty: the site proxies `/api/*`) |
-| `PORT` | listen port, default 8080 |
+| Variable                                                               | Meaning                                                                                          |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `DATABASE_URL`                                                         | Postgres URL                                                                                     |
+| `PUBLIC_URL`                                                           | the site's origin (`/api/*` is proxied there); OAuth redirects, cookie security, `/version.json` |
+| `EKMAN_SECRET`                                                         | at least 32 bytes; signs the OAuth state cookie                                                  |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                             | Google sign-in (redirect URI `$PUBLIC_URL/api/v1/auth/google/callback`)                          |
+| `DEV_ADMIN_EMAIL`                                                      | local dev sign-in; ignored unless `PUBLIC_URL` is local                                          |
+| `MEDIA_DIR`, `MEDIA_BASE_URL`                                          | local uploads directory (relative to `api/` when run from there) and its URL                     |
+| `GITHUB_MEDIA_REPOSITORY`, `GITHUB_MEDIA_TOKEN`, `GITHUB_MEDIA_BRANCH` | production uploads: commit to this repo (Contents API); `MEDIA_BASE_URL` is where it is served   |
+| `GITHUB_REPOSITORY`, `GITHUB_DISPATCH_TOKEN`                           | send `repository_dispatch` `publish` after content writes; unset logs instead                    |
+| `BREVO_API_KEY`, `MAIL_FROM`                                           | RSVP mail through Brevo; an empty key logs mail                                                  |
+| `CORS_ORIGINS`                                                         | comma-separated extra origins (normally empty: the site proxies `/api/*`)                        |
+| `PORT`                                                                 | listen port, default 8080                                                                        |
 
 ## Deploy
 

@@ -28,7 +28,10 @@ const timers = new Map<Request, ReturnType<typeof setTimeout>>();
 
 function track(req: Request) {
   pending++;
-  timers.set(req, setTimeout(() => setWaking(true), SLOW_MS));
+  timers.set(
+    req,
+    setTimeout(() => setWaking(true), SLOW_MS),
+  );
 }
 function untrack(req: Request) {
   clearTimeout(timers.get(req));

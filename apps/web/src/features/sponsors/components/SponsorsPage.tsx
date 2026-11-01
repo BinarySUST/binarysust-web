@@ -26,7 +26,11 @@ export function SponsorsPage() {
               <ul className="grid border-t border-l border-line sm:grid-cols-2 lg:grid-cols-3">
                 {list.map((s) => (
                   <li key={s.name} className="border-r border-b border-line">
-                    <a href={s.url} rel="sponsored noopener" className="group flex h-full flex-col gap-5 p-6 no-underline hover:bg-ground-2">
+                    <a
+                      href={s.url}
+                      rel="sponsored noopener"
+                      className="group flex h-full flex-col gap-5 p-6 no-underline hover:bg-ground-2"
+                    >
                       <span className="flex min-h-24 items-center">
                         <img src={s.logoUrl} alt={s.name} className={`${logo} w-auto max-w-full`} loading="lazy" />
                       </span>
@@ -45,7 +49,11 @@ export function SponsorsPage() {
           );
         })}
         <p className="max-w-2xl text-ink-2">
-          Want to support the club? Write to the committee from the <a href="/about" className="link">about page</a>.
+          Want to support the club? Write to the committee from the{" "}
+          <a href="/about" className="link">
+            about page
+          </a>
+          .
         </p>
       </div>
     </>

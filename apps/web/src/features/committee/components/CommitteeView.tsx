@@ -36,7 +36,8 @@ const EXEC_GROUPS: { group: Group; title: string; size: SeatGroup["size"] }[] = 
 export function groupExecutive(seats: Seat[]): SeatGroup[] {
   const exec = seats.filter((s) => s.category === "executive").sort(byRank);
   // A small committee with no named officers reads best as one group.
-  if (!exec.some((s) => groupOf(s) === "leadership")) return exec.length ? [{ title: "Executive committee", size: "lead", seats: exec }] : [];
+  if (!exec.some((s) => groupOf(s) === "leadership"))
+    return exec.length ? [{ title: "Executive committee", size: "lead", seats: exec }] : [];
   return EXEC_GROUPS.map((g) => ({ title: g.title, size: g.size, seats: exec.filter((s) => groupOf(s) === g.group) })).filter(
     (g) => g.seats.length > 0,
   );
@@ -126,7 +127,11 @@ export function CommitteeView({ data }: { data: CommitteeSlice }) {
           <SectionHead
             title={g.title}
             index={String(i + 1).padStart(2, "0")}
-            action={<span className="meta text-ink-3">{g.seats.length} {g.seats.length === 1 ? "seat" : "seats"}</span>}
+            action={
+              <span className="meta text-ink-3">
+                {g.seats.length} {g.seats.length === 1 ? "seat" : "seats"}
+              </span>
+            }
           />
           <SeatGrid group={g} />
         </section>

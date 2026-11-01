@@ -41,13 +41,17 @@ export function EventPage() {
           <div className="prose text-[1.0625rem]" dangerouslySetInnerHTML={{ __html: highlightHtml(e.bodyHtml) }} />
           {over && e.recapHtml && (
             <section aria-labelledby="recap" className="border-t border-line-strong pt-6">
-              <h2 id="recap" className="mb-4 text-xl font-semibold">How it went</h2>
+              <h2 id="recap" className="mb-4 text-xl font-semibold">
+                How it went
+              </h2>
               <div className="prose" dangerouslySetInnerHTML={{ __html: e.recapHtml }} />
             </section>
           )}
           {e.photos.length > 0 && (
             <section aria-labelledby="photos">
-              <h2 id="photos" className="mb-4 text-xl font-semibold">Photos</h2>
+              <h2 id="photos" className="mb-4 text-xl font-semibold">
+                Photos
+              </h2>
               <ul className="grid grid-cols-2 gap-3 md:grid-cols-3">
                 {e.photos.map((ph) => (
                   <li key={ph.url}>

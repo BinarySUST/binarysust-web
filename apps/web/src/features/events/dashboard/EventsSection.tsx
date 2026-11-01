@@ -207,13 +207,12 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
         <div className="sm:col-span-2">
           <Field label="Title" error={fe.title}>
             <Input
-              
               value={f.title}
               onChange={(e) => {
                 const title = e.target.value;
                 setF((x) => ({ ...x, title, slug: id || x.slug !== slugify(x.title) ? x.slug : slugify(title) }));
               }}
- />
+            />
           </Field>
         </div>
         <Field label="URL slug" hint={`/events/${f.slug || "…"}`} error={fe.slug}>
@@ -229,10 +228,18 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
           </NativeSelect>
         </Field>
         <Field label="Starts" error={fe.startsAt}>
-          <Input type="datetime-local" value={toLocalInput(f.startsAt)} onChange={(e) => set("startsAt", e.target.value ? fromLocalInput(e.target.value) : "")} />
+          <Input
+            type="datetime-local"
+            value={toLocalInput(f.startsAt)}
+            onChange={(e) => set("startsAt", e.target.value ? fromLocalInput(e.target.value) : "")}
+          />
         </Field>
         <Field label="Ends" error={fe.endsAt}>
-          <Input type="datetime-local" value={toLocalInput(f.endsAt)} onChange={(e) => set("endsAt", e.target.value ? fromLocalInput(e.target.value) : "")} />
+          <Input
+            type="datetime-local"
+            value={toLocalInput(f.endsAt)}
+            onChange={(e) => set("endsAt", e.target.value ? fromLocalInput(e.target.value) : "")}
+          />
         </Field>
         <Field label="Venue" error={fe.venue}>
           <Input value={f.venue ?? ""} onChange={(e) => set("venue", e.target.value || null)} />
@@ -241,7 +248,14 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
           <Input type="url" value={f.onlineUrl ?? ""} onChange={(e) => set("onlineUrl", e.target.value || null)} />
         </Field>
         <div className="sm:col-span-2">
-          <ImageField label="Cover image" purpose="event" value={f.coverUrl ?? null} onChange={(v) => set("coverUrl", v)} error={fe.coverUrl} hint="Resized to WebP, at most 1600 px." />
+          <ImageField
+            label="Cover image"
+            purpose="event"
+            value={f.coverUrl ?? null}
+            onChange={(v) => set("coverUrl", v)}
+            error={fe.coverUrl}
+            hint="Resized to WebP, at most 1600 px."
+          />
         </div>
         <div className="sm:col-span-2">
           <Field label="Summary" hint="One or two sentences, shown on lists and link previews." error={fe.summary}>
@@ -254,7 +268,12 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
           </Field>
         </div>
         <div className="sm:col-span-2">
-          <HandleListPicker label="Speakers" error={errorFor(fe, "speakers", true)} value={f.speakers ?? []} onChange={(v) => set("speakers", v)} />
+          <HandleListPicker
+            label="Speakers"
+            error={errorFor(fe, "speakers", true)}
+            value={f.speakers ?? []}
+            onChange={(v) => set("speakers", v)}
+          />
         </div>
       </div>
 
@@ -272,20 +291,27 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
         {f.registration && (
           <div className="mt-5 grid gap-5 sm:grid-cols-3">
             <Field label="Opens" error={fe["registration.opensAt"]}>
-              <Input type="datetime-local" value={toLocalInput(f.registration.opensAt)} onChange={(e) => setReg({ opensAt: e.target.value ? fromLocalInput(e.target.value) : "" })} />
+              <Input
+                type="datetime-local"
+                value={toLocalInput(f.registration.opensAt)}
+                onChange={(e) => setReg({ opensAt: e.target.value ? fromLocalInput(e.target.value) : "" })}
+              />
             </Field>
             <Field label="Closes" error={fe["registration.closesAt"]}>
-              <Input type="datetime-local" value={toLocalInput(f.registration.closesAt)} onChange={(e) => setReg({ closesAt: e.target.value ? fromLocalInput(e.target.value) : "" })} />
+              <Input
+                type="datetime-local"
+                value={toLocalInput(f.registration.closesAt)}
+                onChange={(e) => setReg({ closesAt: e.target.value ? fromLocalInput(e.target.value) : "" })}
+              />
             </Field>
             <Field label="Capacity" hint="Empty means no limit." error={fe["registration.capacity"]}>
               <Input
-                
                 type="number"
                 min={1}
                 inputMode="numeric"
                 value={f.registration.capacity ?? ""}
                 onChange={(e) => setReg({ capacity: e.target.value ? Number(e.target.value) : null })}
- />
+              />
             </Field>
           </div>
         )}
@@ -298,19 +324,36 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
         </Field>
         <div>
           <p className="mb-2 text-sm font-semibold text-ink-2">Photos</p>
-          {(fe.photos || errorFor(fe, "photos", true)) && <p className="mb-2 text-sm font-semibold text-vermilion">{errorFor(fe, "photos", true)}</p>}
+          {(fe.photos || errorFor(fe, "photos", true)) && (
+            <p className="mb-2 text-sm font-semibold text-vermilion">{errorFor(fe, "photos", true)}</p>
+          )}
           <ul className="space-y-3">
             {photos.map((p, i) => (
               <li key={p.url + i} className="flex items-center gap-3">
                 <img src={p.url} alt="" className="h-14 w-20 shrink-0 rounded border border-line object-cover" />
                 <Input
-                  
                   aria-label={`Caption for photo ${i + 1}`}
                   placeholder="Caption"
                   value={p.caption}
-                  onChange={(e) => set("photos", photos.map((x, j) => (j === i ? { ...x, caption: e.target.value } : x)))}
- />
-                <Button type="button" variant="outline" className="px-3" aria-label={`Remove photo ${i + 1}`} onClick={() => set("photos", photos.filter((_, j) => j !== i))}>
+                  onChange={(e) =>
+                    set(
+                      "photos",
+                      photos.map((x, j) => (j === i ? { ...x, caption: e.target.value } : x)),
+                    )
+                  }
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="px-3"
+                  aria-label={`Remove photo ${i + 1}`}
+                  onClick={() =>
+                    set(
+                      "photos",
+                      photos.filter((_, j) => j !== i),
+                    )
+                  }
+                >
                   <Icon name="close" size={18} />
                 </Button>
               </li>
@@ -336,7 +379,23 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
         success={save.isSuccess}
         problem={problem}
         label={id ? "Save changes" : "Create event"}
-        shown={["title", "slug", "kind", "startsAt", "endsAt", "venue", "onlineUrl", "coverUrl", "summary", "bodyMarkdown", "speakers", "registration", "recapMarkdown", "photos", "status"]}
+        shown={[
+          "title",
+          "slug",
+          "kind",
+          "startsAt",
+          "endsAt",
+          "venue",
+          "onlineUrl",
+          "coverUrl",
+          "summary",
+          "bodyMarkdown",
+          "speakers",
+          "registration",
+          "recapMarkdown",
+          "photos",
+          "status",
+        ]}
       >
         {id && event && (
           <span className="ml-auto">
@@ -350,11 +409,14 @@ function EventForm({ id, initial, event }: { id: string | null; initial: EventIn
             >
               {event.status !== "draft" && event.rsvpCount > 0 ? (
                 <p>
-                  {event.rsvpCount} {event.rsvpCount === 1 ? "person is" : "people are"} registered, so the API will refuse. Set
-                  the status to <strong>Cancelled</strong> instead: the page stays up, marked cancelled.
+                  {event.rsvpCount} {event.rsvpCount === 1 ? "person is" : "people are"} registered, so the API will refuse. Set the status
+                  to <strong>Cancelled</strong> instead: the page stays up, marked cancelled.
                 </p>
               ) : (
-                <p>It disappears from the dashboard{event.status === "draft" ? "" : " and, after the next build, from the public site"}. This can't be undone.</p>
+                <p>
+                  It disappears from the dashboard{event.status === "draft" ? "" : " and, after the next build, from the public site"}. This
+                  can't be undone.
+                </p>
               )}
             </DeleteButton>
           </span>
@@ -380,7 +442,9 @@ function Registrants({ id }: { id: string }) {
   if (!ev.data) return <Loading what="Loading event" />;
   const e = ev.data;
   const needle = filter.trim().toLowerCase();
-  const rows = (list.data ?? []).filter((r) => !needle || `${r.name} ${r.email} ${r.handle ?? ""} ${r.ticket}`.toLowerCase().includes(needle));
+  const rows = (list.data ?? []).filter(
+    (r) => !needle || `${r.name} ${r.email} ${r.handle ?? ""} ${r.ticket}`.toLowerCase().includes(needle),
+  );
 
   return (
     <>
@@ -395,7 +459,8 @@ function Registrants({ id }: { id: string }) {
         ]}
       />
       <p className="mb-6 text-ink-2 tabular">
-        {e.confirmed} confirmed{e.registration?.capacity != null && ` of ${e.registration.capacity}`} · {e.waitlisted} on the waitlist · {e.checkedIn} checked in
+        {e.confirmed} confirmed{e.registration?.capacity != null && ` of ${e.registration.capacity}`} · {e.waitlisted} on the waitlist ·{" "}
+        {e.checkedIn} checked in
       </p>
 
       <CheckIn slug={e.slug} onDone={() => (void list.refetch(), void ev.refetch())} />
@@ -403,7 +468,14 @@ function Registrants({ id }: { id: string }) {
       <div className="mt-10 mb-4 flex flex-wrap items-end justify-between gap-4">
         <h2 className="text-lg font-semibold">Registrants</h2>
         <div className="flex flex-wrap items-center gap-3">
-          <Input className="w-64" type="search" placeholder="Filter by name, email or ticket" aria-label="Filter registrants" value={filter} onChange={(x) => setFilter(x.target.value)} />
+          <Input
+            className="w-64"
+            type="search"
+            placeholder="Filter by name, email or ticket"
+            aria-label="Filter registrants"
+            value={filter}
+            onChange={(x) => setFilter(x.target.value)}
+          />
           <a href={csvUrl(e.slug)} download className={buttonVariants({ variant: "outline", size: "sm" })}>
             <Icon name="file" size={16} /> Download CSV
           </a>
@@ -442,7 +514,8 @@ function CheckIn({ slug, onDone }: { slug: string; onDone: () => void }) {
   const me = useMe();
   const [ticket, setTicket] = useState("");
   const check = useMutation({
-    mutationFn: async (t: string) => unwrap(await api.POST("/api/v1/events/{slug}/checkin", { params: { path: { slug } }, body: { ticket: t } })),
+    mutationFn: async (t: string) =>
+      unwrap(await api.POST("/api/v1/events/{slug}/checkin", { params: { path: { slug } }, body: { ticket: t } })),
     onSuccess: () => {
       setTicket("");
       onDone();
@@ -462,7 +535,12 @@ function CheckIn({ slug, onDone }: { slug: string; onDone: () => void }) {
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-0 flex-1">
           <Field label="Ticket code" hint="Type or scan the code from the attendee's ticket." error={fe.ticket}>
-            <Input className="font-[var(--font-code)] uppercase" autoComplete="off" value={ticket} onChange={(e) => (setTicket(e.target.value), check.reset())} />
+            <Input
+              className="font-[var(--font-code)] uppercase"
+              autoComplete="off"
+              value={ticket}
+              onChange={(e) => (setTicket(e.target.value), check.reset())}
+            />
           </Field>
         </div>
         <Button type="submit" disabled={check.isPending || !ticket.trim()}>

@@ -96,8 +96,7 @@ export function Rsvp(props: Props) {
   if (w === "cancelled") body = <p className="font-semibold text-danger">This event was cancelled.</p>;
   else if (w === "over") body = <p className="text-ink-2">This event has ended.</p>;
   else if (w === "none") body = <p className="text-ink-2">No registration needed. Just turn up.</p>;
-  else if (w === "soon" && registration)
-    body = <p className="text-ink-2">Registration opens {formatShort(registration.opensAt)}.</p>;
+  else if (w === "soon" && registration) body = <p className="text-ink-2">Registration opens {formatShort(registration.opensAt)}.</p>;
   else if (w === "closed") body = <p className="text-ink-2">Registration has closed.</p>;
   else if (mine)
     body = (
@@ -118,18 +117,14 @@ export function Rsvp(props: Props) {
           <Icon name="ticket" size={18} />
           {busy ? "Reserving…" : signedIn ? "Reserve a seat" : "Sign in to reserve"}
         </Button>
-        <span className="meta text-ink-2">
-          {seats ?? (registration && `Closes ${formatShort(registration.closesAt)}`)}
-        </span>
+        <span className="meta text-ink-2">{seats ?? (registration && `Closes ${formatShort(registration.closesAt)}`)}</span>
       </div>
     );
 
   return (
     <div className={compact ? "" : "space-y-2"} aria-live="polite">
       {body}
-      {busy && waking && (
-        <p className="text-sm text-ink-2">Waking the server (up to a minute)…</p>
-      )}
+      {busy && waking && <p className="text-sm text-ink-2">Waking the server (up to a minute)…</p>}
       {error && (
         <p role="alert" className="flex items-center gap-2 text-sm font-medium text-danger">
           <Icon name="alert" size={16} /> {error}

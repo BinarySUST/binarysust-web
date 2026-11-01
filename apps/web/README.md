@@ -25,12 +25,12 @@ pnpm dev            # http://localhost:3000; proxies /api and /healthz to API_OR
 serves the shell and every page loads its slice from `/data/*.json` in the browser; the disk-reading half
 of `content.*` runs only during the build's pre-render. Re-run `pnpm slices` after changing the snapshot.
 
-| Variable | Where | Purpose |
-|---|---|---|
-| `VITE_HMR_CLIENT_PORT` | dev | HMR websocket port when behind Caddy (80). Unset for plain `pnpm dev`. |
-| `API_ORIGIN` | dev proxy, Pages Function | Where `/api/*` goes. In production, set it on the Pages project. |
-| `VITE_MEDIA_BASE_URL` | build | Base for media URLs the dashboard builds (default `https://media.binarysust.org`). Snapshot image fields are already absolute. |
-| `SITE_URL` | build | Canonical origin for sitemap, RSS and OpenGraph (default `https://binarysust.org`). |
+| Variable               | Where                     | Purpose                                                                                                                        |
+| ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `VITE_HMR_CLIENT_PORT` | dev                       | HMR websocket port when behind Caddy (80). Unset for plain `pnpm dev`.                                                         |
+| `API_ORIGIN`           | dev proxy, Pages Function | Where `/api/*` goes. In production, set it on the Pages project.                                                               |
+| `VITE_MEDIA_BASE_URL`  | build                     | Base for media URLs the dashboard builds (default `https://media.binarysust.org`). Snapshot image fields are already absolute. |
+| `SITE_URL`             | build                     | Canonical origin for sitemap, RSS and OpenGraph (default `https://binarysust.org`).                                            |
 
 Other scripts: `pnpm typecheck`, `pnpm lint`, `pnpm preview`, `pnpm gen:api`
 (regenerates `src/lib/api/schema.d.ts` from `../api/openapi.json`; run `make gen` at the root to refresh
@@ -71,17 +71,17 @@ all derive from it. Adding a section is one entry there.
 Sections (each shown only when `GET /api/v1/auth/me` grants its `requires`; name, handle and avatar come
 from `GET /api/v1/me`):
 
-| Section | What it does |
-|---|---|
-| Overview | Publish status from `GET /site/status` (`live` or `publishing`); flips right after any content write. |
-| My portfolio | `PUT /me/portfolio`, with photo and CV upload. |
-| My RSVPs | Your registrations; cancel. |
-| Events | List, create, edit (cover, photos, speakers, recap); registrants with CSV download and check-in by ticket. |
-| Blog | My posts; for reviewers a review queue. Markdown editor with live preview from `GET /posts/{id}/preview` (drafts autosave); submit, withdraw, request changes, publish, unpublish. |
-| People | Search, create and edit people (affiliation, batch, member since, graduated on, listing). |
-| Committee & roles | Terms and seats, positions and the roles each carries, grants, and *Make current* (the handover). |
-| Talks, Sponsors | List, create, edit (sponsor logo upload). |
-| Media | Upload any allowed purpose and copy the URL. |
+| Section           | What it does                                                                                                                                                                       |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Overview          | Publish status from `GET /site/status` (`live` or `publishing`); flips right after any content write.                                                                              |
+| My portfolio      | `PUT /me/portfolio`, with photo and CV upload.                                                                                                                                     |
+| My RSVPs          | Your registrations; cancel.                                                                                                                                                        |
+| Events            | List, create, edit (cover, photos, speakers, recap); registrants with CSV download and check-in by ticket.                                                                         |
+| Blog              | My posts; for reviewers a review queue. Markdown editor with live preview from `GET /posts/{id}/preview` (drafts autosave); submit, withdraw, request changes, publish, unpublish. |
+| People            | Search, create and edit people (affiliation, batch, member since, graduated on, listing).                                                                                          |
+| Committee & roles | Terms and seats, positions and the roles each carries, grants, and _Make current_ (the handover).                                                                                  |
+| Talks, Sponsors   | List, create, edit (sponsor logo upload).                                                                                                                                          |
+| Media             | Upload any allowed purpose and copy the URL.                                                                                                                                       |
 
 Forms show the API's 422 `fields` next to the input they belong to. Uploads are resized in the browser to WebP,
 at most 1600 px, before `POST /api/v1/media`.

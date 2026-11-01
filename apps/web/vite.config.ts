@@ -45,10 +45,7 @@ export default defineConfig({
           page.prerender?.headers?.["X-TSS_SHELL"] === "true" ||
           (!CLIENT_ONLY.test(page.path) && !/[?#]/.test(page.path) && !/\.[a-z0-9]+$/i.test(page.path)),
       },
-      pages: [
-        ...allPaths(loadSnapshot()).map((path) => ({ path })),
-        { path: "/404", prerender: { outputPath: "/404.html" } },
-      ],
+      pages: [...allPaths(loadSnapshot()).map((path) => ({ path })), { path: "/404", prerender: { outputPath: "/404.html" } }],
     }),
     viteReact(),
   ],

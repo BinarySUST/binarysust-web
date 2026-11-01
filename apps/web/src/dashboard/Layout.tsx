@@ -79,14 +79,7 @@ function Shell() {
     window.location.assign("/");
   }
 
-  const navigation = (
-    <DashNav
-      me={me.data}
-      current={current}
-      onNavigate={() => setNavOpen(false)}
-      onSignOut={() => void signOut()}
-    />
-  );
+  const navigation = <DashNav me={me.data} current={current} onNavigate={() => setNavOpen(false)} onSignOut={() => void signOut()} />;
 
   return (
     <MeContext.Provider value={me.data}>

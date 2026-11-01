@@ -34,7 +34,11 @@ function writeSearch(patch: Record<string, string>) {
 
 export function PeoplePage() {
   const people = route.useLoaderData();
-  const search = useSyncExternalStore(subscribeSearch, () => window.location.search, () => "");
+  const search = useSyncExternalStore(
+    subscribeSearch,
+    () => window.location.search,
+    () => "",
+  );
   const sp = new URLSearchParams(search);
   const rawStatus = sp.get("status") ?? "";
   const status: PersonStatus | "all" = (STATUS_ORDER as string[]).includes(rawStatus) ? (rawStatus as PersonStatus) : "all";
@@ -57,13 +61,24 @@ export function PeoplePage() {
     <>
       <PageHead title="People" lede="Everyone with a public page: the committee, members, advisors and alumni." />
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <form className="mb-10 grid gap-6 border-y border-line py-6 md:grid-cols-[1fr_auto]" role="search" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="mb-10 grid gap-6 border-y border-line py-6 md:grid-cols-[1fr_auto]"
+          role="search"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <fieldset>
             <legend className="tlabel mb-2">Status</legend>
             <div className="flex flex-wrap gap-2">
               {(["all", ...statuses] as const).map((s) => (
                 <label key={s} className="cursor-pointer">
-                  <input type="radio" name="status" value={s} checked={status === s} onChange={() => setStatus(s)} className="peer sr-only" />
+                  <input
+                    type="radio"
+                    name="status"
+                    value={s}
+                    checked={status === s}
+                    onChange={() => setStatus(s)}
+                    className="peer sr-only"
+                  />
                   <span className="inline-flex min-h-10 items-center rounded-[4px] border border-line-strong px-3.5 text-sm font-medium text-ink-2 hover:border-ink-2 hover:text-ink peer-checked:border-ink peer-checked:bg-ink peer-checked:text-ground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--focus)]">
                     {s === "all" ? "Everyone" : STATUS_LABEL[s]}
                   </span>

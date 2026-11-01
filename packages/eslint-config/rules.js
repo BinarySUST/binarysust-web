@@ -33,16 +33,7 @@ const apiClientInternals = {
 
 /** Rule 3: Base UI / shadcn primitives live in @binarysust/ui; apps compose them. */
 const uiPrimitives = {
-  group: [
-    "@base-ui/react",
-    "@base-ui/react/*",
-    "@radix-ui/*",
-    "radix-ui",
-    "sonner",
-    "vaul",
-    "cmdk",
-    "~/components/ui/*",
-  ],
+  group: ["@base-ui/react", "@base-ui/react/*", "@radix-ui/*", "radix-ui", "sonner", "vaul", "cmdk", "~/components/ui/*"],
   message: `UI primitives come from @binarysust/ui (add one with \`pnpm dlx shadcn@latest add <name>\` in apps/web). ${ADR}`,
 };
 
@@ -87,8 +78,7 @@ export function restrictedSyntax({ apiClient = false, staticSite = false } = {})
     selectors.push(
       { selector: "Identifier[name=/^(createServerFn|createServerFileRoute)$/]", message: NO_SERVER_CODE },
       {
-        selector:
-          "Property[key.name='server'][value.type='ObjectExpression'] > ObjectExpression > Property[key.name='handlers']",
+        selector: "Property[key.name='server'][value.type='ObjectExpression'] > ObjectExpression > Property[key.name='handlers']",
         message: NO_SERVER_CODE,
       },
     );

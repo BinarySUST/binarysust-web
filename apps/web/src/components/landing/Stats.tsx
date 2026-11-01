@@ -15,7 +15,10 @@ export function StatList({ stats }: { stats: Club["stats"] }) {
   return (
     <dl className="-mt-8 grid grid-cols-2">
       {stats.map((s, i) => (
-        <div key={s.label} className={`flex flex-col-reverse justify-end gap-1.5 border-b border-line py-5 ${i % 2 === 1 ? "border-l pl-5" : "pr-4"}`}>
+        <div
+          key={s.label}
+          className={`flex flex-col-reverse justify-end gap-1.5 border-b border-line py-5 ${i % 2 === 1 ? "border-l pl-5" : "pr-4"}`}
+        >
           <dt className="text-[0.9375rem] leading-snug text-ink-2">{label(s.value, s.label)}</dt>
           <dd className="display text-[clamp(1.75rem,3.5vw,2.25rem)] leading-none tabular">{show(s.value)}</dd>
         </div>

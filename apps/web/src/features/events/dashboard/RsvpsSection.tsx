@@ -24,7 +24,11 @@ export function RsvpsSection() {
         <Loading what="Loading your RSVPs" />
       ) : q.data.length === 0 ? (
         <Empty>
-          You have no RSVPs. <a href="/events" className="link">Find an event</a>.
+          You have no RSVPs.{" "}
+          <a href="/events" className="link">
+            Find an event
+          </a>
+          .
         </Empty>
       ) : (
         <ul className="space-y-3">
@@ -42,7 +46,8 @@ export function RsvpsSection() {
               </div>
               <Button
                 type="button"
-                variant="outline" size="sm"
+                variant="outline"
+                size="sm"
                 disabled={cancel.isPending && cancel.variables === r.eventSlug}
                 onClick={() => cancel.mutate(r.eventSlug)}
               >
@@ -52,7 +57,11 @@ export function RsvpsSection() {
           ))}
         </ul>
       )}
-      {cancel.error && <p role="alert" className="mt-4 font-semibold text-vermilion">{cancel.error.message}</p>}
+      {cancel.error && (
+        <p role="alert" className="mt-4 font-semibold text-vermilion">
+          {cancel.error.message}
+        </p>
+      )}
     </>
   );
 }

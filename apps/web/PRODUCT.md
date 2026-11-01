@@ -2,7 +2,7 @@
 
 <!-- impeccable:product-schema 1 -->
 
-> Written unattended from the build brief and `../docs/ARCHITECTURE.md`. Facts marked *(inferred)* were not
+> Written unattended from the build brief and `../docs/ARCHITECTURE.md`. Facts marked _(inferred)_ were not
 > confirmed by a person; replace them when the club reviews this file.
 
 ## Platform
@@ -13,8 +13,8 @@ web
 
 - Students at Shahjalal University of Science & Technology (SUST), Sylhet, deciding whether to join or show
   up to a Binary SUST event. Not only programmers: sessions range from workshops and contests to "Tech Hour",
-  "Road to Tech Career", career talks and live sessions on marketing and brand scaling. *(inferred: mostly on
-  phones, often on mobile data)*
+  "Road to Tech Career", career talks and live sessions on marketing and brand scaling. _(inferred: mostly on
+  phones, often on mobile data)_
 - Members and alumni who keep a public portfolio and point recruiters at it.
 - Committee members who run events, review blog posts and hand over roles every year, via the dashboard.
 - Sponsors and guest speakers checking the club is real and active.
@@ -84,4 +84,4 @@ so the site doubles as the club's institutional memory.
 ## Accessibility & Inclusion
 
 WCAG 2.2 AA contrast, full keyboard navigation with visible focus, `prefers-reduced-motion` respected,
-usable at 360px wide. *(inferred standard from the brief)*
+usable at 360px wide. _(inferred standard from the brief)_

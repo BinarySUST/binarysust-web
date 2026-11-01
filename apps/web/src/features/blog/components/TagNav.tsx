@@ -12,7 +12,12 @@ export function TagNav({ tags, active }: { tags: string[]; active?: string }) {
         </li>
         {tags.map((t) => (
           <li key={t}>
-            <Link to="/blog/tag/$tag" params={{ tag: t }} aria-current={t === active ? "page" : undefined} className={badgeVariants({ className: "min-h-9 px-3" })}>
+            <Link
+              to="/blog/tag/$tag"
+              params={{ tag: t }}
+              aria-current={t === active ? "page" : undefined}
+              className={badgeVariants({ className: "min-h-9 px-3" })}
+            >
               #{t}
             </Link>
           </li>

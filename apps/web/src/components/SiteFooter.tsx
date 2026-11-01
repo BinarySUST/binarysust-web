@@ -15,9 +15,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-x-10 gap-y-10 px-4 pt-12 pb-10 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
           <Logo motto />
-          <p className="mt-5 max-w-sm text-[0.9375rem] text-ink-2">
-            The student technology club of {BRAND.university}.
-          </p>
+          <p className="mt-5 max-w-sm text-[0.9375rem] text-ink-2">The student technology club of {BRAND.university}.</p>
           <p lang="bn" className="mt-4 font-bangla text-lg font-medium text-ink-2">
             {BRAND.bangla}
           </p>
@@ -38,13 +36,20 @@ export function SiteFooter() {
           <h2 className="meta mb-3 text-ink-3">Contact</h2>
           <ul className="space-y-2 text-[0.9375rem]">
             <li>
-              <a href={`mailto:${BRAND.email}`} className="inline-flex items-center gap-2 break-all text-ink-2 no-underline hover:text-ink hover:underline">
+              <a
+                href={`mailto:${BRAND.email}`}
+                className="inline-flex items-center gap-2 break-all text-ink-2 no-underline hover:text-ink hover:underline"
+              >
                 <Icon name="mail" size={16} /> {BRAND.email}
               </a>
             </li>
             {BRAND.links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} rel="me noopener" className="inline-flex items-center gap-2 text-ink-2 no-underline hover:text-ink hover:underline">
+                <a
+                  href={l.href}
+                  rel="me noopener"
+                  className="inline-flex items-center gap-2 text-ink-2 no-underline hover:text-ink hover:underline"
+                >
                   <Icon name="external" size={16} /> {l.label}
                 </a>
               </li>
@@ -66,7 +71,9 @@ export function SiteFooter() {
         <p className="meta mx-auto flex max-w-7xl flex-wrap justify-between gap-x-6 gap-y-1 px-4 py-4 text-ink-3 sm:px-6">
           <span>Binary SUST · SUST, Sylhet 3114</span>
           <span>
-            <a href="/sitemap.xml" className="text-ink-3 no-underline hover:text-ink hover:underline">sitemap.xml</a>
+            <a href="/sitemap.xml" className="text-ink-3 no-underline hover:text-ink hover:underline">
+              sitemap.xml
+            </a>
           </span>
         </p>
       </div>

@@ -1,72 +1,30 @@
 {
   "$schema": "../../node_modules/turbo/schema.json",
-  "extends": [
-    "//"
-  ],
+  "extends": ["//"],
   "tasks": {
     "dev": {
-      "command": [
-        "go",
-        "run",
-        "./cmd/server"
-      ],
+      "command": ["go", "run", "./cmd/server"],
       "cache": false,
       "persistent": true,
-      "passThroughEnv": [
-        "*"
-      ]
+      "passThroughEnv": ["*"]
     },
     "build": {
-      "command": [
-        "go",
-        "build",
-        "-trimpath",
-        "-o",
-        "bin/server",
-        "./cmd/server"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "!bin/**"
-      ],
-      "outputs": [
-        "bin/server"
-      ]
+      "command": ["go", "build", "-trimpath", "-o", "bin/server", "./cmd/server"],
+      "inputs": ["$TURBO_DEFAULT$", "!bin/**"],
+      "outputs": ["bin/server"]
     },
     "test": {
-      "command": [
-        "go",
-        "test",
-        "-race",
-        "./..."
-      ],
-      "env": [
-        "EKMAN_TEST_DATABASE_URL"
-      ],
+      "command": ["go", "test", "-race", "./..."],
+      "env": ["EKMAN_TEST_DATABASE_URL"],
       "outputs": []
     },
     "gen": {
-      "command": [
-        "go",
-        "run",
-        "./cmd/server",
-        "openapi",
-        "-o",
-        "openapi.json"
-      ],
+      "command": ["go", "run", "./cmd/server", "openapi", "-o", "openapi.json"],
       "cache": false
     },
     "lint": {
-      "command": [
-        "go",
-        "run",
-        "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0",
-        "run"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/.golangci.yml"
-      ]
+      "command": ["go", "run", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0", "run"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.golangci.yml"]
     }
   }
 }

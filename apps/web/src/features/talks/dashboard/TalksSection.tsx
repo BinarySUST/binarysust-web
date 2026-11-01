@@ -6,7 +6,22 @@ import { type Schemas, api, unwrap } from "@binarysust/api-client";
 import { formatShort } from "~/lib/format";
 import { HandlePicker } from "~/features/people/components/PersonLookup";
 import type { SectionProps } from "~/dashboard/sections";
-import { BackLink, DeleteButton, Empty, ErrorBox, Field, Loading, SaveBar, SectionHead, Table, fieldErrors, invalidate, orNull, slugify, td } from "~/dashboard/ui";
+import {
+  BackLink,
+  DeleteButton,
+  Empty,
+  ErrorBox,
+  Field,
+  Loading,
+  SaveBar,
+  SectionHead,
+  Table,
+  fieldErrors,
+  invalidate,
+  orNull,
+  slugify,
+  td,
+} from "~/dashboard/ui";
 import { buttonVariants } from "@binarysust/ui/components/button";
 import { Input } from "@binarysust/ui/components/input";
 import { Textarea } from "@binarysust/ui/components/textarea";
@@ -101,22 +116,31 @@ function TalkForm({ id, initial }: { id: string | null; initial: TalkIn }) {
         <div className="sm:col-span-2">
           <Field label="Title" error={fe.title}>
             <Input
-              
               value={f.title}
               onChange={(e) => {
                 const title = e.target.value;
                 setF((x) => ({ ...x, title, slug: id || x.slug !== slugify(x.title) ? x.slug : slugify(title) }));
                 save.reset();
               }}
- />
+            />
           </Field>
         </div>
         <Field label="URL slug" error={fe.slug}>
           <Input value={f.slug} onChange={(e) => set("slug", e.target.value)} />
         </Field>
-        <HandlePicker label="Speaker" hint="Add them under People first if they are new." error={fe.speaker} value={f.speaker} onChange={(v) => set("speaker", v)} />
+        <HandlePicker
+          label="Speaker"
+          hint="Add them under People first if they are new."
+          error={fe.speaker}
+          value={f.speaker}
+          onChange={(v) => set("speaker", v)}
+        />
         <Field label="Date" error={fe.date}>
-          <Input type="date" value={f.date.slice(0, 10)} onChange={(e) => set("date", e.target.value ? `${e.target.value}T00:00:00Z` : "")} />
+          <Input
+            type="date"
+            value={f.date.slice(0, 10)}
+            onChange={(e) => set("date", e.target.value ? `${e.target.value}T00:00:00Z` : "")}
+          />
         </Field>
         <label className="flex items-center gap-3 sm:mt-7">
           <Checkbox className="size-5" checked={f.featured} onCheckedChange={(checked) => set("featured", checked)} />

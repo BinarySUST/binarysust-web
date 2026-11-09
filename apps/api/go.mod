@@ -5,7 +5,7 @@ go 1.27.0
 require (
 	github.com/jackc/pgx/v5 v5.12.0
 	github.com/microcosm-cc/bluemonday v1.0.27
-	github.com/sakib412/ekman v0.1.0
+	github.com/sakib412/ekman v0.2.0
 	github.com/yuin/goldmark v1.8.7
 )
 

@@ -17,8 +17,8 @@ github.com/microcosm-cc/bluemonday v1.0.27 h1:MpEUotklkwCSLeH+Qdx1VJgNqLlpY2KXwX
 github.com/microcosm-cc/bluemonday v1.0.27/go.mod h1:jFi9vgW+H7c3V0lb6nR74Ib/DIB5OBs92Dimizgw2cA=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/sakib412/ekman v0.1.0 h1:0L35SE7Z5K59Ykn6h2wwjPvTjc03jo4g3YKQ5Juc9s4=
-github.com/sakib412/ekman v0.1.0/go.mod h1:IBZS0rpTGWp4wXRVv/O1O9Ftqpx+Zv0kPcXC74M2Cpg=
+github.com/sakib412/ekman v0.2.0 h1:FGDGlc5nATCspxp/lGm6SC/kB1nta6T8FlGRCOcZlF8=
+github.com/sakib412/ekman v0.2.0/go.mod h1:IBZS0rpTGWp4wXRVv/O1O9Ftqpx+Zv0kPcXC74M2Cpg=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

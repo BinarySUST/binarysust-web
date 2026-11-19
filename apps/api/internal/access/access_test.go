@@ -2,6 +2,7 @@ package access_test
 
 import (
 	"context"
+	"errors"
 	"slices"
 	"testing"
 
@@ -168,7 +169,7 @@ func TestSignUpIsInviteOnly(t *testing.T) {
 	a := testapp.New(t)
 	_, _, _, annID, _ := committee(t, a)
 
-	if _, err := a.SignIn("stranger@example.com"); err != access.ErrNotInvited {
+	if _, err := a.SignIn("stranger@example.com"); !errors.Is(err, access.ErrNotInvited) {
 		t.Fatalf("stranger: %v", err)
 	}
 	if n := a.QueryString(t, `SELECT count(*)::text FROM accounts`); n != "0" {
@@ -186,7 +187,7 @@ func TestSignUpIsInviteOnly(t *testing.T) {
 
 	// Removing the email from the person closes the door again.
 	a.Exec(t, `UPDATE persons SET email = NULL WHERE id = $1`, annID)
-	if _, err := a.SignIn("ann@example.com"); err != access.ErrNotInvited {
+	if _, err := a.SignIn("ann@example.com"); !errors.Is(err, access.ErrNotInvited) {
 		t.Fatalf("ann after her email was removed: %v", err)
 	}
 }

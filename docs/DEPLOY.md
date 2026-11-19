@@ -97,6 +97,8 @@ Done 2026-11-20 as binary.sust@gmail.com: project `binarysust`, OAuth client **b
    is lost, add a new secret to the client and delete the old one.
 
 The API builds the callback from `PUBLIC_URL`, so set `PUBLIC_URL=https://www.binarysust.org` on the VPS too.
+Also set `CORS_ORIGINS=https://www.binarysust.org`: the `/api` proxy forwards the site's `Origin`, and without it
+every save in the dashboard fails with "Cross-origin request rejected".
 
 ## 3. VPS (Go API)
 

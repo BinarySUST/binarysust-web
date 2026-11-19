@@ -1,14 +1,18 @@
-# Builds the public site from a database snapshot and deploys it to Cloudflare Pages.
+# Builds the public site from the snapshot the API stored in Workers KV and deploys it to Cloudflare Pages.
+# CI never touches the database: the API builds the snapshot (internal/republish.Publisher), stores it
+# under snapshot:<hash>, points "latest" at it, then fires this workflow with the hash.
 #
 # Triggers:
-#   - repository_dispatch "publish": the API fires it after every content write (republish middleware)
-#   - push to main touching apps/web, packages/ or the snapshot code: code changes always deploy
-#   - nightly 00:05 Asia/Dhaka: "upcoming" and "registration open" roll over with the date
-#   - manual run
+#   - repository_dispatch "publish": the API, after content changed (a write, its nightly 00:05 Asia/Dhaka
+#     date rollover, its boot after a deploy, or "republish now"); client_payload.hash names the snapshot
+#   - push to main touching apps/web or packages/: code changes always deploy, with the latest snapshot
+#   - manual run: the latest snapshot
 #
 # Secrets (repo settings → Secrets and variables → Actions):
-#   SNAPSHOT_DATABASE_URL  Supabase connection string for a READ-ONLY role (optional: without it the fixture is used)
-#   CLOUDFLARE_API_TOKEN   token with "Cloudflare Pages: Edit"
+#   SNAPSHOT_KV_NAMESPACE_ID  the Workers KV namespace the API writes (optional: without it the fixture is
+#                             built and nothing is deployed)
+#   SNAPSHOT_KV_READ_TOKEN    token with "Workers KV Storage: Read"
+#   CLOUDFLARE_API_TOKEN      token with "Cloudflare Pages: Edit"
 #   CLOUDFLARE_ACCOUNT_ID
 name: publish
 
@@ -20,12 +24,8 @@ on:
     paths:
       - apps/web/**
       - packages/**
-      - apps/api/internal/site/**
-      - apps/api/cmd/snapshot/**
       - pnpm-lock.yaml
       - .github/workflows/publish.yml
-  schedule:
-    - cron: "5 18 * * *"
   workflow_dispatch:
 
 permissions:
@@ -47,28 +47,43 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-go@v7
-        with:
-          go-version-file: apps/api/go.mod
-          cache-dependency-path: apps/api/go.sum
-
-      - name: Snapshot the database
+      - name: Fetch the snapshot
         id: snapshot
-        working-directory: apps/api
         env:
-          DATABASE_URL: ${{ secrets.SNAPSHOT_DATABASE_URL }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NAMESPACE: ${{ secrets.SNAPSHOT_KV_NAMESPACE_ID }}
+          TOKEN: ${{ secrets.SNAPSHOT_KV_READ_TOKEN }}
+          WANT: ${{ github.event.client_payload.hash }}
         run: |
-          if [ -z "$DATABASE_URL" ]; then
-            echo "SNAPSHOT_DATABASE_URL is not set; building from the committed fixture."
+          if [ -z "$NAMESPACE" ] || [ -z "$TOKEN" ] || [ -z "$ACCOUNT" ]; then
+            echo "::warning::SNAPSHOT_KV_* is not set; building the committed fixture, which is never deployed."
             echo "hash=fixture" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          version=$(go run ./cmd/snapshot -out ../web)
-          echo "hash=$(echo "$version" | jq -r .hash)" >> "$GITHUB_OUTPUT"
+          kv="https://api.cloudflare.com/client/v4/accounts/$ACCOUNT/storage/kv/namespaces/$NAMESPACE/values"
+          get() { curl -fsS --max-time 20 -H "Authorization: Bearer $TOKEN" "$kv/$1"; }
+          mkdir -p apps/web/.snapshot
+          out=apps/web/.snapshot/site.json
+          # Workers KV is eventually consistent: a key the API just wrote can take up to a minute to be
+          # readable here, so retry until the snapshot with the wanted hash arrives.
+          for delay in 0 5 10 20 30 60; do
+            sleep "$delay"
+            hash="$WANT"
+            [ -n "$hash" ] || hash=$(get latest | jq -r '.hash // empty') || true
+            if [ -n "$hash" ] && get "snapshot%3A$hash" > "$out" && [ "$(jq -r .version.hash "$out")" = "$hash" ]; then
+              echo "snapshot $hash"
+              echo "hash=$hash" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "snapshot ${hash:-latest} not readable yet"
+          done
+          echo "::error::could not read snapshot ${WANT:-latest} from Workers KV"
+          exit 1
 
       - name: Skip if the live site already has this content
         id: live
-        if: github.event_name != 'push' && github.event_name != 'workflow_dispatch'
+        # "Republish now" (client_payload.force) deploys even when the live site already has this hash.
+        if: github.event_name != 'push' && github.event_name != 'workflow_dispatch' && github.event.client_payload.force != 'true'
         run: |
           live=$(curl -fsS --max-time 10 "$SITE_URL/version.json" | jq -r .hash || echo none)
           echo "live hash: $live, new hash: ${{ steps.snapshot.outputs.hash }}"
@@ -93,7 +108,7 @@ jobs:
           pnpm turbo run build --filter=@binarysust/web
 
       - name: Deploy to Cloudflare Pages
-        if: steps.live.outputs.unchanged != 'true'
+        if: steps.live.outputs.unchanged != 'true' && steps.snapshot.outputs.hash != 'fixture'
         working-directory: apps/web
         env:
           WRANGLER_SEND_METRICS: false

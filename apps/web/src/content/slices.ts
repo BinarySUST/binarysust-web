@@ -117,7 +117,10 @@ export const slices = {
     const t = s.terms.find((x) => x.slug === term);
     const c = s.committees.find((x) => x.term === term);
     if (!t || !c) return null;
-    return { term: t, isCurrent: s.currentTerm?.slug === term, terms: s.terms, seats: [...c.seats].sort(bySeat) };
+    // Only terms with a committee get a page (allPaths), so the term nav must not link to the others: the
+    // pre-render crawls those links and fails on the 404.
+    const terms = s.terms.filter((x) => s.committees.some((cm) => cm.term === x.slug));
+    return { term: t, isCurrent: s.currentTerm?.slug === term, terms, seats: [...c.seats].sort(bySeat) };
   },
 
   events(s: Snapshot): EventCard[] {

@@ -60,8 +60,7 @@ Terraform (step 0) creates project `binarysust` in Singapore (`ap-southeast-1`) 
 
 1. **Turn off the Data API** (Project Settings → Data API → disable). Left on, Supabase serves tables in
    `public` over REST and GraphQL to anyone holding the project's anon key.
-2. In the SQL editor, take away what Supabase grants its Data API roles, and create the read-only role for the
-   site build:
+2. In the SQL editor, take away what Supabase grants its Data API roles:
    ```sql
    -- Supabase-only roles get nothing in the API's schema, now or for tables created later.
    REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
@@ -70,16 +69,12 @@ Terraform (step 0) creates project `binarysust` in Singapore (`ap-southeast-1`) 
    ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;
    ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated;
    ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated;
-
-   CREATE ROLE site_reader LOGIN PASSWORD '<generate one>';
-   GRANT CONNECT ON DATABASE postgres TO site_reader;
-   GRANT USAGE ON SCHEMA public TO site_reader;
-   GRANT SELECT ON ALL TABLES IN SCHEMA public TO site_reader;
-   ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT ON TABLES TO site_reader;
    ```
 3. Connect → **Session pooler** connection string (IPv4, supports prepared statements; the direct connection is
-   IPv6-only on the free plan). With the `postgres` password it is `DATABASE_URL` for the VPS (step 3). With
-   user `site_reader.<project-ref>` and its password it is `SNAPSHOT_DATABASE_URL` for GitHub Actions (step 5).
+   IPv6-only on the free plan). With the `postgres` password it is `DATABASE_URL` for the VPS (step 3). The API
+   is the only database client: CI builds the site from the snapshot the API stores in Workers KV (step 5).
+4. Projects set up before the API published snapshots had a read-only `site_reader` role for CI. Drop it:
+   `REASSIGN OWNED BY site_reader TO postgres; DROP OWNED BY site_reader; DROP ROLE site_reader;`
 
 ## 2. Google sign-in
 
@@ -119,7 +114,8 @@ hostname directly: the site's `/api/*` Pages Function proxies to it, so members 
    - `DATABASE_URL`: Supabase session pooler string (user `postgres.<project-ref>`, with the password)
    - Optional, each turns on a feature: `PUBLIC_URL`, `EKMAN_SECRET` (`openssl rand -base64 48`),
      `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (Google sign-in), the `GITHUB_MEDIA_*` trio (uploads),
-     `GITHUB_REPOSITORY`/`GITHUB_DISPATCH_TOKEN` (auto-republish, step 5), `BREVO_API_KEY` (mail). Uncomment them
+     `GITHUB_REPOSITORY`/`GITHUB_DISPATCH_TOKEN` (auto-republish, step 5), the `SNAPSHOT_KV_*` pair with
+     `CLOUDFLARE_ACCOUNT_ID` (the snapshot the site is built from, step 5), `BREVO_API_KEY` (mail). Uncomment them
      as you get the values, then `sudo systemctl restart binarysust-api`.
 3. **Cloudflare Tunnel**: Terraform (step 0) creates tunnel `binarysust-vps`, routes `api.binarysust.org` to
    `localhost:8081` and adds the DNS record. Install the connector on the VPS once, with the token from
@@ -158,8 +154,9 @@ The club owns `binarysust.org` at Namecheap (expires 2027-09-20). Cloudflare's f
 
 In `BinarySUST/binarysust-web` → Settings → Secrets and variables → Actions:
 
-- `SNAPSHOT_DATABASE_URL`: Supabase `site_reader` string
 - `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`: written by Terraform (step 0)
+- `SNAPSHOT_KV_NAMESPACE_ID`, `SNAPSHOT_KV_READ_TOKEN`: see "Snapshot store" below
+- Delete `SNAPSHOT_DATABASE_URL` if it is still there: CI no longer reads the database.
 - `VPS_HOST`, `VPS_USER`: the VM's address and an SSH user with passwordless sudo
 - `VPS_SSH_KEY`: that user's private key
 - `VPS_KNOWN_HOSTS`: output of `ssh-keyscan -t ed25519 <host>`, so the workflow pins the host key
@@ -172,6 +169,23 @@ GitHub account, owned by the `BinarySUST` org:
 
 Set their expiry to one year and add renewing them to the committee handover checklist. A GitHub App is
 the long-term replacement (see ARCHITECTURE.md, open questions).
+
+### Snapshot store (Workers KV)
+
+The API builds the snapshot and stores it in Workers KV, and the publish workflow reads it from there
+(docs/adr/0002-snapshot-in-workers-kv.md). Workers KV is on Cloudflare's free plan with no card; R2 would need one.
+
+1. Cloudflare dashboard → Storage & Databases → **Workers KV** → Create namespace `binarysust-snapshot`. Copy its ID.
+2. My Profile → API Tokens → two custom tokens, each with Account: _Workers KV Storage_ only:
+   - **Edit**, for the API: `SNAPSHOT_KV_TOKEN` in `/etc/binarysust-api.env`, next to `SNAPSHOT_KV_NAMESPACE_ID`
+     and `CLOUDFLARE_ACCOUNT_ID`.
+   - **Read**, for CI: the `SNAPSHOT_KV_READ_TOKEN` secret, next to the `SNAPSHOT_KV_NAMESPACE_ID` secret.
+3. `sudo systemctl restart binarysust-api`. At boot the API stores the current snapshot and dispatches a build;
+   its log says `republish: published snapshot`.
+
+Each changed publish writes two keys: `snapshot:<hash>` (expires after 30 days) and `latest`. That stays far below
+the free plan's 1,000 writes a day. The API also republishes at 00:05 Asia/Dhaka when the date changes what the
+site shows, and an admin can force a rebuild with `POST /api/v1/site/republish`.
 
 `binarysust-media` deploys itself to the `binarysust-media` Pages project on every push. It needs the same two Cloudflare secrets: add `binarysust-media` to `github_repositories` in
 `infra/terraform/variables.tf` once that repository exists.
@@ -196,7 +210,7 @@ After that, give out every other role from the dashboard's **Committee & roles**
 ## Yearly handover checklist
 
 - Dashboard → Committee & roles → create the new term, fill its seats, click **Make current**.
-- Rotate `GITHUB_*` and `TF_*` tokens if they expire within 3 months.
+- Rotate `GITHUB_*`, `TF_*` and the two `SNAPSHOT_KV` tokens if they expire within 3 months.
 - Hand over the HCP Terraform organization (it holds the state) along with the other club accounts.
 - Check the `binarysust.org` renewal date at Namecheap (next: 2027-09-20).
 - Make sure at least two people know the club Google account's password and have recovery set up. The account

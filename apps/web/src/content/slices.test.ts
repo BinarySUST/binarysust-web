@@ -77,6 +77,13 @@ describe("slices.committee", () => {
     }
   });
 
+  it("lists only terms that have a committee, so the term nav never links to a missing page", () => {
+    const s: Snapshot = { ...fixture, terms: [...fixture.terms, { slug: "1999-00", label: "1999-00", startsOn: "1999-07-01" }] };
+    const c = slices.committee(s, fixture.currentTerm!.slug)!;
+    expect(c.terms.map((t) => t.slug)).not.toContain("1999-00");
+    expect(c.terms.every((t) => s.committees.some((cm) => cm.term === t.slug))).toBe(true);
+  });
+
   it("is null for a term without a committee", () => {
     expect(slices.committee(fixture, "1999-00")).toBeNull();
   });

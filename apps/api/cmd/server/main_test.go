@@ -35,11 +35,11 @@ func serve(t *testing.T, cfg Config, d *db.DB) *httptest.Server {
 			t.Fatal(err)
 		}
 	}
-	app, _, err := NewApp(cfg, d, quiet)
+	s, err := NewApp(cfg, d, quiet)
 	if err != nil {
 		t.Fatal(err)
 	}
-	h, err := app.Handler()
+	h, err := s.App.Handler()
 	if err != nil {
 		t.Fatalf("boot: %v", err)
 	}
@@ -82,10 +82,11 @@ func TestDevSignInOnlyOnLocalOrigins(t *testing.T) {
 
 func TestBootAndOpenAPI(t *testing.T) {
 	lazy, _ := db.Open("pgx", "postgres://nobody@127.0.0.1:1/none")
-	app, _, err := NewApp(LoadConfig(env(nil)), lazy, quiet)
+	wired, err := NewApp(LoadConfig(env(nil)), lazy, quiet)
 	if err != nil {
 		t.Fatal(err)
 	}
+	app := wired.App
 	doc, err := club.OpenAPI(app)
 	if err != nil {
 		t.Fatalf("openapi: %v", err)
@@ -114,7 +115,7 @@ func TestBootAndOpenAPI(t *testing.T) {
 	}
 	_ = json.Unmarshal(spec.Components.Schemas["Permission"], &perms)
 	want := []string{"blog.review", "blog.write", "events.checkin", "events.manage", "media.upload", "people.manage",
-		"profile.edit_own", "roles.manage", "sponsors.manage", "talks.manage"}
+		"profile.edit_own", "roles.manage", "site.publish", "sponsors.manage", "talks.manage"}
 	if !slices.Equal(perms.Enum, want) {
 		t.Errorf("permissions: %v", perms.Enum)
 	}
@@ -151,10 +152,11 @@ func TestDevSignInFlow(t *testing.T) {
 		t.Fatal(err)
 	}
 	cfg.PublicURL = "http://" + ln.Addr().String()
-	app, _, err := NewApp(cfg, d, quiet)
+	wired, err := NewApp(cfg, d, quiet)
 	if err != nil {
 		t.Fatal(err)
 	}
+	app := wired.App
 	if err := app.Migrate(context.Background()); err != nil {
 		t.Fatal(err)
 	}

@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { CommitteeView } from "~/features/committee/components/CommitteeView";
 import { PageHead } from "~/components/Page";
 import { content } from "~/content";
@@ -7,7 +7,9 @@ import { seo } from "~/lib/seo";
 export const Route = createFileRoute("/committee/")({
   loader: async () => {
     const { currentTerm } = await content.landing();
-    if (!currentTerm) throw notFound();
+    // A fresh database has no current term yet: show an empty page, not a 404, so the nav link and the
+    // pre-render (which crawls it) both keep working.
+    if (!currentTerm) return null;
     return content.committee(currentTerm.slug);
   },
   head: ({ loaderData }) =>
@@ -18,6 +20,9 @@ export const Route = createFileRoute("/committee/")({
     }),
   component: function CommitteePage() {
     const data = Route.useLoaderData();
+    if (!data) {
+      return <PageHead title="Committee" lede="The committee for this term has not been announced yet." />;
+    }
     return (
       <>
         <PageHead

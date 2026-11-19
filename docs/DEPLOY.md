@@ -16,7 +16,7 @@ personal one, so the next committee inherits it. Use the same account for every 
 ## 0. Terraform (Cloudflare, Supabase, GitHub secrets)
 
 `infra/terraform/` creates the cloud side: the Supabase project, the Cloudflare Tunnel and its `api.` DNS record,
-both Pages projects with their custom domains and DNS, the www → apex redirect, and a Pages-only deploy token that
+both Pages projects with their custom domains and DNS, the apex → www redirect, and a Pages-only deploy token that
 it writes to the repository's `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` secrets. It does not touch the VPS
 or deploy code. Actions → **terraform** plans on every pull request that changes it, and applies only when run by
 hand from `main` with **apply** ticked.
@@ -86,7 +86,7 @@ Terraform (step 0) creates project `binarysust` in Singapore (`ap-southeast-1`) 
 1. console.cloud.google.com → new project `binarysust` (do **not** enable billing).
 2. APIs & Services → OAuth consent screen → External, app name "Binary SUST", then publish it.
 3. Credentials → Create OAuth client ID → Web application. Authorized redirect URIs:
-   - `https://binarysust.org/api/v1/auth/google/callback`
+   - `https://www.binarysust.org/api/v1/auth/google/callback`
    - `http://binarysust.localhost/api/v1/auth/google/callback` (local dev; if Google rejects it, use `pnpm dev` with `DEV_ADMIN_EMAIL` instead)
 4. Copy the client ID and secret.
 
@@ -132,7 +132,7 @@ Useful on the VPS: `sudo systemctl status binarysust-api`, `sudo journalctl -u b
 ## 4. Cloudflare Pages (site)
 
 Terraform (step 0) creates the `binarysust` and `binarysust-media` Pages projects, their custom domains
-(`binarysust.org`, `www.binarysust.org`, `media.binarysust.org`) with DNS records, the www → apex 301 redirect,
+(`binarysust.org`, `www.binarysust.org`, `media.binarysust.org`) with DNS records, the apex → www 301 redirect,
 and the deploy token in GitHub secrets. `API_ORIGIN` (`https://api.binarysust.org`) lives in
 `apps/web/wrangler.toml`, which every deploy uploads. Only the domain itself is set up by hand:
 
@@ -168,7 +168,7 @@ the long-term replacement (see ARCHITECTURE.md, open questions).
 
 ## 6. First publish
 
-Actions → **publish** → Run workflow. Open `https://binarysust.org` and sign in with Google once.
+Actions → **publish** → Run workflow. Open `https://www.binarysust.org` and sign in with Google once.
 Then make yourself the first admin from the Supabase SQL editor. Roles belong to a _person_ (a public
 profile), so create yours, link it, and grant a permanent admin role:
 

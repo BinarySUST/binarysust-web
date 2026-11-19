@@ -37,7 +37,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_URL: https://binarysust.org
+  SITE_URL: https://www.binarysust.org # canonical; binarysust.org 301s here (Cloudflare redirect rule)
   PAGES_PROJECT: binarysust
 
 jobs:

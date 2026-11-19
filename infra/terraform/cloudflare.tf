@@ -103,7 +103,8 @@ resource "cloudflare_dns_record" "pages" {
   comment = "Cloudflare Pages (Terraform)"
 }
 
-# One canonical URL: www.binarysust.org/* → https://binarysust.org/* (301).
+# One canonical URL: binarysust.org/* → https://www.binarysust.org/* (301). The site's SITE_URL and the
+# API's PUBLIC_URL are the www origin, so sign-in cookies and canonical links all live on one host.
 resource "cloudflare_ruleset" "redirects" {
   zone_id     = local.zone_id
   name        = "redirects"
@@ -113,15 +114,15 @@ resource "cloudflare_ruleset" "redirects" {
 
   rules = [
     {
-      description = "www to apex"
-      expression  = "(http.host eq \"www.${var.domain}\")"
+      description = "apex to www"
+      expression  = "(http.host eq \"${var.domain}\")"
       action      = "redirect"
       action_parameters = {
         from_value = {
           status_code           = 301
           preserve_query_string = true
           target_url = {
-            expression = "concat(\"https://${var.domain}\", http.request.uri.path)"
+            expression = "concat(\"https://www.${var.domain}\", http.request.uri.path)"
           }
         }
       }

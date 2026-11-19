@@ -30,7 +30,7 @@ of `content.*` runs only during the build's pre-render. Re-run `pnpm slices` aft
 | `VITE_HMR_CLIENT_PORT` | dev                       | HMR websocket port when behind Caddy (80). Unset for plain `pnpm dev`.                                                         |
 | `API_ORIGIN`           | dev proxy, Pages Function | Where `/api/*` goes. In production, set it on the Pages project.                                                               |
 | `VITE_MEDIA_BASE_URL`  | build                     | Base for media URLs the dashboard builds (default `https://media.binarysust.org`). Snapshot image fields are already absolute. |
-| `SITE_URL`             | build                     | Canonical origin for sitemap, RSS and OpenGraph (default `https://binarysust.org`).                                            |
+| `SITE_URL`             | build                     | Canonical origin for sitemap, RSS and OpenGraph (default `https://www.binarysust.org`).                                        |
 
 Package scripts (Turborepo runs them from the root: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`):
 `typecheck`, `lint`, `test` (Vitest, `src/**/*.test.ts`), `test:e2e` (Playwright, `e2e/`, against the static build

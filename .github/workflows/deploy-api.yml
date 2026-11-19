@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 15
     environment:
       name: production
-      url: https://binarysust.org
+      url: https://www.binarysust.org
     steps:
       - uses: actions/checkout@v7
 

@@ -11,7 +11,7 @@ reporters in the fix's release notes unless you ask us not to.
 
 ## Scope
 
-- The site at `https://binarysust.org`, its `/api/*` proxy and the Go API (`apps/api`).
+- The site at `https://www.binarysust.org` (`binarysust.org` redirects there), its `/api/*` proxy and the Go API (`apps/api`).
 - Sign-in (Google OAuth), sessions, roles and permissions, uploads (`media.binarysust.org`).
 - This repository's GitHub Actions workflows and their secrets handling.
 

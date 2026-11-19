@@ -1,6 +1,6 @@
 # Actions secrets the Pages deploys need, in every repository in var.github_repositories.
-# The VPS deploy secrets (VPS_*) and SNAPSHOT_DATABASE_URL stay out of Terraform on purpose: an SSH key and a
-# database password would otherwise sit in state. Set those with `gh secret set` (docs/DEPLOY.md step 5).
+# The VPS deploy secrets (VPS_*) and the SNAPSHOT_KV_* pair stay out of Terraform on purpose: an SSH key and an
+# API token would otherwise sit in state. Set those with `gh secret set` (docs/DEPLOY.md step 5).
 
 resource "github_actions_secret" "cloudflare_account_id" {
   for_each = var.github_repositories

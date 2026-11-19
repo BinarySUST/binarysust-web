@@ -1,7 +1,9 @@
 # Snapshot contract
 
-`site.Snapshot` (Go, `apps/api/internal/site`) is the only thing the public site reads. `cmd/snapshot` writes it
-two ways from one value:
+`site.Snapshot` (Go, `apps/api/internal/site`) is the only thing the public site reads. In production the API
+builds it and stores it in Workers KV (`snapshot:<hash>` plus a `latest` pointer, ADR 0002), and the publish
+workflow downloads it. Locally `pnpm snapshot` (`cmd/snapshot`) writes it from your database. Either way the
+build uses it two ways from one value:
 
 - `apps/web/.snapshot/site.json`: the whole snapshot, read from disk at pre-render time.
 - `apps/web/public/data/**.json`: per-route slices, fetched by the browser on client-side navigation.

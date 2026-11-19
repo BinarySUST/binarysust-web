@@ -1,7 +1,8 @@
 // Package site owns the public contract: Snapshot, the single value the static site is built
 // from (docs/snapshot.md). Build reads every module through its own Published function inside
 // one read-only, repeatable-read transaction, so a snapshot is a consistent cut of the database.
-// cmd/snapshot (CI) and GET /site/preview (dashboard) run the same Build.
+// The API's republish.Publisher (production), cmd/snapshot (local) and GET /site/preview
+// (dashboard) run the same Build.
 package site
 
 import (
@@ -16,11 +17,13 @@ import (
 
 	"github.com/sakib412/ekman"
 	"github.com/sakib412/ekman/db"
+	"github.com/sakib412/ekman/rbac"
 
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/access"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/blog"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/events"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/people"
+	"github.com/BinarySUST/binarysust-web/apps/api/internal/republish"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/sponsors"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/talks"
 )
@@ -165,13 +168,25 @@ func contentHash(s Snapshot) (string, error) {
 	return hex.EncodeToString(sum[:]), nil
 }
 
+// Publish lets a role force a republish (admins hold it through rbac.All).
+const Publish rbac.Permission = "site.publish"
+
+// Republisher queues a rebuild and deploy even when content is unchanged (republish.Publisher).
+type Republisher interface {
+	Republish(ctx context.Context, reason string) error
+}
+
 // Service serves the dashboard's site endpoints.
 type Service struct {
 	src       Sources
 	publicURL string
 	client    *http.Client
 	now       func() time.Time
+	rep       Republisher
 }
+
+// SetRepublisher sets what POST /site/republish calls; without one it answers 503.
+func (s *Service) SetRepublisher(r Republisher) { s.rep = r }
 
 // New returns the site service. publicURL is where the static site (and its /version.json) lives.
 func New(src Sources, publicURL string) *Service {
@@ -182,17 +197,38 @@ func New(src Sources, publicURL string) *Service {
 // Module wires the site endpoints into the app. It owns no tables.
 func (s *Service) Module() ekman.Module {
 	return ekman.Module{
-		Name: "site",
+		Name:        "site",
+		Permissions: []rbac.Permission{Publish},
 		Routes: func(r *ekman.Router) {
 			ekman.Handle(r, "GET /site/status", ekman.SignedIn(), s.status, ekman.Summary("Is my change live?"))
 			ekman.Handle(r, "GET /site/preview", ekman.SignedIn(), s.preview,
 				ekman.Summary("The snapshot the next build would publish"))
+			ekman.Handle(r, "POST /site/republish", ekman.Requires(Publish), s.republish,
+				ekman.Status(http.StatusAccepted), republish.Skip(), // it publishes by itself, forced
+				ekman.Summary("Rebuild and deploy the site now, even if content is unchanged"))
 		},
 	}
 }
 
 func (s *Service) preview(ctx context.Context, _ ekman.Caller, _ *struct{}) (Snapshot, error) {
 	return Build(ctx, s.src, s.now())
+}
+
+// Queued answers POST /site/republish: the rebuild runs in the background.
+type Queued struct {
+	Queued bool `json:"queued"`
+}
+
+func (s *Service) republish(ctx context.Context, _ ekman.Caller, _ *struct{}) (Queued, error) {
+	if s.rep == nil {
+		return Queued{}, &ekman.Error{Status: http.StatusServiceUnavailable, Code: "republish_unavailable",
+			Message: "publishing is not configured on this server"}
+	}
+	ri, _ := ekman.RouteFrom(ctx)
+	if err := s.rep.Republish(ctx, http.MethodPost+" "+ri.Pattern); err != nil {
+		return Queued{}, err
+	}
+	return Queued{Queued: true}, nil
 }
 
 // LiveVersion is the deployed site's /version.json, as far as status needs it.

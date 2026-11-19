@@ -540,6 +540,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/site/republish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rebuild and deploy the site now, even if content is unchanged */
+        post: operations["postSiteRepublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/site/status": {
         parameters: {
             query?: never;
@@ -704,7 +721,7 @@ export interface components {
          * @description A permission declared by a module.
          * @enum {string}
          */
-        Permission: "blog.review" | "blog.write" | "events.checkin" | "events.manage" | "media.upload" | "people.manage" | "profile.edit_own" | "roles.manage" | "sponsors.manage" | "talks.manage";
+        Permission: "blog.review" | "blog.write" | "events.checkin" | "events.manage" | "media.upload" | "people.manage" | "profile.edit_own" | "roles.manage" | "site.publish" | "sponsors.manage" | "talks.manage";
         "access.Account": {
             avatarUrl: string | null;
             email: string;
@@ -1226,6 +1243,9 @@ export interface components {
         };
         /** @enum {string} */
         "site.PublishState": "live" | "publishing";
+        "site.Queued": {
+            queued: boolean;
+        };
         "site.Snapshot": {
             club: components["schemas"]["site.Club"];
             committees: components["schemas"]["people.Committee"][];
@@ -2523,6 +2543,29 @@ export interface operations {
                 };
             };
             401: components["responses"]["Error"];
+            default: components["responses"]["Error"];
+        };
+    };
+    postSiteRepublish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["site.Queued"];
+                };
+            };
+            401: components["responses"]["Error"];
+            403: components["responses"]["Error"];
             default: components["responses"]["Error"];
         };
     };

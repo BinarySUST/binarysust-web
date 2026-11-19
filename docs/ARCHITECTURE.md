@@ -70,16 +70,16 @@ A Turborepo + pnpm monorepo: `apps/web` (TanStack Start), `apps/api` (Go, a nati
 ```
 Visitor ─► Cloudflare Pages (static HTML from the snapshot) ─── never touches the API
 Member  ─► Pages Function /api/* (same-origin proxy) ─► Cloudflare Tunnel ─► VPS: Go API on ekman ─► Supabase Postgres
-Write   ─► API commit ─► republish middleware ─► GitHub repository_dispatch
-CI      ─► go run ./cmd/snapshot (reads Supabase directly, read-only role) ─► vite build (TanStack Start prerender) ─► wrangler pages deploy
+Write   ─► API commit ─► republish middleware ─► Publisher (background): site.Build ─► Workers KV ─► GitHub repository_dispatch {hash}
+CI      ─► fetch snapshot:<hash> from Workers KV ─► vite build (TanStack Start prerender) ─► wrangler pages deploy
 ```
 
 ### Load-bearing decisions
 
 1. **The public site is built from a single snapshot of the database.**
    - `site.Snapshot` is the public contract. It holds every public view, with markdown already rendered to sanitized HTML by the one Go renderer (`internal/md`). The dashboard preview uses the same renderer, so what authors see is exactly what gets published.
-   - CI produces the snapshot by reading Supabase directly, so a build never depends on the API being up.
-2. **Republishing is on by default.** After every 2xx response to a non-GET request, middleware updates `site_settings.content_changed_at` and fires a GitHub `repository_dispatch`, unless the route carries `republish.Skip()` (RSVP, check-in, uploads). Forgetting `Skip` costs only a no-op build, because builds whose content hash hasn't changed skip the deploy. GitHub's concurrency group merges bursts of edits into one running build plus one pending. _Is my change live?_ compares `content_changed_at` with the deployed `/version.json`.
+   - The API produces the snapshot and stores it in Workers KV under its content hash, then dispatches the build with that hash. CI never touches the database, and a build never depends on the API being up: it reads the last stored snapshot (ADR 0002).
+2. **Republishing is on by default.** After every 2xx response to a non-GET request, middleware updates `site_settings.content_changed_at` and signals the `republish.Publisher`, unless the route carries `republish.Skip()` (RSVP, check-in, uploads). The publisher runs in the background, merges bursts of edits into one run, and stores and dispatches only when the content hash changed, so forgetting `Skip` costs nothing. It also runs at boot, at 00:05 Asia/Dhaka (the date rollover), and on an admin's `POST /site/republish`. _Is my change live?_ compares `content_changed_at` with the deployed `/version.json`.
 3. **Roles follow the committee.**
    - Roles are defined in code (`club.Roles`).
    - A person holds a role through one of two sources:
@@ -129,7 +129,8 @@ CI      ─► go run ./cmd/snapshot (reads Supabase directly, read-only role) �
 | Go API         | Oracle Cloud VPS (ARM64, systemd), behind Cloudflare Tunnel; deployed by `deploy-api.yml`   | Always on, no cold starts; no open ports, and the web server already on the box is untouched                   |
 | Postgres       | Supabase free                                                                               | Managed Postgres with backups; 500 MB is far more than needed                                                  |
 | Media          | GitHub repo `binarysust-media`, deployed to its own Pages project at `media.binarysust.org` | Org-owned and versioned. Kept out of the site build, so the site stays under Pages' 20k-files-per-deploy limit |
-| Builds         | GitHub Actions (public repo, unlimited minutes)                                             | Snapshot, build and deploy                                                                                     |
+| Snapshot store | Cloudflare Workers KV free (1,000 writes/day)                                               | The API writes the snapshot, CI reads it. R2 was rejected because enabling it needs a card                     |
+| Builds         | GitHub Actions (public repo, unlimited minutes)                                             | Build and deploy                                                                                               |
 | Bot token      | GitHub App installed on the org                                                             | Outlives any one student's personal token                                                                      |
 | Sign-in        | Google OAuth (Cloud project without billing)                                                | No passwords, and every SUST student already has a Google account                                              |
 | Mail           | Brevo free (300/day, single verified sender)                                                | RSVP confirmation and waitlist promotion. Optional. Resend was rejected because it needs a verified domain     |
@@ -166,7 +167,7 @@ Two structurally different designs were produced and judged independently:
 ## Tradeoffs accepted
 
 - We accept 2–4 minutes of publish latency in exchange for a public site that is fast, free, and still up when the API is down or broken.
-- We accept a read-only Supabase credential in GitHub Actions secrets in exchange for builds that never depend on the API.
+- We accept that the site is built from the snapshot the _deployed_ API produces, so a change to `site.Snapshot` must stay readable by the current web code (or the API ships first), in exchange for keeping database credentials out of CI.
 - We accept over-triggered CI runs (republish on by default) in exchange for never shipping a stale site because someone forgot to opt in.
 - We accept that `site.Snapshot` is a second list next to `club.Modules()`. It is checked at compile time, and it is the explicit public contract.
 - We accept up to a minute of "Waking the server…" on the first sign-in or RSVP after a quiet period. Islands start waking the API as soon as they mount, so by the time the user acts, it's usually awake.
@@ -180,12 +181,13 @@ Two structurally different designs were produced and judged independently:
 
 - **Dynamic SSR with an edge cache (Next.js on Vercel, or Astro or TanStack Start on Workers).** Every cache miss waits on a sleeping API. It also needs a server runtime under a 10 ms CPU limit, and caching rules leak into every page.
 - **Content stored in git (markdown plus a git-based CMS).** Portfolios edited by hundreds of members, role-gated review and committee history are relational data with permissions. Putting them in git hands merge conflicts and access control to students.
-- **The build pulls the snapshot from the API.** Every build would first wait about a minute for Render to wake, and would fail when Render is down.
+- **The build pulls the snapshot from the API.** A deploy would fail whenever the API is down. The API now pushes the snapshot to Workers KV instead (ADR 0002).
+- **CI reads Supabase directly (the original design).** It kept a database credential in GitHub secrets and needed Supabase's IPv4 pooler. Replaced by ADR 0002.
+- **R2 as the snapshot store.** Cloudflare requires a payment method before R2 can be enabled, which breaks "no card anywhere".
 
 ## Open questions and risks
 
 - The club owns `binarysust.org` (Namecheap, expires 2027-09-20). Who keeps renewing it? An expired domain takes the site, sign-in and media down together.
-- GitHub disables scheduled workflows on public repos after 60 days with no commits, so the nightly rebuild could silently stop. Should a Cloudflare cron trigger the nightly rebuild instead? Note that the client-side "hide past events" script already covers stale pages.
 - Should non-SUST guests be able to RSVP? Today anyone with a Google account can.
 
 ## Next implementation step

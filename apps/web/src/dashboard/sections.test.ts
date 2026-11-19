@@ -40,6 +40,7 @@ describe("dashboard sections", () => {
       "people.manage",
       "profile.edit_own",
       "roles.manage",
+      "site.publish",
       "sponsors.manage",
       "talks.manage",
     ];

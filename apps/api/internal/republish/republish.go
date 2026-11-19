@@ -50,9 +50,10 @@ type Notifier interface {
 	Notify(ctx context.Context, reason string) error
 }
 
-// Middleware runs after the handler, inside the same request, so a free instance that sleeps
-// right after responding cannot drop the notification. Failures are logged, never returned:
-// the user's write already succeeded, and the next write or the nightly build catches up.
+// Middleware runs after the handler: it records the change inside the request, then notifies.
+// In production the Notifier is a Publisher, which only queues a run, so building and storing
+// the snapshot never delays the response. Failures are logged, never returned: the user's write
+// already succeeded, and the next write, the nightly run or the next boot catches up.
 func Middleware(rec Recorder, n Notifier, log *slog.Logger) ekman.Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -113,8 +114,12 @@ type GitHub struct {
 	Client     *http.Client // default: 5 s timeout
 }
 
-// Notify implements Notifier.
-func (g *GitHub) Notify(ctx context.Context, reason string) error {
+// Notify implements Notifier: a dispatch without a snapshot hash.
+func (g *GitHub) Notify(ctx context.Context, reason string) error { return g.Dispatch(ctx, reason, "") }
+
+// Dispatch implements Dispatcher. The publish workflow fetches the snapshot with hash from KV
+// (or the latest one when hash is empty).
+func (g *GitHub) Dispatch(ctx context.Context, reason, hash string) error {
 	base := g.BaseURL
 	if base == "" {
 		base = "https://api.github.com"
@@ -123,10 +128,11 @@ func (g *GitHub) Notify(ctx context.Context, reason string) error {
 	if client == nil {
 		client = &http.Client{Timeout: 5 * time.Second}
 	}
-	body, _ := json.Marshal(map[string]any{
-		"event_type":     "publish",
-		"client_payload": map[string]string{"reason": reason},
-	})
+	payload := map[string]string{"reason": reason}
+	if hash != "" {
+		payload["hash"] = hash
+	}
+	body, _ := json.Marshal(map[string]any{"event_type": "publish", "client_payload": payload})
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
 		strings.TrimSuffix(base, "/")+"/repos/"+g.Repository+"/dispatches", bytes.NewReader(body))
 	if err != nil {
@@ -148,11 +154,14 @@ func (g *GitHub) Notify(ctx context.Context, reason string) error {
 	return nil
 }
 
-// Log is the Notifier used when no GitHub token is configured (local development).
+// Log is the Notifier (and Dispatcher) used when no GitHub token is configured (local development).
 type Log struct{ Logger *slog.Logger }
 
 // Notify implements Notifier.
-func (l Log) Notify(ctx context.Context, reason string) error {
-	l.Logger.InfoContext(ctx, "republish: content changed (no GITHUB_DISPATCH_TOKEN; not dispatching)", "route", reason)
+func (l Log) Notify(ctx context.Context, reason string) error { return l.Dispatch(ctx, reason, "") }
+
+// Dispatch implements Dispatcher.
+func (l Log) Dispatch(ctx context.Context, reason, hash string) error {
+	l.Logger.InfoContext(ctx, "republish: content changed (no GITHUB_DISPATCH_TOKEN; not dispatching)", "route", reason, "hash", hash)
 	return nil
 }

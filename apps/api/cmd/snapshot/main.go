@@ -1,11 +1,11 @@
-// Command snapshot writes the public-site snapshot. CI runs it against Supabase directly (with a
-// read-only role), so a site build never depends on the API being up.
+// Command snapshot writes the public-site snapshot from a database, for local site builds
+// (`pnpm snapshot`). Production does not use it: the API stores the snapshot in Workers KV and
+// the publish workflow downloads it (internal/republish.Publisher, docs/adr/0002).
 //
 //	DATABASE_URL=... go run ./cmd/snapshot -out ../web
 //
 // It writes <out>/.snapshot/site.json (the whole site.Snapshot; the web build slices it and
-// writes public/version.json from its version field) and prints the version to stdout, so CI can
-// compare the hash with the deployed /version.json and skip an unchanged deploy.
+// writes public/version.json from its version field) and prints the version to stdout.
 package main
 
 import (

@@ -56,6 +56,7 @@
           "people.manage",
           "profile.edit_own",
           "roles.manage",
+          "site.publish",
           "sponsors.manage",
           "talks.manage"
         ],
@@ -2265,6 +2266,17 @@
           "publishing"
         ],
         "type": "string"
+      },
+      "site.Queued": {
+        "properties": {
+          "queued": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "queued"
+        ],
+        "type": "object"
       },
       "site.Snapshot": {
         "properties": {
@@ -4793,6 +4805,42 @@
           "site"
         ],
         "x-ekman-access": "signed_in"
+      }
+    },
+    "/api/v1/site/republish": {
+      "post": {
+        "operationId": "postSiteRepublish",
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/site.Queued"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Rebuild and deploy the site now, even if content is unchanged",
+        "tags": [
+          "site"
+        ],
+        "x-ekman-access": "site.publish"
       }
     },
     "/api/v1/site/status": {

@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"log/slog"
 	"os"
@@ -15,6 +16,7 @@ import (
 	"slices"
 	"strings"
 	"syscall"
+	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // the "pgx" database/sql driver
 
@@ -28,6 +30,7 @@ import (
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/club"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/media"
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/republish"
+	"github.com/BinarySUST/binarysust-web/apps/api/internal/site"
 )
 
 // Config is read from the environment (see .env.example at the repository root and infra/vps/binarysust-api.env.example).
@@ -46,7 +49,17 @@ type Config struct {
 	MediaToken         string // GITHUB_MEDIA_TOKEN: contents:write on the media repo
 	MediaRepository    string // GITHUB_MEDIA_REPOSITORY: owner/name; set it to store uploads on GitHub
 	MediaBranch        string // GITHUB_MEDIA_BRANCH: default main
+	CloudflareAccount  string // CLOUDFLARE_ACCOUNT_ID
+	SnapshotKV         string // SNAPSHOT_KV_NAMESPACE_ID: set it (and SNAPSHOT_KV_TOKEN) to publish snapshots to Workers KV
+	SnapshotKVToken    string // SNAPSHOT_KV_TOKEN: "Workers KV Storage: Edit"
 	CORS               []string
+
+	cloudflareAPI, githubAPI string // tests point these at fakes
+}
+
+// snapshotKV reports whether snapshots are published to Workers KV.
+func (c Config) snapshotKV() bool {
+	return c.CloudflareAccount != "" && c.SnapshotKV != "" && c.SnapshotKVToken != ""
 }
 
 // LoadConfig reads Config from getenv.
@@ -72,12 +85,22 @@ func LoadConfig(getenv func(string) string) Config {
 		MediaToken:         getenv("GITHUB_MEDIA_TOKEN"),
 		MediaRepository:    getenv("GITHUB_MEDIA_REPOSITORY"),
 		MediaBranch:        getenv("GITHUB_MEDIA_BRANCH"),
+		CloudflareAccount:  getenv("CLOUDFLARE_ACCOUNT_ID"),
+		SnapshotKV:         getenv("SNAPSHOT_KV_NAMESPACE_ID"),
+		SnapshotKVToken:    getenv("SNAPSHOT_KV_TOKEN"),
 		CORS:               cors,
 	}
 }
 
+// Server is the wired API.
+type Server struct {
+	App       *ekman.App
+	Svc       *club.Services
+	Publisher *republish.Publisher // nil unless snapshots go to Workers KV; Start it when serving
+}
+
 // NewApp builds the whole API from cfg over database.
-func NewApp(cfg Config, database *db.DB, logger *slog.Logger) (*ekman.App, *club.Services, error) {
+func NewApp(cfg Config, database *db.DB, logger *slog.Logger) (*Server, error) {
 	svc := club.New(database, club.Deps{
 		Mail:      mailer(cfg, logger),
 		Bucket:    bucket(cfg),
@@ -110,11 +133,35 @@ func NewApp(cfg Config, database *db.DB, logger *slog.Logger) (*ekman.App, *club
 			Description: "The Binary SUST club API. Public pages never call it; they are built from the snapshot."},
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	app.Use(republish.Middleware(svc.Access, notifier(cfg, logger), logger))
+	s := &Server{App: app, Svc: svc}
+	var n republish.Notifier = notifier(cfg, logger)
+	if cfg.snapshotKV() {
+		s.Publisher = &republish.Publisher{
+			Build: func(ctx context.Context) (republish.Built, error) {
+				snap, err := site.Build(ctx, svc.Sources, time.Now())
+				if err != nil {
+					return republish.Built{}, err
+				}
+				body, err := json.MarshalIndent(snap, "", "  ") // the same file cmd/snapshot writes
+				return republish.Built{Hash: snap.Version.Hash, BuiltAt: snap.Version.BuiltAt, Body: body}, err
+			},
+			Store: &republish.KV{AccountID: cfg.CloudflareAccount, NamespaceID: cfg.SnapshotKV,
+				Token: cfg.SnapshotKVToken, BaseURL: cfg.cloudflareAPI},
+			Dispatch: n.(republish.Dispatcher),
+			Log:      logger,
+		}
+		n = s.Publisher
+	}
+	if s.Publisher != nil {
+		svc.Site.SetRepublisher(s.Publisher)
+	} else {
+		svc.Site.SetRepublisher(dispatchOnly{n})
+	}
+	app.Use(republish.Middleware(svc.Access, n, logger))
 	app.Register(svc.Modules()...)
-	return app, svc, nil
+	return s, nil
 }
 
 func mailer(cfg Config, logger *slog.Logger) mail.Sender {
@@ -135,9 +182,20 @@ func bucket(cfg Config) storage.Bucket {
 	return nil
 }
 
-func notifier(cfg Config, logger *slog.Logger) republish.Notifier {
+// dispatchOnly forces a build without a stored snapshot (KV not configured).
+type dispatchOnly struct{ republish.Notifier }
+
+func (d dispatchOnly) Republish(ctx context.Context, reason string) error {
+	return d.Notify(ctx, reason)
+}
+
+// notifier dispatches without a snapshot (KV not configured), or is the Publisher's Dispatcher.
+func notifier(cfg Config, logger *slog.Logger) interface {
+	republish.Notifier
+	republish.Dispatcher
+} {
 	if cfg.DispatchToken != "" && cfg.Repository != "" {
-		return &republish.GitHub{Token: cfg.DispatchToken, Repository: cfg.Repository}
+		return &republish.GitHub{Token: cfg.DispatchToken, Repository: cfg.Repository, BaseURL: cfg.githubAPI}
 	}
 	return republish.Log{Logger: logger}
 }
@@ -169,7 +227,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer database.Close()
-	app, _, err := NewApp(cfg, database, logger)
+	s, err := NewApp(cfg, database, logger)
 	if err != nil {
 		logger.Error("configure", "err", err.Error())
 		os.Exit(1)
@@ -177,7 +235,7 @@ func main() {
 	// `openapi [-o file]`: ekman's document plus the enums it cannot express (club.OpenAPI),
 	// written to stdout or to file (`pnpm gen` writes openapi.json without a shell redirect).
 	if len(os.Args) > 1 && os.Args[1] == "openapi" {
-		if err := writeOpenAPI(app, os.Args[2:]); err != nil {
+		if err := writeOpenAPI(s.App, os.Args[2:]); err != nil {
 			logger.Error("openapi", "err", err.Error())
 			os.Exit(1)
 		}
@@ -190,7 +248,7 @@ func main() {
 	// `serve --migrate`: migrate first, then hand over to ekman's serve.
 	if len(os.Args) > 2 && os.Args[1] == "serve" && slices.Contains(os.Args[2:], "--migrate") {
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-		err := app.Migrate(ctx)
+		err := s.App.Migrate(ctx)
 		stop()
 		if err != nil {
 			logger.Error("migrate", "err", err.Error())
@@ -199,5 +257,26 @@ func main() {
 		logger.Info("migrations applied")
 		os.Args = os.Args[:2]
 	}
-	app.Main()
+	if serving && s.Publisher != nil {
+		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		s.Publisher.Start(ctx)
+		go func() { // the date rollover changes "upcoming" and "registration open"
+			for range republish.Daily(ctx, dhaka) {
+				_ = s.Publisher.Notify(ctx, "nightly")
+			}
+		}()
+		defer func() {
+			stop()
+			sctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			s.Publisher.Stop(sctx)
+		}()
+	} else if serving {
+		logger.Warn("SNAPSHOT_KV_* not set: content changes dispatch builds without storing a snapshot")
+	}
+	s.App.Main()
 }
+
+// dhaka is the club's day: "upcoming" and "registration open" roll over at 00:05 here.
+// Bangladesh has had no daylight saving since 2009, so a fixed zone needs no tzdata.
+var dhaka = time.FixedZone("Asia/Dhaka", 6*60*60)

@@ -1,5 +1,10 @@
 # Where should the publish pipeline get its content snapshot?
 
+> **Decision (2026-11-20):** the maintainers chose a push model, as in option A, but storing the snapshot
+> in **Workers KV** rather than R2, because R2 needs a payment method on the Cloudflare account and the
+> project has a "no card anywhere" rule. See docs/adr/0002-snapshot-in-workers-kv.md and
+> BinarySUST/binarysust-web#7. The comparison below is kept as written.
+
 Research note, 2026-11-20. Question: how `.github/workflows/publish.yml` should obtain the `site.Snapshot`
 that the static site is pre-rendered from. Option B (CI fetches it from an authenticated API endpoint) is the
 main candidate. Every external claim links to its primary source. Claims about this repo cite the file.

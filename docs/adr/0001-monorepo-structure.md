@@ -42,7 +42,7 @@ binarysust-web/
 │   ├── docker/compose.yaml     local Postgres + Caddy
 │   └── caddy/Caddyfile         binarysust.localhost edge (mirrors production)
 ├── docs/                       ARCHITECTURE.md, DEPLOY.md, snapshot.md, adr/
-├── .github/                    workflows (ci, publish, deploy-api), CODEOWNERS, PR + issue templates, dependabot
+├── .github/                    workflows (ci, publish, deploy-api, terraform), CODEOWNERS, PR + issue templates, dependabot
 ├── turbo.json, go.work, pnpm-workspace.yaml, package.json (root scripts only)
 ├── .editorconfig, .nvmrc, .golangci.yml, commitlint + lefthook (Conventional Commits, pre-commit format/lint)
 └── README.md, CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md, LICENSE

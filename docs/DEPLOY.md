@@ -13,23 +13,71 @@ personal one, so the next committee inherits it. Use the same account for every 
 | Sign-in                    | Google OAuth                                                      | no billing account needed           |
 | Mail (optional)            | Brevo                                                             | 300 emails/day                      |
 
-## 1. Supabase (database)
+## 0. Terraform (Cloudflare, Supabase, GitHub secrets)
 
-1. Sign up at supabase.com, create project `binarysust`, region **Southeast Asia (Singapore)**. Save the database password.
-2. **Turn off the Data API** (Project Settings → Data API → disable, or remove `public` from the exposed schemas).
-   The API owns every table in `public`; left on, Supabase would serve them over REST to anyone with the anon key.
-3. Connect → **Session pooler** connection string (IPv4; the direct connection is IPv6-only on the free plan).
-   With the database password filled in, this is `DATABASE_URL` for the VPS.
-4. Create a read-only role for the site build (SQL editor):
+`infra/terraform/` creates the cloud side: the Supabase project, the Cloudflare Tunnel and its `api.` DNS record,
+both Pages projects with their custom domains and DNS, the www → apex redirect, and a Pages-only deploy token that
+it writes to the repository's `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` secrets. It does not touch the VPS
+or deploy code. Actions → **terraform** plans on every pull request that changes it, and applies only when run by
+hand from `main` with **apply** ticked.
+
+Do this once, after the domain is on Cloudflare (step 4, "Domain") and before steps 1, 3 and 4:
+
+1. **HCP Terraform** (app.terraform.io, free, no card): create an organization, then a workspace named
+   `binarysust-prod` of type **CLI-driven**, and set its Settings → Execution Mode to **Local** (HCP only stores
+   state; state holds secrets, so keep the organization to the committee). Create a team or user API token.
+2. **Tokens** (all from the club accounts):
+   - Cloudflare → My Profile → API Tokens → custom token with Account: _Cloudflare Tunnel: Edit_,
+     _Cloudflare Pages: Edit_, _Account Settings: Read_; Zone (binarysust.org): _DNS: Edit_,
+     _Single Redirect: Edit_, _Zone: Read_; User: _API Tokens: Edit_ (to create the deploy token).
+   - Supabase → Account → Access Tokens → new token.
+   - GitHub → fine-grained PAT on `BinarySUST/binarysust-web`: **Secrets: read and write**.
+3. In `BinarySUST/binarysust-web` → Settings → Secrets and variables → Actions:
+   - Secrets: `TF_API_TOKEN`, `TF_CLOUDFLARE_API_TOKEN`, `SUPABASE_ACCESS_TOKEN`, `TF_GITHUB_TOKEN`
+   - Variables: `TF_CLOUD_ORGANIZATION`, `CLOUDFLARE_ACCOUNT_ID`, `SUPABASE_ORGANIZATION_ID` (the org slug)
+4. Actions → **terraform** → Run workflow on `main`, **apply** ticked. Check the plan in the run summary first
+   by running it once without **apply**.
+
+**Already created by hand?** Import before the first apply instead of letting Terraform create duplicates
+(from `infra/terraform`, with the same env vars as the workflow):
+`terraform import supabase_project.main <project-ref>`,
+`terraform import cloudflare_pages_project.site <account-id>/binarysust`,
+`terraform import 'cloudflare_pages_domain.this["apex"]' <account-id>/binarysust/binarysust.org`,
+`terraform import 'cloudflare_dns_record.pages["apex"]' <zone-id>/<record-id>`, and so on for `www`, `media`
+and the redirect ruleset (`cloudflare_ruleset.redirects`, `zones/<zone-id>/<ruleset-id>`). Delete the
+manually created tunnel instead of importing it; Terraform makes a fresh one.
+
+Read secrets back from state with `terraform output -raw <name>`: `tunnel_token`, `database_password`,
+`supabase_pooler`.
+
+## 1. Supabase (database only)
+
+Supabase is used only as Postgres: no Supabase Auth, Storage or Data API. Sign-in, uploads and the API are ours.
+Terraform (step 0) creates project `binarysust` in Singapore (`ap-southeast-1`) with a generated password
+(`terraform output -raw database_password`). Then, once:
+
+1. **Turn off the Data API** (Project Settings → Data API → disable). Left on, Supabase serves tables in
+   `public` over REST and GraphQL to anyone holding the project's anon key.
+2. In the SQL editor, take away what Supabase grants its Data API roles, and create the read-only role for the
+   site build:
    ```sql
+   -- Supabase-only roles get nothing in the API's schema, now or for tables created later.
+   REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
+   REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon, authenticated;
+   REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM anon, authenticated;
+   ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;
+   ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated;
+   ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated;
+
    CREATE ROLE site_reader LOGIN PASSWORD '<generate one>';
    GRANT CONNECT ON DATABASE postgres TO site_reader;
    GRANT USAGE ON SCHEMA public TO site_reader;
    GRANT SELECT ON ALL TABLES IN SCHEMA public TO site_reader;
    ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT ON TABLES TO site_reader;
    ```
-   The session pooler string with user `site_reader.<project-ref>` and its password is `SNAPSHOT_DATABASE_URL`
-   for GitHub Actions.
+3. Connect → **Session pooler** connection string (IPv4, supports prepared statements; the direct connection is
+   IPv6-only on the free plan). With the `postgres` password it is `DATABASE_URL` for the VPS (step 3). With
+   user `site_reader.<project-ref>` and its password it is `SNAPSHOT_DATABASE_URL` for GitHub Actions (step 5).
 
 ## 2. Google sign-in
 
@@ -60,11 +108,17 @@ hostname directly: the site's `/api/*` Pages Function proxies to it, so members 
    - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
    - `GITHUB_DISPATCH_TOKEN`, `GITHUB_MEDIA_TOKEN`: see step 5
    - `BREVO_API_KEY`: optional
-3. **Cloudflare Tunnel** (needs `binarysust.org` on Cloudflare, see step 4):
-   1. Cloudflare dashboard → Zero Trust → Networks → Tunnels → **Create a tunnel** → Cloudflared, name it `binarysust-vps`.
-   2. Choose Debian, **arm64**, and run the install command it shows on the VPS
-      (`sudo cloudflared service install <token>`). The tunnel shows as Healthy.
-   3. Public hostname: `api.binarysust.org` → Service `HTTP` → `localhost:8081`.
+3. **Cloudflare Tunnel**: Terraform (step 0) creates tunnel `binarysust-vps`, routes `api.binarysust.org` to
+   `localhost:8081` and adds the DNS record. Install the connector on the VPS once, with the token from
+   `terraform output -raw tunnel_token`:
+   ```sh
+   curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+   echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' \
+     | sudo tee /etc/apt/sources.list.d/cloudflared.list
+   sudo apt-get update && sudo apt-get install -y cloudflared
+   sudo cloudflared service install <token>
+   ```
+   The tunnel shows as Healthy in Zero Trust → Networks → Tunnels.
 4. GitHub secrets for `deploy-api` (step 5), then Actions → **deploy-api** → Run workflow. It runs the Go tests,
    builds, uploads to `/opt/binarysust-api/releases/<sha>/`, switches `current`, restarts the service (migrations
    run on boot) and checks `/healthz`, rolling back to the previous release if it fails. After that, every push
@@ -74,9 +128,10 @@ Useful on the VPS: `sudo systemctl status binarysust-api`, `sudo journalctl -u b
 
 ## 4. Cloudflare Pages (site)
 
-1. Sign up at dash.cloudflare.com. Workers & Pages → Create → Pages → **Direct Upload**, named `binarysust`. Create a second project named `binarysust-media` the same way.
-2. In `binarysust` → Settings → Variables: set `API_ORIGIN` = `https://api.binarysust.org` (also the default in `apps/web/wrangler.toml`).
-3. My Profile → API Tokens → Create token with the template **Edit Cloudflare Workers** (it includes Pages). Copy it, and copy your Account ID from the dashboard sidebar.
+Terraform (step 0) creates the `binarysust` and `binarysust-media` Pages projects, their custom domains
+(`binarysust.org`, `www.binarysust.org`, `media.binarysust.org`) with DNS records, the www → apex 301 redirect,
+and the deploy token in GitHub secrets. `API_ORIGIN` (`https://api.binarysust.org`) lives in
+`apps/web/wrangler.toml`, which every deploy uploads. Only the domain itself is set up by hand:
 
 ### Domain: binarysust.org
 
@@ -84,17 +139,14 @@ The club owns `binarysust.org` at Namecheap (expires 2027-09-20). Cloudflare's f
 
 1. Cloudflare dashboard → **Add a domain** → `binarysust.org` → Free plan. Cloudflare shows two nameservers.
 2. Namecheap → Domain List → `binarysust.org` → Nameservers → **Custom DNS**, then paste both Cloudflare nameservers. It usually takes effect within an hour, and at most 24 hours.
-3. Pages project `binarysust` → Custom domains → add `binarysust.org` and `www.binarysust.org`. Cloudflare creates the DNS records and certificates.
-4. Pages project `binarysust-media` → Custom domains → add `media.binarysust.org`.
-5. Rules → **Redirect Rules** → redirect `www.binarysust.org/*` to `https://binarysust.org/${1}` (301), so there is one canonical URL.
-6. Keep `binary.sust@gmail.com` as the Namecheap contact, and turn on auto-renew. If the domain lapses, the site, sign-in and media all go down.
+3. Keep `binary.sust@gmail.com` as the Namecheap contact, and turn on auto-renew. If the domain lapses, the site, sign-in and media all go down.
 
 ## 5. GitHub
 
 In `BinarySUST/binarysust-web` → Settings → Secrets and variables → Actions:
 
 - `SNAPSHOT_DATABASE_URL`: Supabase `site_reader` string
-- `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`: written by Terraform (step 0)
 - `VPS_HOST`, `VPS_USER`: the VM's address and an SSH user with passwordless sudo
 - `VPS_SSH_KEY`: that user's private key
 - `VPS_KNOWN_HOSTS`: output of `ssh-keyscan -t ed25519 <host>`, so the workflow pins the host key
@@ -108,7 +160,8 @@ GitHub account, owned by the `BinarySUST` org:
 Set their expiry to one year and add renewing them to the committee handover checklist. A GitHub App is
 the long-term replacement (see ARCHITECTURE.md, open questions).
 
-`binarysust-media` deploys itself to the `binarysust-media` Pages project on every push. It needs the same two Cloudflare secrets.
+`binarysust-media` deploys itself to the `binarysust-media` Pages project on every push. It needs the same two Cloudflare secrets: add `binarysust-media` to `github_repositories` in
+`infra/terraform/variables.tf` once that repository exists.
 
 ## 6. First publish
 
@@ -130,6 +183,7 @@ After that, give out every other role from the dashboard's **Committee & roles**
 ## Yearly handover checklist
 
 - Dashboard → Committee & roles → create the new term, fill its seats, click **Make current**.
-- Rotate `GITHUB_*` tokens if they expire within 3 months.
+- Rotate `GITHUB_*` and `TF_*` tokens if they expire within 3 months.
+- Hand over the HCP Terraform organization (it holds the state) along with the other club accounts.
 - Check the `binarysust.org` renewal date at Namecheap (next: 2027-09-20).
 - Make sure at least two people know the club Google account's password and have recovery set up.

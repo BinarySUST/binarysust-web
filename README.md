@@ -56,6 +56,7 @@ packages/
 infra/
   docker/         compose.yaml: local Postgres + Caddy
   vps/            systemd unit, env template and one-time setup for the API on the VPS
+  terraform/      Cloudflare (DNS, tunnel, Pages), Supabase project and deploy secrets, as code
   caddy/          Caddyfile: the binarysust.localhost edge, shaped like production
 docs/             architecture, deploy guide, snapshot contract, ADRs
 ```

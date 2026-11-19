@@ -9,7 +9,7 @@ Public pages never call this API. They are pre-rendered from a snapshot of the d
 
 ## Commands
 
-Run these from the repository root (they read the root `.env` through dotenv-cli):
+Run these from the repository root (they read `apps/api/.env` through dotenv-cli; only `DATABASE_URL` is required):
 
 ```sh
 pnpm db:up       # Postgres + Caddy (http://binarysust.localhost)

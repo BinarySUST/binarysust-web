@@ -12,7 +12,7 @@ Playwright, pnpm + Turborepo.
 
 The entry point is the monorepo root: `pnpm dev`, then open **http://binarysust.localhost**.
 Caddy serves that one origin: `/api/*` and `/healthz` go to the Go API, and everything else to this dev
-server on :3000 (`VITE_HMR_CLIENT_PORT=80` from the root `.env` routes HMR through Caddy). Uploads are served
+server on :3000 (`VITE_HMR_CLIENT_PORT=80` from `apps/web/.env` routes HMR through Caddy). Uploads are served
 at `http://media.binarysust.localhost`.
 
 Only this app, without Docker or Caddy:

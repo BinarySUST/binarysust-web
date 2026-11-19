@@ -37,10 +37,11 @@ pnpm db:seed         # optional, once: demo people, events, posts and the defaul
 
 Open **http://binarysust.localhost**. Caddy serves the site there exactly as production does (`/api/*` to the Go
 API, everything else to Vite). Sign in without Google at
-<http://binarysust.localhost/api/v1/auth/dev/start> (as `DEV_ADMIN_EMAIL` from `.env`, an admin).
+<http://binarysust.localhost/api/v1/auth/dev/start> (as `DEV_ADMIN_EMAIL` from `apps/api/.env`, an admin).
 
-`pnpm dev` creates `.env` from `.env.example` on first run. Every root script that needs it loads it with
-dotenv-cli, so the API, the web dev server, tests and the `db:*` scripts read the same file.
+Each app keeps its own local config, and `pnpm dev` creates both from their examples on first run:
+`apps/api/.env` (only `DATABASE_URL` is required; the root `dev`, `test`, `db:*` and `snapshot` scripts load it
+with dotenv-cli) and `apps/web/.env` (read by Vite). Production reads neither: see [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ## Structure
 

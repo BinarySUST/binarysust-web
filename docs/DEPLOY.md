@@ -44,8 +44,10 @@ Do this once, after the domain is on Cloudflare (step 4, "Domain") and before st
 `terraform import cloudflare_pages_project.site <account-id>/binarysust`,
 `terraform import 'cloudflare_pages_domain.this["apex"]' <account-id>/binarysust/binarysust.org`,
 `terraform import 'cloudflare_dns_record.pages["apex"]' <zone-id>/<record-id>`, and so on for `www`, `media`
-and the redirect ruleset (`cloudflare_ruleset.redirects`, `zones/<zone-id>/<ruleset-id>`). Delete the
-manually created tunnel instead of importing it; Terraform makes a fresh one.
+and the redirect ruleset (`cloudflare_ruleset.redirects`, `zones/<zone-id>/<ruleset-id>`). A tunnel made in the dashboard is imported too:
+`terraform import cloudflare_zero_trust_tunnel_cloudflared.api <account-id>/<tunnel-id>`,
+`terraform import cloudflare_zero_trust_tunnel_cloudflared_config.api <account-id>/<tunnel-id>` and
+`terraform import cloudflare_dns_record.api <zone-id>/<record-id>`; the connector on the VPS keeps running.
 
 Read secrets back from state with `terraform output -raw <name>`: `tunnel_token`, `database_password`,
 `supabase_pooler`.
@@ -102,12 +104,13 @@ hostname directly: the site's `/api/*` Pages Function proxies to it, so members 
    ```
    It creates `/opt/binarysust-api/`, installs and enables `binarysust-api.service`, and creates
    `/etc/binarysust-api.env` (root, 0600) from `infra/vps/binarysust-api.env.example`. Re-running it is safe.
-2. Fill in the env file on the VPS (`sudo nano /etc/binarysust-api.env`):
-   - `DATABASE_URL`: Supabase session pooler string (owner role `postgres.<project-ref>`)
-   - `EKMAN_SECRET`: `openssl rand -base64 48`
-   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-   - `GITHUB_DISPATCH_TOKEN`, `GITHUB_MEDIA_TOKEN`: see step 5
-   - `BREVO_API_KEY`: optional
+2. Fill in the env file on the VPS (`sudo nano /etc/binarysust-api.env`). Only `DATABASE_URL` is required, and
+   the API boots with it alone:
+   - `DATABASE_URL`: Supabase session pooler string (user `postgres.<project-ref>`, with the password)
+   - Optional, each turns on a feature: `PUBLIC_URL`, `EKMAN_SECRET` (`openssl rand -base64 48`),
+     `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (Google sign-in), the `GITHUB_MEDIA_*` trio (uploads),
+     `GITHUB_REPOSITORY`/`GITHUB_DISPATCH_TOKEN` (auto-republish, step 5), `BREVO_API_KEY` (mail). Uncomment them
+     as you get the values, then `sudo systemctl restart binarysust-api`.
 3. **Cloudflare Tunnel**: Terraform (step 0) creates tunnel `binarysust-vps`, routes `api.binarysust.org` to
    `localhost:8081` and adds the DNS record. Install the connector on the VPS once, with the token from
    `terraform output -raw tunnel_token`:

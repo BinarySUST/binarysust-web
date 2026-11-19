@@ -62,14 +62,16 @@ package may be named `api`; JS packages are scoped `@binarysust/*`. The feature 
 Turborepo release breaks it, the fallback is a thin `package.json` adapter in `apps/api`, with no other
 changes.
 
-### Local environment: one `.env`, loaded by dotenv-cli
+### Local environment: one `.env` per app
 
-The root `.env` (copied from `.env.example` on first `pnpm dev`) is the only local configuration. Root
-scripts that need it run under `dotenv -e .env -- …` (`dev`, `test`, `db:*`, `snapshot`); the variables
+Each app owns its local configuration, created from its `.env.example` on first `pnpm dev`
+(`scripts/env-init.mjs`, which also moves an old root `.env` to `apps/api/.env`). `apps/api/.env` holds the
+API's variables, and root scripts that need it run under `dotenv -e apps/api/.env -- …` (`dev`, `test`, `db:*`,
+`snapshot`). `apps/web/.env` is read by Vite itself (`loadEnv` in `vite.config.ts`). The API's variables
 never come from a Go-side loader, so `apps/api` keeps reading plain `os.Getenv` and production (systemd's
 `EnvironmentFile` on the VPS) is unchanged. Turborepo runs in strict env mode: `dev` tasks pass the environment through
 (`passThroughEnv`), `api#test` declares `EKMAN_TEST_DATABASE_URL`, and `@binarysust/web#build` hashes
-`SITE_URL` and `VITE_*`. `pnpm build` and `pnpm lint` do not read `.env`, so CI and local builds match.
+`SITE_URL` and `VITE_*`. `pnpm build` and `pnpm lint` do not read `apps/api/.env`, so CI and local builds match.
 
 ### Versions
 

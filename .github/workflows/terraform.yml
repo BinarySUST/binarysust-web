@@ -1,0 +1,96 @@
+# Plans infra/terraform on pull requests; applies only when run by hand from main (Actions → terraform →
+# Run workflow, apply: true). State is in HCP Terraform (workspace binarysust-prod, Local execution mode).
+#
+# Repository secrets:   TF_API_TOKEN (HCP Terraform team/user token), TF_CLOUDFLARE_API_TOKEN,
+#                       SUPABASE_ACCESS_TOKEN, TF_GITHUB_TOKEN (fine-grained PAT: Secrets read/write)
+# Repository variables: TF_CLOUD_ORGANIZATION, CLOUDFLARE_ACCOUNT_ID, SUPABASE_ORGANIZATION_ID
+# See docs/DEPLOY.md, "Terraform".
+name: terraform
+
+on:
+  pull_request:
+    paths:
+      - infra/terraform/**
+      - .github/workflows/terraform.yml
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Apply the plan (main only)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: infra/terraform
+
+env:
+  TF_IN_AUTOMATION: "1"
+  TF_INPUT: "0"
+  TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+  TF_CLOUD_ORGANIZATION: ${{ vars.TF_CLOUD_ORGANIZATION }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.TF_CLOUDFLARE_API_TOKEN }}
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
+  GITHUB_OWNER: ${{ github.repository_owner }}
+  TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  TF_VAR_supabase_organization_id: ${{ vars.SUPABASE_ORGANIZATION_ID }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.17.2
+          terraform_wrapper: false
+
+      - name: Format
+        run: terraform fmt -check -recursive
+
+      - name: Credentials present
+        id: creds
+        run: |
+          missing=""
+          for v in TF_TOKEN_app_terraform_io TF_CLOUD_ORGANIZATION CLOUDFLARE_API_TOKEN SUPABASE_ACCESS_TOKEN GITHUB_TOKEN TF_VAR_cloudflare_account_id TF_VAR_supabase_organization_id; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::warning::Skipping init/plan; not configured:$missing (docs/DEPLOY.md, Terraform)"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Init
+        if: steps.creds.outputs.ok == 'true'
+        run: terraform init
+
+      - name: Validate
+        if: steps.creds.outputs.ok == 'true'
+        run: terraform validate -no-color
+
+      - name: Plan
+        if: steps.creds.outputs.ok == 'true'
+        run: |
+          set -o pipefail
+          terraform plan -no-color -out=tfplan | tee plan.txt
+          {
+            echo '### terraform plan'
+            echo '```'
+            grep -E '^(Plan:|No changes|  # )' plan.txt || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Apply
+        if: steps.creds.outputs.ok == 'true' && inputs.apply && github.ref == 'refs/heads/main'
+        run: terraform apply -no-color tfplan

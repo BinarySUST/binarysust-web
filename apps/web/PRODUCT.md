@@ -37,7 +37,7 @@ so the site doubles as the club's institutional memory.
 - Yearly committee handover (term `2025-26` -> `2026-27`).
 - Events with RSVP windows, capacity, waitlists and QR check-in.
 - Blog posts move draft -> in review -> published.
-- The API sleeps on Render's free tier; signed-in actions may wait up to a minute.
+- The API is always on (a VPS behind Cloudflare Tunnel); only signed-in actions and RSVP need it.
 
 ## Capabilities and Constraints
 

@@ -1,9 +1,9 @@
-// Cloudflare Pages Function: same-origin proxy for /api/* to the Go API on Render.
+// Cloudflare Pages Function: same-origin proxy for /api/* to the Go API on the VPS (via Cloudflare Tunnel).
 // The browser only ever talks to the site's own origin, so session cookies are first-party and there is
 // no CORS. Method, headers, body and cookies go upstream; status, headers and every Set-Cookie come back.
 
 interface Env {
-  API_ORIGIN: string; // e.g. https://binarysust-api.onrender.com (no trailing slash)
+  API_ORIGIN: string; // e.g. https://api.binarysust.org (no trailing slash)
 }
 
 const HOP_BY_HOP = ["connection", "keep-alive", "proxy-connection", "transfer-encoding", "upgrade", "te", "trailer", "host"];
@@ -32,7 +32,7 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
     });
   } catch {
     return Response.json(
-      { title: "API unreachable", status: 502, detail: "The server did not answer. It may be waking up; try again in a minute." },
+      { title: "API unreachable", status: 502, detail: "The server did not answer. Try again in a minute." },
       { status: 502 },
     );
   }

@@ -13,11 +13,11 @@ anywhere, and it is built so that next year's committee can maintain it by copyi
   (repository_dispatch)  └───────────────────────────────┬──────────────────────────────┘
                                                          ▼
   Visitor ─────────────────────────────►  Cloudflare Pages  (static HTML + /data/*.json)
-  Member  ──► /api/* Pages Function ──►  Render: Go API on ekman (apps/api) ──► Neon Postgres
+  Member  ──► /api/* Pages Function ──►  VPS (Cloudflare Tunnel): Go API on ekman ──► Supabase Postgres
 ```
 
 - **Public pages never call the API.** They are pre-rendered from one snapshot of the database, so the site stays
-  fast and up while the free-tier API sleeps. Only the RSVP button and the dashboard talk to the API.
+  fast and up even when the API is down or being deployed. Only the RSVP button and the dashboard talk to the API.
 - **The Go API** (`apps/api`, on [ekman](https://github.com/sakib412/ekman)) owns the data, the roles and the
   OpenAPI contract. **The web app** (`apps/web`, TanStack Start) reaches it only through the generated
   `@binarysust/api-client`.
@@ -47,7 +47,7 @@ dotenv-cli, so the API, the web dev server, tests and the `db:*` scripts read th
 ```
 apps/
   web/            TanStack Start: pre-rendered public site + client-only /dashboard (Cloudflare Pages)
-  api/            Go API on ekman (Render); openapi.json is its generated contract
+  api/            Go API on ekman (VPS, systemd); openapi.json is its generated contract
 packages/
   ui/             @binarysust/ui: shadcn/ui on Base UI, design tokens (globals.css), brand <Logo/>
   api-client/     @binarysust/api-client: types generated from openapi.json, the one API client, ApiError
@@ -55,6 +55,8 @@ packages/
   typescript-config/  shared tsconfigs (base, react-library, vite-app)
 infra/
   docker/         compose.yaml: local Postgres + Caddy
+  vps/            systemd unit, env template and one-time setup for the API on the VPS
+  terraform/      Cloudflare (DNS, tunnel, Pages), Supabase project and deploy secrets, as code
   caddy/          Caddyfile: the binarysust.localhost edge, shaped like production
 docs/             architecture, deploy guide, snapshot contract, ADRs
 ```

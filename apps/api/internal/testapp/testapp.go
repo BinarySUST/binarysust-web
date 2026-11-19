@@ -44,14 +44,24 @@ func New(t testing.TB) *App {
 	return &App{Client: c, Svc: svc, DB: d, Mail: box}
 }
 
-// Account signs up email through the real Directory and returns the account (user) id.
+// Account returns the account (user) id for email, creating it directly and linking it to the
+// person with that email, if any. It bypasses the Directory, which refuses uninvited emails, so
+// tests can have guests; SignIn goes through the real Directory.
 func (a *App) Account(t testing.TB, email string) string {
 	t.Helper()
-	id, err := a.Svc.Access.UserFor(context.Background(), auth.Identity{Provider: "test", Subject: email, Email: email, EmailVerified: true, Name: email})
-	if err != nil {
-		t.Fatalf("account %s: %v", email, err)
+	id := a.QueryString(t, `
+		INSERT INTO accounts (email, name) VALUES (lower($1), $1)
+		ON CONFLICT (email) DO UPDATE SET last_login_at = now()
+		RETURNING id`, email)
+	if err := a.Svc.Access.LinkPersons(context.Background()); err != nil {
+		t.Fatal(err)
 	}
 	return id
+}
+
+// SignIn signs email in through the real Directory, as Google sign-in does.
+func (a *App) SignIn(email string) (string, error) {
+	return a.Svc.Access.UserFor(context.Background(), auth.Identity{Provider: "test", Subject: email, Email: email, EmailVerified: true, Name: email})
 }
 
 // AsUser runs as an account with permissions resolved the production way: baseline plus the

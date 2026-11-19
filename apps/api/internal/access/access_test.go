@@ -163,3 +163,30 @@ func TestGrantsAPI(t *testing.T) {
 		t.Fatalf("me: %+v", acct)
 	}
 }
+
+func TestSignUpIsInviteOnly(t *testing.T) {
+	a := testapp.New(t)
+	_, _, _, annID, _ := committee(t, a)
+
+	if _, err := a.SignIn("stranger@example.com"); err != access.ErrNotInvited {
+		t.Fatalf("stranger: %v", err)
+	}
+	if n := a.QueryString(t, `SELECT count(*)::text FROM accounts`); n != "0" {
+		t.Fatalf("a refused sign-in must not create an account: %s accounts", n)
+	}
+
+	// Ann's email is on a person: she signs in (case-insensitively) and is linked.
+	id, err := a.SignIn(" Ann@Example.com ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pid, err := a.Svc.Access.PersonOf(context.Background(), id); err != nil || pid != annID {
+		t.Fatalf("ann linked to %q: %v", pid, err)
+	}
+
+	// Removing the email from the person closes the door again.
+	a.Exec(t, `UPDATE persons SET email = NULL WHERE id = $1`, annID)
+	if _, err := a.SignIn("ann@example.com"); err != access.ErrNotInvited {
+		t.Fatalf("ann after her email was removed: %v", err)
+	}
+}

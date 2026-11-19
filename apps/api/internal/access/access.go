@@ -41,6 +41,10 @@ const ManageRoles rbac.Permission = "roles.manage"
 var ErrNotMember = &ekman.Error{Status: http.StatusForbidden, Code: "not_a_member",
 	Message: "your account is not linked to a club profile; ask a people manager to add your email"}
 
+// ErrNotInvited refuses a sign-in whose email is on no person: sign-up is invite-only.
+var ErrNotInvited = &ekman.Error{Status: http.StatusForbidden, Code: "not_invited",
+	Message: "sign-in is for club members only; ask the committee to add your email to the club's people"}
+
 // Role names a role defined in code (club.Roles). Its OpenAPI enum is the role table.
 type Role string
 
@@ -127,14 +131,24 @@ func (s *Service) RolesOf(ctx context.Context, userID string) ([]string, error) 
 	return out, rows.Err()
 }
 
-// UserFor implements auth.Directory: any verified email gets an account, linked to the person
-// with the same email when there is one.
+// UserFor implements auth.Directory. Sign-up is invite-only: a verified email gets an account
+// only when a person (added in People) has that email, and the account is linked to that person.
+// Everyone else is refused with ErrNotInvited, so strangers never get an account.
 func (s *Service) UserFor(ctx context.Context, id auth.Identity) (string, error) {
 	if !id.EmailVerified || id.Email == "" {
 		return "", ekman.Forbidden("sign in with an account whose email address is verified")
 	}
+	email := strings.ToLower(strings.TrimSpace(id.Email))
 	var accountID string
 	err := s.db.Tx(ctx, func(ctx context.Context) error {
+		var invited bool
+		if err := s.db.Q(ctx).QueryRowContext(ctx,
+			`SELECT EXISTS (SELECT 1 FROM persons WHERE email = $1)`, email).Scan(&invited); err != nil {
+			return err
+		}
+		if !invited {
+			return ErrNotInvited
+		}
 		var avatar *string
 		if id.AvatarURL != "" {
 			avatar = &id.AvatarURL
@@ -145,7 +159,7 @@ func (s *Service) UserFor(ctx context.Context, id auth.Identity) (string, error)
 			   SET name = CASE WHEN EXCLUDED.name <> '' THEN EXCLUDED.name ELSE accounts.name END,
 			       avatar_url = coalesce(EXCLUDED.avatar_url, accounts.avatar_url),
 			       last_login_at = now()
-			RETURNING id`, strings.ToLower(strings.TrimSpace(id.Email)), id.Name, avatar).Scan(&accountID); err != nil {
+			RETURNING id`, email, id.Name, avatar).Scan(&accountID); err != nil {
 			return err
 		}
 		return s.LinkPersons(ctx)

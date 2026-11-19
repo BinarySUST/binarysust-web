@@ -168,18 +168,18 @@ the long-term replacement (see ARCHITECTURE.md, open questions).
 
 ## 6. First publish
 
-Actions → **publish** → Run workflow. Open `https://www.binarysust.org` and sign in with Google once.
-Then make yourself the first admin from the Supabase SQL editor. Roles belong to a _person_ (a public
-profile), so create yours, link it, and grant a permanent admin role:
+Actions → **publish** → Run workflow. Sign-up is invite-only (only emails on a person can sign in), so
+make yourself the first admin from the Supabase SQL editor before signing in. Roles belong to a
+_person_ (a public profile), so create yours and grant it a permanent admin role:
 
 ```sql
 INSERT INTO persons (handle, name, email) VALUES ('your-handle', 'Your Name', 'you@gmail.com');
-UPDATE accounts a SET person_id = p.id FROM persons p WHERE p.email = a.email AND a.email = 'you@gmail.com';
 INSERT INTO role_grants (person_id, role, term_id)
 SELECT id, 'admin', NULL FROM persons WHERE email = 'you@gmail.com';
 ```
 
-Emails must be lowercase.
+Emails must be lowercase. Then open `https://www.binarysust.org/login` and sign in with Google.
+To let anyone else sign in, add their email to their person in the dashboard's **People** section.
 
 After that, give out every other role from the dashboard's **Committee & roles** section.
 

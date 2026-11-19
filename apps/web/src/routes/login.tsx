@@ -34,9 +34,7 @@ function Login() {
         </div>
         <div className="px-8 pt-8 pb-9 sm:px-10">
           <h1 className="display text-[2rem]">Sign in</h1>
-          <p className="mt-3 text-ink-2">
-            Use your Google account. Any account can sign in to reserve seats; committee members also get the dashboard.
-          </p>
+          <p className="mt-3 text-ink-2">Sign-in is for club members. Use the Google account whose email the committee added for you.</p>
           <a href={googleStartUrl(next)} className={buttonVariants({ variant: "outline", className: "mt-8 w-full bg-panel" })}>
             <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
               <path

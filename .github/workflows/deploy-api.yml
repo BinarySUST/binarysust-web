@@ -118,15 +118,18 @@ jobs:
           }
 
           switch_to "releases/$SHA"
+          sudo -n systemctl reset-failed "$SERVICE" 2>/dev/null || true # clear a start-limit hit by an earlier crash loop
           sudo -n systemctl restart "$SERVICE"
           if healthy; then
             echo "Live: $SHA"
           else
-            echo "::error::$SERVICE did not become healthy on $SHA. Recent logs:"
-            sudo -n journalctl -u "$SERVICE" -n 60 --no-pager || true
+            # Service logs are not printed here: this repository is public, and error messages can carry
+            # connection strings or other secrets. Read them on the VPS: sudo journalctl -u binarysust-api -n 60
+            echo "::error::$SERVICE did not become healthy on $SHA. See: sudo journalctl -u $SERVICE -n 60 (on the VPS)"
             if [ -n "$previous" ] && [ "$previous" != "releases/$SHA" ]; then
               echo "Rolling back to $previous"
               switch_to "$previous"
+              sudo -n systemctl reset-failed "$SERVICE" 2>/dev/null || true
               sudo -n systemctl restart "$SERVICE"
               healthy && echo "Rolled back to $previous" || echo "::error::Rollback is not healthy either"
             fi

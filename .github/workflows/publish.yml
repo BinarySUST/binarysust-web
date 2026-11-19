@@ -104,4 +104,7 @@ jobs:
             echo "::warning::CLOUDFLARE_API_TOKEN is not set; built but not deployed."
             exit 0
           fi
+          # First run only: create the Pages project (fails harmlessly when it exists; a real auth problem
+          # surfaces in the deploy below).
+          pnpm exec wrangler pages project create "$PAGES_PROJECT" --production-branch main >/dev/null 2>&1 || true
           pnpm exec wrangler pages deploy dist/client --project-name "$PAGES_PROJECT" --branch main --commit-dirty=true

@@ -83,12 +83,20 @@ Terraform (step 0) creates project `binarysust` in Singapore (`ap-southeast-1`) 
 
 ## 2. Google sign-in
 
-1. console.cloud.google.com → new project `binarysust` (do **not** enable billing).
-2. APIs & Services → OAuth consent screen → External, app name "Binary SUST", then publish it.
-3. Credentials → Create OAuth client ID → Web application. Authorized redirect URIs:
-   - `https://www.binarysust.org/api/v1/auth/google/callback`
-   - `http://binarysust.localhost/api/v1/auth/google/callback` (local dev; if Google rejects it, use `pnpm dev` with `DEV_ADMIN_EMAIL` instead)
-4. Copy the client ID and secret.
+Done 2026-11-20 as binary.sust@gmail.com: project `binarysust`, OAuth client **binarysust-web prod**. To redo it:
+
+1. console.cloud.google.com → new project `binarysust`, no organization (do **not** enable billing).
+2. Google Auth Platform → Get started: app name "Binary SUST", support and contact email binary.sust@gmail.com,
+   audience **External**. No logo: a logo forces Google's brand verification.
+3. Branding: home page `https://www.binarysust.org`, privacy policy `https://www.binarysust.org/privacy`,
+   authorized domain `binarysust.org`. Then Audience → **Publish app**. The scopes are only `openid email profile`,
+   so no verification is needed; while the app is in Testing only listed test users can sign in.
+4. Clients → Create client → Web application. One authorized redirect URI, nothing else:
+   `https://www.binarysust.org/api/v1/auth/google/callback`. Local dev signs in with `DEV_ADMIN_EMAIL` instead.
+5. Copy the client ID and secret into `/etc/binarysust-api.env` (step 3). Google shows the secret only once; if it
+   is lost, add a new secret to the client and delete the old one.
+
+The API builds the callback from `PUBLIC_URL`, so set `PUBLIC_URL=https://www.binarysust.org` on the VPS too.
 
 ## 3. VPS (Go API)
 
@@ -189,4 +197,5 @@ After that, give out every other role from the dashboard's **Committee & roles**
 - Rotate `GITHUB_*` and `TF_*` tokens if they expire within 3 months.
 - Hand over the HCP Terraform organization (it holds the state) along with the other club accounts.
 - Check the `binarysust.org` renewal date at Namecheap (next: 2027-09-20).
-- Make sure at least two people know the club Google account's password and have recovery set up.
+- Make sure at least two people know the club Google account's password and have recovery set up. The account
+  also owns the `binarysust` Google Cloud project (Google sign-in).

@@ -16,6 +16,7 @@ import { Route as AdvisorsRouteImport } from './routes/advisors'
 import { Route as AlumniRouteImport } from './routes/alumni'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SponsorsRouteImport } from './routes/sponsors'
 import { Route as TalksRouteImport } from './routes/talks'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
@@ -63,6 +64,11 @@ const DashboardRouteRoute = DashboardRouteRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SponsorsRoute = SponsorsRouteImport.update({
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/advisors': typeof AdvisorsRoute
   '/alumni': typeof AlumniRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/sponsors': typeof SponsorsRoute
   '/talks': typeof TalksRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/advisors': typeof AdvisorsRoute
   '/alumni': typeof AlumniRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/sponsors': typeof SponsorsRoute
   '/talks': typeof TalksRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/advisors': typeof AdvisorsRoute
   '/alumni': typeof AlumniRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/sponsors': typeof SponsorsRoute
   '/talks': typeof TalksRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/advisors'
     | '/alumni'
     | '/login'
+    | '/privacy'
     | '/sponsors'
     | '/talks'
     | '/blog/$slug'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/advisors'
     | '/alumni'
     | '/login'
+    | '/privacy'
     | '/sponsors'
     | '/talks'
     | '/blog/$slug'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/advisors'
     | '/alumni'
     | '/login'
+    | '/privacy'
     | '/sponsors'
     | '/talks'
     | '/blog/$slug'
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   AdvisorsRoute: typeof AdvisorsRoute
   AlumniRoute: typeof AlumniRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   SponsorsRoute: typeof SponsorsRoute
   TalksRoute: typeof TalksRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sponsors': {
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvisorsRoute: AdvisorsRoute,
   AlumniRoute: AlumniRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   SponsorsRoute: SponsorsRoute,
   TalksRoute: TalksRoute,
   BlogSlugRoute: BlogSlugRoute,

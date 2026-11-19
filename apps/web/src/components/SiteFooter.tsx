@@ -70,7 +70,10 @@ export function SiteFooter() {
       <div className="border-t border-line">
         <p className="meta mx-auto flex max-w-7xl flex-wrap justify-between gap-x-6 gap-y-1 px-4 py-4 text-ink-3 sm:px-6">
           <span>Binary SUST · SUST, Sylhet 3114</span>
-          <span>
+          <span className="flex gap-x-6">
+            <a href="/privacy" className="text-ink-3 no-underline hover:text-ink hover:underline">
+              Privacy
+            </a>
             <a href="/sitemap.xml" className="text-ink-3 no-underline hover:text-ink hover:underline">
               sitemap.xml
             </a>

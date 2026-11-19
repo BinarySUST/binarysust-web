@@ -198,6 +198,7 @@ export function allPaths(s: Snapshot): string[] {
     "/blog",
     "/talks",
     "/sponsors",
+    "/privacy",
     ...s.terms.filter((t) => s.committees.some((c) => c.term === t.slug)).map((t) => `/committee/${t.slug}`),
     ...s.people.map((p) => `/people/${p.handle}`),
     ...s.events.map((e) => `/events/${e.slug}`),

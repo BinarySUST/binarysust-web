@@ -115,11 +115,13 @@ type GitHub struct {
 }
 
 // Notify implements Notifier: a dispatch without a snapshot hash.
-func (g *GitHub) Notify(ctx context.Context, reason string) error { return g.Dispatch(ctx, reason, "") }
+func (g *GitHub) Notify(ctx context.Context, reason string) error {
+	return g.Dispatch(ctx, Dispatch{Reason: reason})
+}
 
-// Dispatch implements Dispatcher. The publish workflow fetches the snapshot with hash from KV
-// (or the latest one when hash is empty).
-func (g *GitHub) Dispatch(ctx context.Context, reason, hash string) error {
+// Dispatch implements Dispatcher. The publish workflow fetches the snapshot with d.Hash from KV
+// (or the latest one when it is empty), and with force it deploys even an unchanged hash.
+func (g *GitHub) Dispatch(ctx context.Context, d Dispatch) error {
 	base := g.BaseURL
 	if base == "" {
 		base = "https://api.github.com"
@@ -128,9 +130,12 @@ func (g *GitHub) Dispatch(ctx context.Context, reason, hash string) error {
 	if client == nil {
 		client = &http.Client{Timeout: 5 * time.Second}
 	}
-	payload := map[string]string{"reason": reason}
-	if hash != "" {
-		payload["hash"] = hash
+	payload := map[string]string{"reason": d.Reason}
+	if d.Hash != "" {
+		payload["hash"] = d.Hash
+	}
+	if d.Force {
+		payload["force"] = "true"
 	}
 	body, _ := json.Marshal(map[string]any{"event_type": "publish", "client_payload": payload})
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
@@ -158,10 +163,13 @@ func (g *GitHub) Dispatch(ctx context.Context, reason, hash string) error {
 type Log struct{ Logger *slog.Logger }
 
 // Notify implements Notifier.
-func (l Log) Notify(ctx context.Context, reason string) error { return l.Dispatch(ctx, reason, "") }
+func (l Log) Notify(ctx context.Context, reason string) error {
+	return l.Dispatch(ctx, Dispatch{Reason: reason})
+}
 
 // Dispatch implements Dispatcher.
-func (l Log) Dispatch(ctx context.Context, reason, hash string) error {
-	l.Logger.InfoContext(ctx, "republish: content changed (no GITHUB_DISPATCH_TOKEN; not dispatching)", "route", reason, "hash", hash)
+func (l Log) Dispatch(ctx context.Context, d Dispatch) error {
+	l.Logger.InfoContext(ctx, "republish: content changed (no GITHUB_DISPATCH_TOKEN; not dispatching)",
+		"route", d.Reason, "hash", d.Hash, "force", d.Force)
 	return nil
 }

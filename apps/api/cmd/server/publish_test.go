@@ -269,7 +269,7 @@ func TestWriteStoresSnapshotThenDispatches(t *testing.T) {
 		t.Fatalf("latest: %s", r.kv.vals["latest"])
 	}
 	sent := r.dispatch.take()
-	if len(sent) != 1 || sent[0]["hash"] != hash || sent[0]["reason"] != "POST /api/v1/sponsors" {
+	if len(sent) != 1 || sent[0]["hash"] != hash || sent[0]["reason"] != "POST /api/v1/sponsors" || sent[0]["force"] != nil {
 		t.Fatalf("dispatches %v", sent)
 	}
 }
@@ -392,7 +392,8 @@ func TestRepublishNowIsAdminOnlyAndAlwaysDispatches(t *testing.T) {
 	}
 	r.idle(t)
 	hash := r.previewHash(t)
-	if s := r.dispatch.take(); len(s) != 1 || s[0]["hash"] != hash || s[0]["reason"] != "POST /api/v1/site/republish" {
+	// force tells the workflow to deploy even though the live site already has this hash.
+	if s := r.dispatch.take(); len(s) != 1 || s[0]["hash"] != hash || s[0]["reason"] != "POST /api/v1/site/republish" || s[0]["force"] != "true" {
 		t.Fatalf("republish dispatches %v (content unchanged, so only a forced run dispatches)", s)
 	}
 }

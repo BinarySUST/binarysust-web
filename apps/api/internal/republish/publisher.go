@@ -22,9 +22,17 @@ type Store interface {
 	Get(ctx context.Context, key string) ([]byte, error)
 }
 
-// Dispatcher asks CI to rebuild the site from the snapshot with hash (GitHub in production).
+// Dispatch is one build request: the snapshot to build (empty: the latest) and whether to deploy
+// even when the live site already serves that hash.
+type Dispatch struct {
+	Reason string
+	Hash   string
+	Force  bool
+}
+
+// Dispatcher asks CI to rebuild the site (GitHub in production).
 type Dispatcher interface {
-	Dispatch(ctx context.Context, reason, hash string) error
+	Dispatch(ctx context.Context, d Dispatch) error
 }
 
 // LatestKey points at the newest stored snapshot: {"hash", "builtAt"}. Snapshots themselves live
@@ -214,7 +222,7 @@ func (p *Publisher) run(parent context.Context, reason string, force bool) {
 		fail("store latest", err)
 		return
 	}
-	if err := p.Dispatch.Dispatch(ctx, reason, b.Hash); err != nil {
+	if err := p.Dispatch.Dispatch(ctx, Dispatch{Reason: reason, Hash: b.Hash, Force: force}); err != nil {
 		fail("dispatch failed", err)
 		return
 	}

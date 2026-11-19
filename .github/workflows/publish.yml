@@ -82,7 +82,8 @@ jobs:
 
       - name: Skip if the live site already has this content
         id: live
-        if: github.event_name != 'push' && github.event_name != 'workflow_dispatch'
+        # "Republish now" (client_payload.force) deploys even when the live site already has this hash.
+        if: github.event_name != 'push' && github.event_name != 'workflow_dispatch' && github.event.client_payload.force != 'true'
         run: |
           live=$(curl -fsS --max-time 10 "$SITE_URL/version.json" | jq -r .hash || echo none)
           echo "live hash: $live, new hash: ${{ steps.snapshot.outputs.hash }}"

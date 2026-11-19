@@ -1,5 +1,5 @@
-// Command snapshot writes the public-site snapshot. CI runs it against Neon directly (with a
-// read-only role), so a site build never waits on the sleeping API.
+// Command snapshot writes the public-site snapshot. CI runs it against Supabase directly (with a
+// read-only role), so a site build never depends on the API being up.
 //
 //	DATABASE_URL=... go run ./cmd/snapshot -out ../web
 //

@@ -1,0 +1,38 @@
+# Binary SUST Go API on the VPS. Installed by infra/vps/setup.sh to /etc/systemd/system/.
+# .github/workflows/deploy-api.yml swaps /opt/binarysust-api/current and restarts this unit.
+# Migrations run at boot (advisory-locked, forward-only), so a deploy is one restart.
+[Unit]
+Description=Binary SUST API
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+ExecStart=/opt/binarysust-api/current/server serve --migrate
+# Secrets live only in this root-owned 0600 file (template: infra/vps/binarysust-api.env.example).
+EnvironmentFile=/etc/binarysust-api.env
+# Ports 80/443 belong to OpenLiteSpeed; ufw keeps 8081 closed to the internet, and Cloudflare Tunnel
+# (cloudflared) reaches it on localhost.
+Environment=PORT=8081
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+
+# Sandboxing: a throwaway user, read-only system, no privileges.
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

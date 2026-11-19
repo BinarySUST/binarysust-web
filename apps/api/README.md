@@ -173,8 +173,9 @@ and the CI check see it. The document ekman serves at runtime (`GET /api/v1/open
 
 ## Deploy
 
-`../../render.yaml` (`rootDir: apps/api`) deploys `Dockerfile` (distroless, static binary) to Render's free plan in
-Singapore with a `/healthz` health check. The container runs `server serve --migrate`.
+`../../.github/workflows/deploy-api.yml` builds a static linux/arm64 binary and ships it to the VPS, where systemd
+runs `server serve --migrate` on 127.0.0.1:8081 (`../../infra/vps/`). A failed `/healthz` check rolls back to the
+previous release. Cloudflare Tunnel exposes it as `api.binarysust.org` for the site's `/api/*` proxy.
 
 ## Known gaps in ekman v0.1 (worked around here)
 

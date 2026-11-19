@@ -30,7 +30,7 @@ import (
 	"github.com/BinarySUST/binarysust-web/apps/api/internal/republish"
 )
 
-// Config is read from the environment (see .env.example and render.yaml at the repository root).
+// Config is read from the environment (see .env.example at the repository root and infra/vps/binarysust-api.env.example).
 type Config struct {
 	DatabaseURL        string // DATABASE_URL
 	PublicURL          string // PUBLIC_URL: the site's origin; /api/* is proxied there

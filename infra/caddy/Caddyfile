@@ -2,7 +2,7 @@
 #
 #   production                           local
 #   binarysust.org                 http://binarysust.localhost
-#     /api/*  -> Pages Function -> Render  /api/*, /healthz -> Go API on the host
+#     /api/*  -> Pages Function -> VPS     /api/*, /healthz -> Go API on the host
 #     /*      -> static site               /*                -> TanStack Start dev server on the host
 #   media.binarysust.org           http://media.binarysust.localhost  -> .data/media
 #

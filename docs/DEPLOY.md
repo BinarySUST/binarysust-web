@@ -3,29 +3,33 @@
 Set this up once with a **club-owned Google account** (for example binary.sust@gmail.com), not a
 personal one, so the next committee inherits it. Use the same account for every service below.
 
-| Piece                      | Service                                                           | Free tier used                               |
-| -------------------------- | ----------------------------------------------------------------- | -------------------------------------------- |
-| Public site + `/api` proxy | Cloudflare Pages                                                  | static hosting, unlimited bandwidth          |
-| Go API                     | Render                                                            | 1 free web service (sleeps when idle)        |
-| Database                   | Neon                                                              | 0.5 GB Postgres, suspends instead of billing |
-| Media                      | GitHub repo `BinarySUST/binarysust-media` + its own Pages project |                                              |
-| Builds                     | GitHub Actions                                                    | unlimited on public repos                    |
-| Sign-in                    | Google OAuth                                                      | no billing account needed                    |
-| Mail (optional)            | Brevo                                                             | 300 emails/day                               |
+| Piece                      | Service                                                           | Free tier used                      |
+| -------------------------- | ----------------------------------------------------------------- | ----------------------------------- |
+| Public site + `/api` proxy | Cloudflare Pages                                                  | static hosting, unlimited bandwidth |
+| Go API                     | Oracle Cloud VPS + Cloudflare Tunnel                              | Always Free ARM VM; tunnel is free  |
+| Database                   | Supabase                                                          | 500 MB Postgres                     |
+| Media                      | GitHub repo `BinarySUST/binarysust-media` + its own Pages project |                                     |
+| Builds                     | GitHub Actions                                                    | unlimited on public repos           |
+| Sign-in                    | Google OAuth                                                      | no billing account needed           |
+| Mail (optional)            | Brevo                                                             | 300 emails/day                      |
 
-## 1. Neon (database)
+## 1. Supabase (database)
 
-1. Sign up at neon.tech, create project `binarysust`, region **Singapore**.
-2. Copy the **pooled** connection string. This is `DATABASE_URL` for Render.
-3. Create a read-only role for the site build (Neon SQL editor):
+1. Sign up at supabase.com, create project `binarysust`, region **Southeast Asia (Singapore)**. Save the database password.
+2. **Turn off the Data API** (Project Settings → Data API → disable, or remove `public` from the exposed schemas).
+   The API owns every table in `public`; left on, Supabase would serve them over REST to anyone with the anon key.
+3. Connect → **Session pooler** connection string (IPv4; the direct connection is IPv6-only on the free plan).
+   With the database password filled in, this is `DATABASE_URL` for the VPS.
+4. Create a read-only role for the site build (SQL editor):
    ```sql
    CREATE ROLE site_reader LOGIN PASSWORD '<generate one>';
-   GRANT CONNECT ON DATABASE neondb TO site_reader;
+   GRANT CONNECT ON DATABASE postgres TO site_reader;
    GRANT USAGE ON SCHEMA public TO site_reader;
    GRANT SELECT ON ALL TABLES IN SCHEMA public TO site_reader;
-   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO site_reader;
+   ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT ON TABLES TO site_reader;
    ```
-   The same connection string with `site_reader` is `SNAPSHOT_DATABASE_URL` for GitHub Actions.
+   The session pooler string with user `site_reader.<project-ref>` and its password is `SNAPSHOT_DATABASE_URL`
+   for GitHub Actions.
 
 ## 2. Google sign-in
 
@@ -36,21 +40,42 @@ personal one, so the next committee inherits it. Use the same account for every 
    - `http://binarysust.localhost/api/v1/auth/google/callback` (local dev; if Google rejects it, use `pnpm dev` with `DEV_ADMIN_EMAIL` instead)
 4. Copy the client ID and secret.
 
-## 3. Render (Go API)
+## 3. VPS (Go API)
 
-1. Sign up at render.com with GitHub. New → **Blueprint** → pick `BinarySUST/binarysust-web`. Render reads `render.yaml`.
-2. Fill in the secret env vars it asks for:
-   - `DATABASE_URL`: from Neon (owner role)
+The API runs as a static linux/arm64 binary under systemd on the club's Oracle Cloud VM (Ubuntu 22.04,
+aarch64). OpenLiteSpeed already owns ports 80/443 there, so the API listens on port 8081
+(closed to the internet by ufw) and Cloudflare Tunnel publishes it as `api.binarysust.org`. Nobody visits that
+hostname directly: the site's `/api/*` Pages Function proxies to it, so members only ever see `binarysust.org/api`.
+
+1. **One-time setup** from the repository root (needs an SSH user with sudo):
+   ```sh
+   scp -r infra/vps <user>@<host>:/tmp/binarysust-vps
+   ssh <user>@<host> bash /tmp/binarysust-vps/setup.sh
+   ```
+   It creates `/opt/binarysust-api/`, installs and enables `binarysust-api.service`, and creates
+   `/etc/binarysust-api.env` (root, 0600) from `infra/vps/binarysust-api.env.example`. Re-running it is safe.
+2. Fill in the env file on the VPS (`sudo nano /etc/binarysust-api.env`):
+   - `DATABASE_URL`: Supabase session pooler string (owner role `postgres.<project-ref>`)
    - `EKMAN_SECRET`: `openssl rand -base64 48`
    - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
    - `GITHUB_DISPATCH_TOKEN`, `GITHUB_MEDIA_TOKEN`: see step 5
    - `BREVO_API_KEY`: optional
-3. Deploy. The container runs migrations on boot. Check `https://binarysust-api.onrender.com/healthz`.
+3. **Cloudflare Tunnel** (needs `binarysust.org` on Cloudflare, see step 4):
+   1. Cloudflare dashboard → Zero Trust → Networks → Tunnels → **Create a tunnel** → Cloudflared, name it `binarysust-vps`.
+   2. Choose Debian, **arm64**, and run the install command it shows on the VPS
+      (`sudo cloudflared service install <token>`). The tunnel shows as Healthy.
+   3. Public hostname: `api.binarysust.org` → Service `HTTP` → `localhost:8081`.
+4. GitHub secrets for `deploy-api` (step 5), then Actions → **deploy-api** → Run workflow. It runs the Go tests,
+   builds, uploads to `/opt/binarysust-api/releases/<sha>/`, switches `current`, restarts the service (migrations
+   run on boot) and checks `/healthz`, rolling back to the previous release if it fails. After that, every push
+   to `main` that touches `apps/api/**` deploys. Check `https://api.binarysust.org/healthz`.
+
+Useful on the VPS: `sudo systemctl status binarysust-api`, `sudo journalctl -u binarysust-api -f`.
 
 ## 4. Cloudflare Pages (site)
 
 1. Sign up at dash.cloudflare.com. Workers & Pages → Create → Pages → **Direct Upload**, named `binarysust`. Create a second project named `binarysust-media` the same way.
-2. In `binarysust` → Settings → Variables: set `API_ORIGIN` = `https://binarysust-api.onrender.com`.
+2. In `binarysust` → Settings → Variables: set `API_ORIGIN` = `https://api.binarysust.org` (also the default in `apps/web/wrangler.toml`).
 3. My Profile → API Tokens → Create token with the template **Edit Cloudflare Workers** (it includes Pages). Copy it, and copy your Account ID from the dashboard sidebar.
 
 ### Domain: binarysust.org
@@ -68,10 +93,13 @@ The club owns `binarysust.org` at Namecheap (expires 2027-09-20). Cloudflare's f
 
 In `BinarySUST/binarysust-web` → Settings → Secrets and variables → Actions:
 
-- `SNAPSHOT_DATABASE_URL`: Neon `site_reader` string
+- `SNAPSHOT_DATABASE_URL`: Supabase `site_reader` string
 - `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- `VPS_HOST`, `VPS_USER`: the VM's address and an SSH user with passwordless sudo
+- `VPS_SSH_KEY`: that user's private key
+- `VPS_KNOWN_HOSTS`: output of `ssh-keyscan -t ed25519 <host>`, so the workflow pins the host key
 
-Tokens the API uses (paste them into Render): create **fine-grained personal access tokens** from the club's
+Tokens the API uses (paste them into `/etc/binarysust-api.env` on the VPS): create **fine-grained personal access tokens** from the club's
 GitHub account, owned by the `BinarySUST` org:
 
 - `GITHUB_DISPATCH_TOKEN`: repository `binarysust-web`, permission **Contents: read and write** (needed for `repository_dispatch`).
@@ -85,7 +113,7 @@ the long-term replacement (see ARCHITECTURE.md, open questions).
 ## 6. First publish
 
 Actions → **publish** → Run workflow. Open `https://binarysust.org` and sign in with Google once.
-Then make yourself the first admin from the Neon SQL editor. Roles belong to a _person_ (a public
+Then make yourself the first admin from the Supabase SQL editor. Roles belong to a _person_ (a public
 profile), so create yours, link it, and grant a permanent admin role:
 
 ```sql

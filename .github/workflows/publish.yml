@@ -7,7 +7,7 @@
 #   - manual run
 #
 # Secrets (repo settings → Secrets and variables → Actions):
-#   SNAPSHOT_DATABASE_URL  Neon connection string for a READ-ONLY role (optional: without it the fixture is used)
+#   SNAPSHOT_DATABASE_URL  Supabase connection string for a READ-ONLY role (optional: without it the fixture is used)
 #   CLOUDFLARE_API_TOKEN   token with "Cloudflare Pages: Edit"
 #   CLOUDFLARE_ACCOUNT_ID
 name: publish

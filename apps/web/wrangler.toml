@@ -5,4 +5,4 @@ compatibility_date = "2026-10-01"
 pages_build_output_dir = "dist/client"
 
 [vars]
-API_ORIGIN = "https://binarysust-api.onrender.com"
+API_ORIGIN = "https://api.binarysust.org" # Cloudflare Tunnel to the API on the VPS

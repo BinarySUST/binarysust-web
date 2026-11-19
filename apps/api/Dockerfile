@@ -9,6 +9,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/server ./cmd/serve
 FROM gcr.io/distroless/static-debian13:nonroot
 COPY --from=build /out/server /server
 EXPOSE 8080
-# Render's free plan has no pre-deploy step, so migrations run at boot (advisory-locked).
+# Not used by the VPS deploy (deploy-api.yml ships a bare binary); kept for container hosts.
+# Migrations run at boot (advisory-locked).
 ENTRYPOINT ["/server"]
 CMD ["serve", "--migrate"]

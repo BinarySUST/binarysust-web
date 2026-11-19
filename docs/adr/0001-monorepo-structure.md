@@ -42,8 +42,8 @@ binarysust-web/
 │   ├── docker/compose.yaml     local Postgres + Caddy
 │   └── caddy/Caddyfile         binarysust.localhost edge (mirrors production)
 ├── docs/                       ARCHITECTURE.md, DEPLOY.md, snapshot.md, adr/
-├── .github/                    workflows (ci, publish), CODEOWNERS, PR + issue templates, dependabot
-├── turbo.json, go.work, pnpm-workspace.yaml, package.json (root scripts only), render.yaml
+├── .github/                    workflows (ci, publish, deploy-api), CODEOWNERS, PR + issue templates, dependabot
+├── turbo.json, go.work, pnpm-workspace.yaml, package.json (root scripts only)
 ├── .editorconfig, .nvmrc, .golangci.yml, commitlint + lefthook (Conventional Commits, pre-commit format/lint)
 └── README.md, CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md, LICENSE
 ```
@@ -66,8 +66,8 @@ changes.
 
 The root `.env` (copied from `.env.example` on first `pnpm dev`) is the only local configuration. Root
 scripts that need it run under `dotenv -e .env -- …` (`dev`, `test`, `db:*`, `snapshot`); the variables
-never come from a Go-side loader, so `apps/api` keeps reading plain `os.Getenv` and production (Render)
-is unchanged. Turborepo runs in strict env mode: `dev` tasks pass the environment through
+never come from a Go-side loader, so `apps/api` keeps reading plain `os.Getenv` and production (systemd's
+`EnvironmentFile` on the VPS) is unchanged. Turborepo runs in strict env mode: `dev` tasks pass the environment through
 (`passThroughEnv`), `api#test` declares `EKMAN_TEST_DATABASE_URL`, and `@binarysust/web#build` hashes
 `SITE_URL` and `VITE_*`. `pnpm build` and `pnpm lint` do not read `.env`, so CI and local builds match.
 
@@ -100,4 +100,4 @@ Turborepo, TanStack, React, Tailwind, shadcn). Dependabot keeps them current. Pi
 - Adding a second app (e.g. a contest portal) = `apps/<name>` reusing `ui` and `api-client`.
 - Turbo caches tasks locally and in CI (`actions/cache` on `.turbo`), with no Vercel account needed.
 - More files at the root than a minimal repo. Every one has a single purpose, documented in CONTRIBUTING.md.
-- Render: `rootDir: apps/api`. Cloudflare Pages: output `apps/web/dist/client`.
+- VPS: `deploy-api.yml` builds `apps/api` for linux/arm64. Cloudflare Pages: output `apps/web/dist/client`.
